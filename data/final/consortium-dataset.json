@@ -1,0 +1,2046 @@
+{
+  "metadata": {
+    "name": "CrimConsortium Static Hub Dataset",
+    "description": "Consortium member publications for permanent archival on Arweave",
+    "version": "1.0",
+    "createdAt": "2025-09-16T22:12:19.335Z",
+    "source": "PubPub Export + Affiliation Detection"
+  },
+  "summary": {
+    "totalMembers": 15,
+    "totalPublications": 37,
+    "pdfsAvailable": 37,
+    "dateRange": {
+      "earliest": "2020-07-07T21:27:03.688Z",
+      "latest": "2022-07-07T12:03:37.213Z"
+    },
+    "averagePublicationsPerMember": 2
+  },
+  "members": [
+    {
+      "id": "university-of-manchester",
+      "name": "University of Manchester",
+      "keywords": [
+        "University of Manchester",
+        "Manchester University"
+      ],
+      "publicationCount": 19,
+      "publications": [
+        "64bc853e-5c8c-4e25-8478-1b4c6b0a150f",
+        "e57177e2-1ede-4691-b588-eef6b8738707",
+        "929bb60a-7bd2-49d3-b608-05fd5e758514",
+        "2e2eac22-8bd6-4dfd-a96c-4f9e556aa979",
+        "75598f0c-6c9d-450d-be9a-15d62343d1fe",
+        "6b2206bd-ae32-468a-9b0d-cde1f6bc3fb7",
+        "647a9e61-9b61-4331-b981-87bcdd433e91",
+        "d848147d-1131-493c-aee4-87148bfb15df",
+        "7b92990e-7e18-454b-a1f4-bf4358f4cb82",
+        "10ee04d2-9cb9-466c-a7b9-270de3b8d31e",
+        "9a026b9f-d77a-4af5-b002-f7f4cf6e887a",
+        "8d50382d-295c-4b08-8309-cb610269152e",
+        "1489adbc-52bc-4ac3-9bda-b79b1ad958f2",
+        "06cb27fc-33c8-4ac6-88e7-abf834adb088",
+        "e0ff7944-00a7-4b14-acc8-c0be9d2229ca",
+        "587b9c68-560e-4e41-b1e8-449df3019e23",
+        "aba1ae7a-ad36-449f-8d93-551e99d2aba1",
+        "3347bcba-d4cc-43ab-a806-e68a7c0c9cb9",
+        "a9708ebe-229c-4b39-8191-d1f0ac95543c"
+      ]
+    },
+    {
+      "id": "georgia-state-university",
+      "name": "Georgia State University",
+      "keywords": [
+        "Georgia State University",
+        "GSU"
+      ],
+      "publicationCount": 23,
+      "publications": [
+        "30868967-2f13-440d-bef5-d53176b01ad1",
+        "aab5ffbe-1af7-47cd-8051-266281525c84",
+        "4307e3de-25bc-4ebf-ae4f-823c7aafdf49",
+        "f7b86188-496b-4c37-85ce-2538c97e008a",
+        "0f3fbca8-1bd7-4119-8eab-1d537cc66937",
+        "b687013c-ae1e-481b-9c1a-8660962bfaa1",
+        "c6eae022-c976-43c4-bb10-d31115e56b7e",
+        "e0a7ef02-82b7-4352-8670-ff888ed4928f",
+        "dd7a1c57-2718-437a-bcd8-e5a44a136240",
+        "5f335e6f-0c3e-4483-bba7-67bab9a4a75c",
+        "8298e7d8-8124-4c84-832b-a04d3c1e6df9",
+        "9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71",
+        "e187aede-9c5f-4028-b057-18fea267fc1c",
+        "4cffda3d-7b71-41b4-84a5-de2dfa11e08d",
+        "2b7d065e-6edd-471b-a6b6-e85c91975dbf",
+        "ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91",
+        "69930b9a-045a-49ea-b9c5-9e8c5c6a7a44",
+        "c8186ce7-1e7a-4348-9562-6638e9658d5c",
+        "76272507-56bc-4e9f-bca8-13a3260f538c",
+        "017a704c-a163-407f-aad7-dc63d8fcfde8",
+        "57ca44a6-08de-425b-a525-bf42645daea9",
+        "be4a2ed5-4d26-4dc5-826a-d4359cf61ae9",
+        "117a25ca-6b49-4044-bc47-99e8d6423634"
+      ]
+    },
+    {
+      "id": "ghent-university",
+      "name": "Ghent University",
+      "keywords": [
+        "Ghent University",
+        "Universiteit Gent"
+      ],
+      "publicationCount": 4,
+      "publications": [
+        "a832e977-5ee9-4777-953b-8e1c00161868",
+        "5470e177-fa9f-4ce9-a48c-08b03391df43",
+        "c3095be2-6dcb-4a3e-89ee-5f8be0c72b35",
+        "595d51e0-34a6-4666-afc2-6932e5b6af76"
+      ]
+    },
+    {
+      "id": "john-jay-college",
+      "name": "John Jay College",
+      "keywords": [
+        "John Jay College",
+        "John Jay",
+        "CUNY John Jay"
+      ],
+      "publicationCount": 14,
+      "publications": [
+        "7ef5f8ad-36e1-4f36-8a08-59d6e863e543",
+        "e1ec4277-3431-424b-99aa-c559fffd4793",
+        "876d7923-ee5b-45c1-b0b4-fb3736a1ecaf",
+        "f5cc6109-de07-4e3b-9bfa-b9321205c6be",
+        "6e58ae84-cece-402f-baff-9824c9bc2207",
+        "ef173b57-f130-4366-8211-64f465769941",
+        "defb1f90-3613-4998-a17f-986ff127aebe",
+        "0387ca3b-471e-448f-90a7-143c28e45527",
+        "916f82c9-a912-4ca0-b98b-9c2b765d1f71",
+        "128a98c0-1a08-4057-8c08-5dcd04b0d095",
+        "5bc3c52a-f13f-4fc2-9492-2680ad88175e",
+        "527b7d37-fea1-47d1-9b3b-629564a16752",
+        "7cc495c8-cd4f-4d17-94d7-0318d4e4fa60",
+        "1121a2ef-3330-44ff-a757-853508563ab9"
+      ]
+    },
+    {
+      "id": "simon-fraser-university",
+      "name": "Simon Fraser University",
+      "keywords": [
+        "Simon Fraser University",
+        "SFU"
+      ],
+      "publicationCount": 7,
+      "publications": [
+        "e1ca98a9-4116-43b4-bed9-c66adafd8045",
+        "c53e0ad7-8320-4452-a16f-6ba0754b088f",
+        "20b1f578-b633-4fd0-b47d-ee2c0b2fc28c",
+        "942d2e26-682a-495c-98a7-378ce6f953e3",
+        "ad5d8f5b-31b1-491f-9c84-0dce57c5d419",
+        "01a63f76-3a50-4c93-b1e2-39a35efc3358",
+        "92d198f5-8e2e-4987-bdfe-02691e67644d"
+      ]
+    },
+    {
+      "id": "temple-university",
+      "name": "Temple University",
+      "keywords": [
+        "Temple University"
+      ],
+      "publicationCount": 2,
+      "publications": [
+        "b062237a-30db-484b-9487-c019a13619c9",
+        "1a6fe77d-7c36-4f0f-b729-1638039a979d"
+      ]
+    },
+    {
+      "id": "university-of-cambridge",
+      "name": "University of Cambridge",
+      "keywords": [
+        "University of Cambridge",
+        "Cambridge University"
+      ],
+      "publicationCount": 7,
+      "publications": [
+        "41445fae-e9cb-4261-9ece-10254de3d691",
+        "e1f02603-4d87-41b8-9c88-0e1ea870d8c8",
+        "d79990d9-47da-4a1a-9370-07e711f3b651",
+        "9b03bb0d-5851-4b7f-9f3b-0afe98cb1025",
+        "e8b282d0-50a8-452d-a7b1-364bfb2cc285",
+        "e108b822-4f13-46be-acfb-96a014521ad1",
+        "f349ff69-a221-4cb9-bd01-275e2bbc32f3"
+      ]
+    },
+    {
+      "id": "university-of-georgia",
+      "name": "University of Georgia",
+      "keywords": [
+        "University of Georgia",
+        "UGA"
+      ],
+      "publicationCount": 3,
+      "publications": [
+        "02dbfd78-5013-4775-94b8-9006ebe538b8",
+        "489e30b2-fad6-4909-80d6-eead7aa54288",
+        "8138f3e4-be2e-4b33-aa3a-5d82752092eb"
+      ]
+    },
+    {
+      "id": "university-of-missouri",
+      "name": "University of Missouri",
+      "keywords": [
+        "University of Missouri",
+        "UMSL",
+        "Missouri St. Louis"
+      ],
+      "publicationCount": 1,
+      "publications": [
+        "7476fdd1-f5b2-4f83-8094-5b1397fee42e"
+      ]
+    },
+    {
+      "id": "university-of-texas-dallas",
+      "name": "University of Texas at Dallas",
+      "keywords": [
+        "University of Texas at Dallas",
+        "UT Dallas",
+        "UTD"
+      ],
+      "publicationCount": 2,
+      "publications": [
+        "515fbf6b-2be3-45cc-9b7d-3a561d395d94",
+        "cc9bbf11-4629-44e3-92b8-c936b71d6ed2"
+      ]
+    },
+    {
+      "id": "northeastern-university",
+      "name": "Northeastern University",
+      "keywords": [
+        "Northeastern University"
+      ],
+      "publicationCount": 10,
+      "publications": [
+        "aa55b408-9064-4060-82ad-43fd18b643a7",
+        "e001428e-23fd-43eb-bf6f-062db256b2bd",
+        "302274d2-b3bf-411c-8496-1ae19f09465a",
+        "f527651d-d63d-4f43-bd12-bd1195fbe514",
+        "25cf801b-547c-4476-92ea-0a12f7b61b30",
+        "8cad5d7a-260b-4b07-b47f-1c076d576eea",
+        "5aec2535-19ed-4578-a9ae-0a7d305da5e7",
+        "9f78f472-fa9a-4273-8bbf-5a13c8f7ba0e",
+        "8efcc1b9-d7fd-4dbe-a58a-db7119a21e5f",
+        "84e2576c-1a8a-4248-8e29-8bf6ebcaf294"
+      ]
+    },
+    {
+      "id": "max-planck-institute",
+      "name": "Max Planck Institute",
+      "keywords": [
+        "Max Planck Institute",
+        "MPI"
+      ],
+      "publicationCount": 3,
+      "publications": [
+        "e9edd646-ab8b-495d-9c61-b6cdfdadb181",
+        "e8fd9b28-09ec-451a-a40f-fdbd45568c70",
+        "c04b6d1a-b5bc-4abb-9862-2e034e74e28f"
+      ]
+    },
+    {
+      "id": "knowledge-futures",
+      "name": "Knowledge Futures",
+      "keywords": [
+        "Knowledge Futures",
+        "Knowledge Futures Group"
+      ],
+      "publicationCount": 1,
+      "publications": [
+        "dc975be1-e02d-454e-8a82-0732f8a3dad8"
+      ]
+    },
+    {
+      "id": "ucl",
+      "name": "UCL",
+      "keywords": [
+        "UCL",
+        "University College London"
+      ],
+      "publicationCount": 13,
+      "publications": [
+        "283a70a2-4f44-4678-a7e6-eab1f62af4a2",
+        "8c79f146-0310-4845-a16e-ec1a0c79e766",
+        "5f56dafb-be8c-48a7-937f-f83b79436207",
+        "73eb841d-aaef-436d-b92a-eef4d9268935",
+        "8c4e3181-b758-429d-8803-601affa0adf4",
+        "46d2b268-3f54-418e-a561-608870f06b8d",
+        "ec343def-b2e5-4ed9-a61c-0ab0a6df00ad",
+        "9745b9d9-9304-4538-8c11-ed15380c2756",
+        "7ff3b742-203c-4e72-bf99-f16b5f06466f",
+        "0cc12e8c-df7e-4f08-a760-ac53f70f57d9",
+        "4fd8c815-6531-4139-ad5d-c9282bba2763",
+        "56b8415f-d6a4-4787-9674-abe3d14c16d2",
+        "c9c8c99a-ed2b-457d-bf47-5b577aff6376"
+      ]
+    },
+    {
+      "id": "universite-de-montreal",
+      "name": "Université de Montréal",
+      "keywords": [
+        "Université de Montréal",
+        "University of Montreal"
+      ],
+      "publicationCount": 14,
+      "publications": [
+        "0bcce0c6-f745-441a-abec-47b7eb633cd1",
+        "87c7cf45-2146-455b-8bac-8c6d7b162162",
+        "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+        "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+        "d228871d-d62e-4819-aa62-e405c403cdad",
+        "5a8937f1-0bd4-419c-9830-027b064a4607",
+        "8e4da5be-350f-418d-b30a-26a7afa32589",
+        "0f13c885-9d8c-42a4-bee0-a03e9036cfb5",
+        "a72d098a-3d9a-4f8d-9389-edcd68a42465",
+        "4ea1692a-4d7a-4301-b604-6e879404728c",
+        "1e4ff939-bf95-4c6f-a0ec-382bd8a2803f",
+        "17477cbe-8f40-444c-9c88-1ad129f74739",
+        "e7dfe773-3df2-4d78-81d6-fee6c2493452",
+        "b39a5e06-0460-48ef-b117-e6feb314cae1"
+      ]
+    }
+  ],
+  "publications": [
+    {
+      "id": "aab5ffbe-1af7-47cd-8051-266281525c84",
+      "slug": "oxbqg1op",
+      "title": "Proterrence & Rule Illegitimacy in an Age of Creeping Social Control:  The Ban on Tobacco Smoke in Amsterdam’s Coffeeshops",
+      "description": "",
+      "doi": "10.21428/cb6ab371.aab5ffbe",
+      "authors": [
+        {
+          "name": "Bruce Jacobs",
+          "affiliation": "University of Texas, Dallas",
+          "orcid": ""
+        },
+        {
+          "name": "Scott Jacques",
+          "affiliation": "Georgia State University",
+          "orcid": "0000-0002-2089-4078"
+        }
+      ],
+      "createdAt": "2020-07-07T21:27:03.688Z",
+      "updatedAt": "2022-11-17T22:57:59.031Z",
+      "filePath": "./data/consortium/pdfs/oxbqg1op.pdf",
+      "fileSize": 252352,
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/rxsk44t8/aab5ffbe-1af7-47cd-8051-266281525c84.pdf",
+        "docx": "https://assets.pubpub.org/rltpjv9g/aab5ffbe-1af7-47cd-8051-266281525c84.docx"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/oxbqg1op",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "0bcce0c6-f745-441a-abec-47b7eb633cd1",
+      "slug": "gf7zjbgf",
+      "title": "Les sites de réseautage social et la présence des groupes criminels",
+      "description": "Revue internationale de criminologie et de police technique et scientifique",
+      "doi": "10.21428/cb6ab371.0bcce0c6",
+      "authors": [
+        {
+          "name": "David Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X"
+        },
+        {
+          "name": "Carlo Morselli",
+          "affiliation": "Université de Montréal",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2020-07-08T00:46:47.276Z",
+      "updatedAt": "2022-11-17T22:57:58.415Z",
+      "filePath": "./data/consortium/pdfs/gf7zjbgf.pdf",
+      "fileSize": 233261,
+      "downloads": {
+        "docx": "https://assets.pubpub.org/1zrt42rr/0bcce0c6-f745-441a-abec-47b7eb633cd1.docx",
+        "pdf": "https://assets.pubpub.org/qunhmxm1/0bcce0c6-f745-441a-abec-47b7eb633cd1.pdf",
+        "plain": "https://assets.pubpub.org/b5ktry53/0bcce0c6-f745-441a-abec-47b7eb633cd1.txt",
+        "odt": "https://assets.pubpub.org/01fk30pj/0bcce0c6-f745-441a-abec-47b7eb633cd1.odt"
+      },
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/gf7zjbgf",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "515fbf6b-2be3-45cc-9b7d-3a561d395d94",
+      "slug": "wmelrli9",
+      "title": "Redrawing Hot Spots of Crime in Dallas, Texas",
+      "description": "",
+      "doi": "10.21428/cb6ab371.515fbf6b",
+      "authors": [
+        {
+          "name": "Andrew Wheeler",
+          "affiliation": "HMS",
+          "orcid": "0000-0003-2255-1316"
+        },
+        {
+          "name": "Sydney Reuter",
+          "affiliation": "University of Texas at Dallas",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2020-07-11T18:47:18.640Z",
+      "updatedAt": "2022-11-17T22:57:54.207Z",
+      "filePath": "./data/consortium/pdfs/wmelrli9.pdf",
+      "fileSize": 1769574,
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/hph9kqvp/515fbf6b-2be3-45cc-9b7d-3a561d395d94.pdf",
+        "docx": "https://assets.pubpub.org/aflmwfjz/515fbf6b-2be3-45cc-9b7d-3a561d395d94.docx",
+        "plain": "https://assets.pubpub.org/8i2dvp9x/515fbf6b-2be3-45cc-9b7d-3a561d395d94.txt",
+        "html": "https://assets.pubpub.org/wmauabrk/515fbf6b-2be3-45cc-9b7d-3a561d395d94.html"
+      },
+      "memberAssociations": [
+        "university-of-texas-dallas"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/wmelrli9",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "4307e3de-25bc-4ebf-ae4f-823c7aafdf49",
+      "slug": "jgvs9sef",
+      "title": "Drug Control Policy, Normalization, and Symbolic Boundaries in Amsterdam’s Coffeeshops",
+      "description": "",
+      "doi": "10.21428/cb6ab371.4307e3de",
+      "authors": [
+        {
+          "name": "Timothy Dickinson",
+          "affiliation": "University of Texas at El Paso",
+          "orcid": ""
+        },
+        {
+          "name": "Scott Jacques",
+          "affiliation": "Georgia State University",
+          "orcid": "0000-0002-2089-4078"
+        }
+      ],
+      "createdAt": "2020-07-14T14:12:54.875Z",
+      "updatedAt": "2022-11-17T22:57:49.858Z",
+      "filePath": "./data/consortium/pdfs/jgvs9sef.pdf",
+      "fileSize": 202494,
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/hbicdd35/4307e3de-25bc-4ebf-ae4f-823c7aafdf49.pdf",
+        "odt": "https://assets.pubpub.org/7yrg306y/4307e3de-25bc-4ebf-ae4f-823c7aafdf49.odt",
+        "docx": "https://assets.pubpub.org/ku0nzu5b/4307e3de-25bc-4ebf-ae4f-823c7aafdf49.docx"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/jgvs9sef",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "7ef5f8ad-36e1-4f36-8a08-59d6e863e543",
+      "slug": "807h7vz8",
+      "title": "The History, Policy Implications and Knowledge Gaps of the CCTV Literature: Insights for the Development of Body-Worn Video Camera Research",
+      "description": "International Criminal Justice Review; DOI: 10.1177/1057567718759583",
+      "doi": "10.21428/cb6ab371.7ef5f8ad",
+      "authors": [
+        {
+          "name": "Eric Piza",
+          "affiliation": "John Jay College of Criminal Justice  City University of New York",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2020-07-21T01:01:51.263Z",
+      "updatedAt": "2022-11-17T22:57:22.755Z",
+      "filePath": "./data/consortium/pdfs/807h7vz8.pdf",
+      "fileSize": 239426,
+      "downloads": {
+        "plain": "https://assets.pubpub.org/jwcx41jz/16686ae9-5908-4bb9-8f14-92008e4948b0.txt",
+        "markdown": "https://assets.pubpub.org/kzvqa361/16686ae9-5908-4bb9-8f14-92008e4948b0.md",
+        "odt": "https://assets.pubpub.org/9fhsoxk8/16686ae9-5908-4bb9-8f14-92008e4948b0.odt",
+        "tex": "https://assets.pubpub.org/srwr7guk/16686ae9-5908-4bb9-8f14-92008e4948b0.tex",
+        "pdf": "https://assets.pubpub.org/po3envip/7ef5f8ad-36e1-4f36-8a08-59d6e863e543.pdf",
+        "html": "https://assets.pubpub.org/97pf2ywe/16686ae9-5908-4bb9-8f14-92008e4948b0.html",
+        "jats": "https://assets.pubpub.org/uewyajbk/16686ae9-5908-4bb9-8f14-92008e4948b0.xml",
+        "docx": "https://assets.pubpub.org/vm3gu95g/16686ae9-5908-4bb9-8f14-92008e4948b0.docx"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/807h7vz8",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "f7b86188-496b-4c37-85ce-2538c97e008a",
+      "slug": "8wt1jajb",
+      "title": "Drug Control Policy, Normalization, and Symbolic Boundaries in Amsterdam’s Coffeeshops",
+      "description": "British Journal of Criminology; no DOI at time of this rxiving",
+      "doi": "10.21428/cb6ab371.f7b86188",
+      "authors": [
+        {
+          "name": "Timothy Dickinson",
+          "affiliation": "University of Texas at El Paso",
+          "orcid": ""
+        },
+        {
+          "name": "Scott Jacques",
+          "affiliation": "Georgia State University",
+          "orcid": "0000-0002-2089-4078"
+        }
+      ],
+      "createdAt": "2020-07-25T13:16:41.661Z",
+      "updatedAt": "2022-11-17T22:57:13.683Z",
+      "filePath": "./data/consortium/pdfs/8wt1jajb.pdf",
+      "fileSize": 46719,
+      "downloads": {
+        "html": "https://assets.pubpub.org/r8eg0x78/e41f660c-f933-4d4d-839c-0e77c48430ff.html",
+        "epub": "https://assets.pubpub.org/cfuodofj/e41f660c-f933-4d4d-839c-0e77c48430ff.epub",
+        "plain": "https://assets.pubpub.org/pcrqb9bk/e41f660c-f933-4d4d-839c-0e77c48430ff.txt",
+        "pdf": "https://assets.pubpub.org/fxqq6m66/f7b86188-496b-4c37-85ce-2538c97e008a.pdf",
+        "tex": "https://assets.pubpub.org/wjn8kgzn/e41f660c-f933-4d4d-839c-0e77c48430ff.tex",
+        "odt": "https://assets.pubpub.org/r3545wrf/e41f660c-f933-4d4d-839c-0e77c48430ff.odt",
+        "docx": "https://assets.pubpub.org/rsnjtnay/f7b86188-496b-4c37-85ce-2538c97e008a.docx",
+        "markdown": "https://assets.pubpub.org/l0iss3f2/e41f660c-f933-4d4d-839c-0e77c48430ff.md",
+        "jats": "https://assets.pubpub.org/jqhbnn0b/e41f660c-f933-4d4d-839c-0e77c48430ff.xml"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/8wt1jajb",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "0f3fbca8-1bd7-4119-8eab-1d537cc66937",
+      "slug": "i46kc97z",
+      "title": "One gang dies, another gains? The network dynamics of criminal group persistence",
+      "description": "",
+      "doi": "10.21428/cb6ab371.0f3fbca8",
+      "authors": [
+        {
+          "name": "Marie Ouellet",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        },
+        {
+          "name": "Martin Bouchard",
+          "affiliation": "Simon Fraser University",
+          "orcid": ""
+        },
+        {
+          "name": "Yanick Charette",
+          "affiliation": "Université Laval",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2020-07-31T13:16:09.063Z",
+      "updatedAt": "2022-11-17T22:57:07.507Z",
+      "filePath": "./data/consortium/pdfs/i46kc97z.pdf",
+      "fileSize": 663446,
+      "downloads": {
+        "odt": "https://assets.pubpub.org/d1kmqjgq/dc0d325b-5210-4dca-84ca-6b83cea01f9c.odt",
+        "html": "https://assets.pubpub.org/ta5k1oqp/dc0d325b-5210-4dca-84ca-6b83cea01f9c.html",
+        "jats": "https://assets.pubpub.org/gsvdbxz0/dc0d325b-5210-4dca-84ca-6b83cea01f9c.xml",
+        "pdf": "https://assets.pubpub.org/4s0ir20q/0f3fbca8-1bd7-4119-8eab-1d537cc66937.pdf",
+        "plain": "https://assets.pubpub.org/0gr8u9d6/dc0d325b-5210-4dca-84ca-6b83cea01f9c.txt",
+        "docx": "https://assets.pubpub.org/p6cwxa9z/0f3fbca8-1bd7-4119-8eab-1d537cc66937.docx",
+        "epub": "https://assets.pubpub.org/mw38ddow/dc0d325b-5210-4dca-84ca-6b83cea01f9c.epub",
+        "tex": "https://assets.pubpub.org/29xn19l8/dc0d325b-5210-4dca-84ca-6b83cea01f9c.tex",
+        "markdown": "https://assets.pubpub.org/jlk2i4pv/dc0d325b-5210-4dca-84ca-6b83cea01f9c.md"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/i46kc97z",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "b687013c-ae1e-481b-9c1a-8660962bfaa1",
+      "slug": "sous9bds",
+      "title": "Situational Awareness and Public Wi-Fi Users’ Self-Protective Behaviors",
+      "description": "Accessing public Wi-Fi networks can be as dangerous as it is convenient. People who access a public Wi-Fi network should engage in self-protective behaviors to keep their data safe from malicious actors on the same network as well as persons looking over their shoulder, ...",
+      "doi": "10.21428/cb6ab371.b687013c",
+      "authors": [
+        {
+          "name": "Robert Perkins",
+          "affiliation": "",
+          "orcid": ""
+        },
+        {
+          "name": "C. Jordan Howell",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        },
+        {
+          "name": "David Maimon",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        },
+        {
+          "name": "Scott Jacques",
+          "affiliation": "Criminology Open and Georgia State University",
+          "orcid": "0000-0002-2089-4078"
+        }
+      ],
+      "createdAt": "2020-10-29T11:17:21.135Z",
+      "updatedAt": "2023-09-26T23:22:05.620Z",
+      "filePath": "./data/consortium/pdfs/sous9bds.pdf",
+      "fileSize": 231626,
+      "downloads": {
+        "plain": "https://assets.pubpub.org/v9vk360r/8092c9a7-ee97-47f1-afb1-7ce20f26f5f2.txt",
+        "odt": "https://assets.pubpub.org/nwu4deam/8092c9a7-ee97-47f1-afb1-7ce20f26f5f2.odt",
+        "pdf": "https://assets.pubpub.org/37o60u58/b687013c-ae1e-481b-9c1a-8660962bfaa1.pdf",
+        "epub": "https://assets.pubpub.org/evmdzzcx/8092c9a7-ee97-47f1-afb1-7ce20f26f5f2.epub",
+        "docx": "https://assets.pubpub.org/7ly85fnf/8092c9a7-ee97-47f1-afb1-7ce20f26f5f2.docx",
+        "jats": "https://assets.pubpub.org/scdclwkw/8092c9a7-ee97-47f1-afb1-7ce20f26f5f2.xml",
+        "html": "https://assets.pubpub.org/mj56yftx/8092c9a7-ee97-47f1-afb1-7ce20f26f5f2.html",
+        "markdown": "https://assets.pubpub.org/3dhcahvg/8092c9a7-ee97-47f1-afb1-7ce20f26f5f2.md",
+        "tex": "https://assets.pubpub.org/cp1tzm7s/8092c9a7-ee97-47f1-afb1-7ce20f26f5f2.tex"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/sous9bds",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "e0a7ef02-82b7-4352-8670-ff888ed4928f",
+      "slug": "0lfhzgj9",
+      "title": "Toleration by Victimized Coffeeshops in Amsterdam",
+      "description": "",
+      "doi": "10.21428/cb6ab371.e0a7ef02",
+      "authors": [
+        {
+          "name": "Kim Moeller",
+          "affiliation": "Malmo University",
+          "orcid": ""
+        },
+        {
+          "name": "Scott Jacques",
+          "affiliation": "Criminology Open and Georgia State University",
+          "orcid": "0000-0002-2089-4078"
+        }
+      ],
+      "createdAt": "2021-01-05T15:33:11.176Z",
+      "updatedAt": "2022-11-17T22:53:40.621Z",
+      "filePath": "./data/consortium/pdfs/0lfhzgj9.pdf",
+      "fileSize": 158474,
+      "downloads": {
+        "docx": "https://assets.pubpub.org/jszd7vt2/e0a7ef02-82b7-4352-8670-ff888ed4928f.docx",
+        "odt": "https://assets.pubpub.org/lyeqpirp/9819f279-532e-4c97-a80d-3e5ec2fa472e.odt",
+        "pdf": "https://assets.pubpub.org/crofi5wp/e0a7ef02-82b7-4352-8670-ff888ed4928f.pdf",
+        "markdown": "https://assets.pubpub.org/w8p11g20/9819f279-532e-4c97-a80d-3e5ec2fa472e.md",
+        "html": "https://assets.pubpub.org/5qi2emwu/9819f279-532e-4c97-a80d-3e5ec2fa472e.html",
+        "plain": "https://assets.pubpub.org/2z08m28s/9819f279-532e-4c97-a80d-3e5ec2fa472e.txt",
+        "jats": "https://assets.pubpub.org/dc4v5f4i/9819f279-532e-4c97-a80d-3e5ec2fa472e.xml",
+        "epub": "https://assets.pubpub.org/sq1dkcq8/9819f279-532e-4c97-a80d-3e5ec2fa472e.epub",
+        "tex": "https://assets.pubpub.org/p8dxjixp/9819f279-532e-4c97-a80d-3e5ec2fa472e.tex"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/0lfhzgj9",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "e1ca98a9-4116-43b4-bed9-c66adafd8045",
+      "slug": "w61ut41h",
+      "title": "Information Trolls vs Democracy: An examination of disinformation content delivered during the 2019 Canadian Federal Election",
+      "description": "",
+      "doi": "10.21428/cb6ab371.e1ca98a9",
+      "authors": [
+        {
+          "name": "Rachelle Louden",
+          "affiliation": "Simon Fraser University",
+          "orcid": ""
+        },
+        {
+          "name": "Richard Frank",
+          "affiliation": "Simon Fraser University",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-01-11T04:19:49.559Z",
+      "updatedAt": "2022-11-17T22:53:35.118Z",
+      "filePath": "./data/consortium/pdfs/w61ut41h.pdf",
+      "fileSize": 181827,
+      "downloads": {
+        "html": "https://assets.pubpub.org/dzdkbrr7/100eb9bf-ff5d-4f98-8cc3-c02e61febc30.html",
+        "markdown": "https://assets.pubpub.org/49fhl2pv/100eb9bf-ff5d-4f98-8cc3-c02e61febc30.md",
+        "tex": "https://assets.pubpub.org/kxju24cf/100eb9bf-ff5d-4f98-8cc3-c02e61febc30.tex",
+        "pdf": "https://assets.pubpub.org/j7fb4a4n/e1ca98a9-4116-43b4-bed9-c66adafd8045.pdf",
+        "plain": "https://assets.pubpub.org/lstescfo/100eb9bf-ff5d-4f98-8cc3-c02e61febc30.txt",
+        "epub": "https://assets.pubpub.org/t51x1tum/100eb9bf-ff5d-4f98-8cc3-c02e61febc30.epub",
+        "docx": "https://assets.pubpub.org/nyd77bwe/e1ca98a9-4116-43b4-bed9-c66adafd8045.docx",
+        "odt": "https://assets.pubpub.org/czxs01tu/100eb9bf-ff5d-4f98-8cc3-c02e61febc30.odt",
+        "jats": "https://assets.pubpub.org/n3xirsfn/100eb9bf-ff5d-4f98-8cc3-c02e61febc30.xml"
+      },
+      "memberAssociations": [
+        "simon-fraser-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/w61ut41h",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "e1ec4277-3431-424b-99aa-c559fffd4793",
+      "slug": "hhqd41lz",
+      "title": "Predicting Initiator and Near Repeat Events in Spatiotemporal Crime Patterns: An Analysis of Residential Burglary and Motor Vehicle Theft",
+      "description": "Justice Quarterly (2018)",
+      "doi": "10.21428/cb6ab371.e1ec4277",
+      "authors": [
+        {
+          "name": "Eric Piza",
+          "affiliation": "John Jay College of Criminal Justice",
+          "orcid": ""
+        },
+        {
+          "name": "Jeremy Carter",
+          "affiliation": "Indiana University-Purdue University Indianapolis",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-02-18T00:12:16.595Z",
+      "updatedAt": "2022-11-17T22:51:49.625Z",
+      "filePath": "./data/consortium/pdfs/hhqd41lz.pdf",
+      "fileSize": 2723497,
+      "downloads": {
+        "epub": "https://assets.pubpub.org/qiwv4ngo/e1ec4277-3431-424b-99aa-c559fffd4793.epub",
+        "docx": "https://assets.pubpub.org/o5547kxd/e1ec4277-3431-424b-99aa-c559fffd4793.docx",
+        "markdown": "https://assets.pubpub.org/fznnl5bt/e1ec4277-3431-424b-99aa-c559fffd4793.md",
+        "pdf": "https://assets.pubpub.org/5u87b97y/e1ec4277-3431-424b-99aa-c559fffd4793.pdf",
+        "html": "https://assets.pubpub.org/bt21j4m9/e1ec4277-3431-424b-99aa-c559fffd4793.html",
+        "plain": "https://assets.pubpub.org/mfgrxzbe/e1ec4277-3431-424b-99aa-c559fffd4793.txt",
+        "odt": "https://assets.pubpub.org/xv8w8152/e1ec4277-3431-424b-99aa-c559fffd4793.odt",
+        "jats": "https://assets.pubpub.org/y3ib95sf/e1ec4277-3431-424b-99aa-c559fffd4793.xml",
+        "tex": "https://assets.pubpub.org/3cdq3z2n/e1ec4277-3431-424b-99aa-c559fffd4793.tex"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/hhqd41lz",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "876d7923-ee5b-45c1-b0b4-fb3736a1ecaf",
+      "slug": "lbnyuidm",
+      "title": "Measuring the Temporal Stability of Near-Repeat Crime Patterns: A Longitudinal Analysis",
+      "description": "Crime & Delinquency (2020)",
+      "doi": "10.21428/cb6ab371.876d7923",
+      "authors": [
+        {
+          "name": "David Hatten",
+          "affiliation": "John Jay College of Criminal Justice, Graduate Center - CUNY",
+          "orcid": ""
+        },
+        {
+          "name": "Eric Piza",
+          "affiliation": "John Jay College of Criminal Justice",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-03-01T23:20:31.851Z",
+      "updatedAt": "2022-11-17T22:51:26.407Z",
+      "filePath": "./data/consortium/pdfs/lbnyuidm.pdf",
+      "fileSize": 479687,
+      "downloads": {
+        "epub": "https://assets.pubpub.org/52wiru7d/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.epub",
+        "html": "https://assets.pubpub.org/q5w7y9pn/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.html",
+        "pdf": "https://assets.pubpub.org/42k0qsqz/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.pdf",
+        "tex": "https://assets.pubpub.org/ptil5pnr/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.tex",
+        "jats": "https://assets.pubpub.org/wbjcowtr/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.xml",
+        "plain": "https://assets.pubpub.org/8mh5x06b/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.txt",
+        "docx": "https://assets.pubpub.org/xgxwo9qp/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.docx",
+        "markdown": "https://assets.pubpub.org/6mdnkuhi/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.md",
+        "odt": "https://assets.pubpub.org/drwdkhn8/876d7923-ee5b-45c1-b0b4-fb3736a1ecaf.odt"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/lbnyuidm",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "f5cc6109-de07-4e3b-9bfa-b9321205c6be",
+      "slug": "ahhf1bl0",
+      "title": "Understanding the Predictors of Street Robbery Hot Spots: A Matched Pairs Analysis and Systematic Social Observation",
+      "description": "Crime & Delinquency (2020). https://doi.org/10.1177/0011128720926116",
+      "doi": "",
+      "authors": [
+        {
+          "name": "Nathan T. Connealy",
+          "affiliation": "John Jay College – CUNY Graduate Center",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-03-05T23:10:23.317Z",
+      "updatedAt": "2022-11-17T22:51:23.225Z",
+      "filePath": "./data/consortium/pdfs/ahhf1bl0.pdf",
+      "fileSize": 955651,
+      "downloads": {
+        "tex": "https://assets.pubpub.org/5gs5v2s0/f5cc6109-de07-4e3b-9bfa-b9321205c6be.tex",
+        "markdown": "https://assets.pubpub.org/o75v6qjy/f5cc6109-de07-4e3b-9bfa-b9321205c6be.md",
+        "jats": "https://assets.pubpub.org/iahsrdpf/f5cc6109-de07-4e3b-9bfa-b9321205c6be.xml",
+        "pdf": "https://assets.pubpub.org/h1kbbu29/f5cc6109-de07-4e3b-9bfa-b9321205c6be.pdf",
+        "epub": "https://assets.pubpub.org/skk1j8h3/f5cc6109-de07-4e3b-9bfa-b9321205c6be.epub",
+        "odt": "https://assets.pubpub.org/dubmxum6/f5cc6109-de07-4e3b-9bfa-b9321205c6be.odt",
+        "docx": "https://assets.pubpub.org/nxz8trv7/f5cc6109-de07-4e3b-9bfa-b9321205c6be.docx",
+        "html": "https://assets.pubpub.org/h5dw2rmp/f5cc6109-de07-4e3b-9bfa-b9321205c6be.html",
+        "plain": "https://assets.pubpub.org/ks6thubd/f5cc6109-de07-4e3b-9bfa-b9321205c6be.txt"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/ahhf1bl0",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "6e58ae84-cece-402f-baff-9824c9bc2207",
+      "slug": "xpe7lvxx",
+      "title": "Risk Terrain Modeling: Seasonality and Predictive Validity",
+      "description": "Justice Quarterly (2019)",
+      "doi": "",
+      "authors": [
+        {
+          "name": "Eric Piza",
+          "affiliation": "",
+          "orcid": ""
+        },
+        {
+          "name": "Jason Szkola",
+          "affiliation": "John Jay College of Criminal Justice, John Jay Research and Evaluation Center, City University of New York",
+          "orcid": ""
+        },
+        {
+          "name": "Grant Drawve",
+          "affiliation": "University of Arkansas",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-03-06T20:42:47.784Z",
+      "updatedAt": "2022-11-17T22:51:22.916Z",
+      "filePath": "./data/consortium/pdfs/xpe7lvxx.pdf",
+      "fileSize": 593662,
+      "downloads": {
+        "epub": "https://assets.pubpub.org/wx3u5p8r/6e58ae84-cece-402f-baff-9824c9bc2207.epub",
+        "html": "https://assets.pubpub.org/r9k8jyfa/6e58ae84-cece-402f-baff-9824c9bc2207.html",
+        "markdown": "https://assets.pubpub.org/8ptlhaxg/6e58ae84-cece-402f-baff-9824c9bc2207.md",
+        "pdf": "https://assets.pubpub.org/867qemyi/6e58ae84-cece-402f-baff-9824c9bc2207.pdf",
+        "plain": "https://assets.pubpub.org/hoa78isp/6e58ae84-cece-402f-baff-9824c9bc2207.txt",
+        "tex": "https://assets.pubpub.org/ay4vsvh6/6e58ae84-cece-402f-baff-9824c9bc2207.tex",
+        "jats": "https://assets.pubpub.org/fuz4inp1/6e58ae84-cece-402f-baff-9824c9bc2207.xml",
+        "docx": "https://assets.pubpub.org/wl0yeidk/6e58ae84-cece-402f-baff-9824c9bc2207.docx",
+        "odt": "https://assets.pubpub.org/qcw0uin8/6e58ae84-cece-402f-baff-9824c9bc2207.odt"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/xpe7lvxx",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "ef173b57-f130-4366-8211-64f465769941",
+      "slug": "drottq0y",
+      "title": "The Financial Implications of Merging Proactive CCTV Monitoring and Directed Police Patrol: A Cost-Benefit Analysis",
+      "description": "Journal of Experimental Criminology (2016). https://doi.org/10.1007/s11292-016-9267-x",
+      "doi": "",
+      "authors": [
+        {
+          "name": "Joel M. Caplan",
+          "affiliation": "Rutgers University",
+          "orcid": ""
+        },
+        {
+          "name": "Leslie W. Kennedy",
+          "affiliation": "Rutgers University",
+          "orcid": ""
+        },
+        {
+          "name": "Eric Piza",
+          "affiliation": "John Jay College",
+          "orcid": ""
+        },
+        {
+          "name": "Andrew M. Gilchrist",
+          "affiliation": "University of Cincinnati",
+          "orcid": ""
+        },
+        {
+          "name": "Brian A. O'Hara",
+          "affiliation": "Newark Police Department",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-03-07T19:45:48.910Z",
+      "updatedAt": "2022-11-17T22:51:22.425Z",
+      "filePath": "./data/consortium/pdfs/drottq0y.pdf",
+      "fileSize": 2345904,
+      "downloads": {
+        "tex": "https://assets.pubpub.org/a7dfw6h1/ef173b57-f130-4366-8211-64f465769941.tex",
+        "odt": "https://assets.pubpub.org/d5k5tkm9/ef173b57-f130-4366-8211-64f465769941.odt",
+        "epub": "https://assets.pubpub.org/gu839i1b/ef173b57-f130-4366-8211-64f465769941.epub",
+        "pdf": "https://assets.pubpub.org/p5uezyas/ef173b57-f130-4366-8211-64f465769941.pdf",
+        "markdown": "https://assets.pubpub.org/7ia8l3wb/ef173b57-f130-4366-8211-64f465769941.md",
+        "docx": "https://assets.pubpub.org/pman10h6/ef173b57-f130-4366-8211-64f465769941.docx",
+        "html": "https://assets.pubpub.org/kzpzhe4v/ef173b57-f130-4366-8211-64f465769941.html",
+        "jats": "https://assets.pubpub.org/8rsszwfk/ef173b57-f130-4366-8211-64f465769941.xml",
+        "plain": "https://assets.pubpub.org/ji7lv54r/ef173b57-f130-4366-8211-64f465769941.txt"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/drottq0y",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "defb1f90-3613-4998-a17f-986ff127aebe",
+      "slug": "sw8ljm5k",
+      "title": "The Internationalization of CCTV Surveillance: Effects on Crime and Implications for Emerging Technologies",
+      "description": "International Journal of Comparative and Applied Criminal Justice (2021)",
+      "doi": "",
+      "authors": [
+        {
+          "name": "Eric Piza",
+          "affiliation": "John Jay College of Criminal Justice",
+          "orcid": ""
+        },
+        {
+          "name": "Amanda Thomas",
+          "affiliation": "John Jay College of Criminal Justice",
+          "orcid": ""
+        },
+        {
+          "name": "Brandon C. Welsh",
+          "affiliation": "Northeastern University",
+          "orcid": ""
+        },
+        {
+          "name": "David P. Farrington",
+          "affiliation": "Cambridge University",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-03-20T15:18:35.295Z",
+      "updatedAt": "2022-11-17T22:51:01.962Z",
+      "filePath": "./data/consortium/pdfs/sw8ljm5k.pdf",
+      "fileSize": 4334198,
+      "downloads": {
+        "html": "https://assets.pubpub.org/4giijd44/defb1f90-3613-4998-a17f-986ff127aebe.html",
+        "epub": "https://assets.pubpub.org/eohenvim/defb1f90-3613-4998-a17f-986ff127aebe.epub",
+        "plain": "https://assets.pubpub.org/nkj3cmx1/defb1f90-3613-4998-a17f-986ff127aebe.txt",
+        "markdown": "https://assets.pubpub.org/33etcb3g/defb1f90-3613-4998-a17f-986ff127aebe.md",
+        "odt": "https://assets.pubpub.org/g9cggse9/defb1f90-3613-4998-a17f-986ff127aebe.odt",
+        "tex": "https://assets.pubpub.org/tom7ve36/defb1f90-3613-4998-a17f-986ff127aebe.tex",
+        "docx": "https://assets.pubpub.org/9n20folm/defb1f90-3613-4998-a17f-986ff127aebe.docx",
+        "jats": "https://assets.pubpub.org/vkfr1adf/defb1f90-3613-4998-a17f-986ff127aebe.xml",
+        "pdf": "https://assets.pubpub.org/xc4pfc7x/defb1f90-3613-4998-a17f-986ff127aebe.pdf"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/sw8ljm5k",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "0387ca3b-471e-448f-90a7-143c28e45527",
+      "slug": "u00ggcyo",
+      "title": "An overview of seized illegal wildlife entering the United States",
+      "description": "Global Crime (2016). https://doi.org/10.1080/17440572.2016.1152548",
+      "doi": "",
+      "authors": [
+        {
+          "name": "Daan P. van Uhm",
+          "affiliation": "Institute for Criminal Law and Criminology of the Utrecht University",
+          "orcid": ""
+        },
+        {
+          "name": "Gohar A. Petrossian",
+          "affiliation": "John Jay College of Criminal Justice",
+          "orcid": ""
+        },
+        {
+          "name": "Stephen F. Pires",
+          "affiliation": "Florida International University",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-03-28T15:54:42.607Z",
+      "updatedAt": "2022-11-17T22:50:49.210Z",
+      "filePath": "./data/consortium/pdfs/u00ggcyo.pdf",
+      "fileSize": 4454313,
+      "downloads": {
+        "tex": "https://assets.pubpub.org/n21v7srl/0387ca3b-471e-448f-90a7-143c28e45527.tex",
+        "docx": "https://assets.pubpub.org/jnk1ew6h/0387ca3b-471e-448f-90a7-143c28e45527.docx",
+        "html": "https://assets.pubpub.org/8gar3q6i/0387ca3b-471e-448f-90a7-143c28e45527.html",
+        "pdf": "https://assets.pubpub.org/8rnv8at5/0387ca3b-471e-448f-90a7-143c28e45527.pdf",
+        "jats": "https://assets.pubpub.org/vq9qrigh/0387ca3b-471e-448f-90a7-143c28e45527.xml",
+        "markdown": "https://assets.pubpub.org/2zqkdzbj/0387ca3b-471e-448f-90a7-143c28e45527.md",
+        "odt": "https://assets.pubpub.org/fhlzph17/0387ca3b-471e-448f-90a7-143c28e45527.odt",
+        "epub": "https://assets.pubpub.org/hcu75wgy/0387ca3b-471e-448f-90a7-143c28e45527.epub",
+        "plain": "https://assets.pubpub.org/ap8ppz9p/0387ca3b-471e-448f-90a7-143c28e45527.txt"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/u00ggcyo",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "916f82c9-a912-4ca0-b98b-9c2b765d1f71",
+      "slug": "2rulo4mw",
+      "title": "Black Markets: A Comparison of the Illegal Ivory and Narcotic Trades",
+      "description": "Deviant Behavior (2020). https://doi.org/10.1080/01639625.2019.1568360",
+      "doi": "",
+      "authors": [
+        {
+          "name": "Monique Sosnowski­",
+          "affiliation": "John Jay College of Criminal Justice",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-03-28T16:10:01.893Z",
+      "updatedAt": "2022-11-17T22:50:49.178Z",
+      "filePath": "./data/consortium/pdfs/2rulo4mw.pdf",
+      "fileSize": 239466,
+      "downloads": {
+        "html": "https://assets.pubpub.org/rqt7uitn/916f82c9-a912-4ca0-b98b-9c2b765d1f71.html",
+        "epub": "https://assets.pubpub.org/kn2brqnp/916f82c9-a912-4ca0-b98b-9c2b765d1f71.epub",
+        "docx": "https://assets.pubpub.org/72kezh9k/916f82c9-a912-4ca0-b98b-9c2b765d1f71.docx",
+        "tex": "https://assets.pubpub.org/fski4w38/916f82c9-a912-4ca0-b98b-9c2b765d1f71.tex",
+        "jats": "https://assets.pubpub.org/fdidx2q6/916f82c9-a912-4ca0-b98b-9c2b765d1f71.xml",
+        "plain": "https://assets.pubpub.org/qqx7vgee/916f82c9-a912-4ca0-b98b-9c2b765d1f71.txt",
+        "odt": "https://assets.pubpub.org/51du45y7/916f82c9-a912-4ca0-b98b-9c2b765d1f71.odt",
+        "pdf": "https://assets.pubpub.org/dil8txsr/916f82c9-a912-4ca0-b98b-9c2b765d1f71.pdf",
+        "markdown": "https://assets.pubpub.org/1xsqdhrt/916f82c9-a912-4ca0-b98b-9c2b765d1f71.md"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/2rulo4mw",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "283a70a2-4f44-4678-a7e6-eab1f62af4a2",
+      "slug": "covidhatecrime",
+      "title": "Timing is Everything: The COVID-19 Outbreak as a Trigger Event for Sinophobic Hate Crimes in the United Kingdom",
+      "description": "",
+      "doi": "10.21428/cb6ab371.283a70a2",
+      "authors": [
+        {
+          "name": "Sandy Schumann",
+          "affiliation": "University College London",
+          "orcid": ""
+        },
+        {
+          "name": "Ysanne Moore",
+          "affiliation": "University College London",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-04-13T13:17:24.477Z",
+      "updatedAt": "2022-11-17T22:50:09.954Z",
+      "filePath": "./data/consortium/pdfs/covidhatecrime.pdf",
+      "fileSize": 491245,
+      "downloads": {
+        "html": "https://assets.pubpub.org/31ki4mqt/283a70a2-4f44-4678-a7e6-eab1f62af4a2.html",
+        "epub": "https://assets.pubpub.org/7f24rpri/283a70a2-4f44-4678-a7e6-eab1f62af4a2.epub",
+        "markdown": "https://assets.pubpub.org/ir0h01t1/283a70a2-4f44-4678-a7e6-eab1f62af4a2.md",
+        "plain": "https://assets.pubpub.org/ef6pj6pr/283a70a2-4f44-4678-a7e6-eab1f62af4a2.txt",
+        "odt": "https://assets.pubpub.org/h5mkeegm/283a70a2-4f44-4678-a7e6-eab1f62af4a2.odt",
+        "pdf": "https://assets.pubpub.org/aoz14qsr/283a70a2-4f44-4678-a7e6-eab1f62af4a2.pdf",
+        "jats": "https://assets.pubpub.org/6i5wjq3h/283a70a2-4f44-4678-a7e6-eab1f62af4a2.xml",
+        "tex": "https://assets.pubpub.org/euvmglqu/283a70a2-4f44-4678-a7e6-eab1f62af4a2.tex",
+        "docx": "https://assets.pubpub.org/jyi7ags1/283a70a2-4f44-4678-a7e6-eab1f62af4a2.docx"
+      },
+      "memberAssociations": [
+        "ucl"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/covidhatecrime",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "dd7a1c57-2718-437a-bcd8-e5a44a136240",
+      "slug": "q28n1b8f",
+      "title": "Evaluating Criminal Transactional Methods in Cyberspace as Understood in an International Context: Executive Summary",
+      "description": "This report surveys what is currently known about the financial transactions that cybercriminals conduct among themselves or demand/receive from their victims in English, Russia, Spanish, French, and Chinese contexts. ",
+      "doi": "10.21428/cb6ab371.dd7a1c57",
+      "authors": [
+        {
+          "name": "Maria Stolyarova",
+          "affiliation": "",
+          "orcid": ""
+        },
+        {
+          "name": "Lennon Yao-Chung Chang",
+          "affiliation": "Monash University",
+          "orcid": ""
+        },
+        {
+          "name": "R.V. Gundur",
+          "affiliation": "Flinders University",
+          "orcid": "0000-0003-4241-8811"
+        },
+        {
+          "name": "Diego Domínguez Mejía",
+          "affiliation": "Flinders University",
+          "orcid": ""
+        },
+        {
+          "name": "Michael Levi",
+          "affiliation": "Cardiff University",
+          "orcid": ""
+        },
+        {
+          "name": "Volkan Topalli",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        },
+        {
+          "name": "Marie Ouellet",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-04-15T23:44:56.172Z",
+      "updatedAt": "2022-11-17T22:50:06.678Z",
+      "filePath": "./data/consortium/pdfs/q28n1b8f.pdf",
+      "fileSize": 204830,
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/e7hh4sx9/dd7a1c57-2718-437a-bcd8-e5a44a136240.pdf",
+        "tex": "https://assets.pubpub.org/wuyogo8w/dd7a1c57-2718-437a-bcd8-e5a44a136240.tex",
+        "html": "https://assets.pubpub.org/ung2e3dq/dd7a1c57-2718-437a-bcd8-e5a44a136240.html",
+        "docx": "https://assets.pubpub.org/f1bournp/dd7a1c57-2718-437a-bcd8-e5a44a136240.docx",
+        "plain": "https://assets.pubpub.org/vsxa0bjw/dd7a1c57-2718-437a-bcd8-e5a44a136240.txt",
+        "epub": "https://assets.pubpub.org/zbk5k8xi/dd7a1c57-2718-437a-bcd8-e5a44a136240.epub",
+        "jats": "https://assets.pubpub.org/2qmcr7ji/dd7a1c57-2718-437a-bcd8-e5a44a136240.xml",
+        "odt": "https://assets.pubpub.org/0mn8v5xl/dd7a1c57-2718-437a-bcd8-e5a44a136240.odt",
+        "markdown": "https://assets.pubpub.org/0tljhbxs/dd7a1c57-2718-437a-bcd8-e5a44a136240.md"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/q28n1b8f",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "5f335e6f-0c3e-4483-bba7-67bab9a4a75c",
+      "slug": "48bmtkg0",
+      "title": "Evaluating Criminal Transactional Methods in Cyberspace as Understood in an International Context",
+      "description": "This report surveys what is currently known about the financial transactions that cybercriminals conduct among themselves or demand/receive from their victims in English, Russia, Spanish, French, and Chinese contexts. ",
+      "doi": "10.21428/cb6ab371.5f335e6f",
+      "authors": [
+        {
+          "name": "Volkan Topalli",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        },
+        {
+          "name": "Marie Ouellet",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        },
+        {
+          "name": "Lennon Yao-Chung Chang",
+          "affiliation": "Monash University",
+          "orcid": ""
+        },
+        {
+          "name": "Maria Stolyarova",
+          "affiliation": "",
+          "orcid": ""
+        },
+        {
+          "name": "R.V. Gundur",
+          "affiliation": "Flinders University",
+          "orcid": "0000-0003-4241-8811"
+        },
+        {
+          "name": "Michael Levi",
+          "affiliation": "Cardiff University",
+          "orcid": ""
+        },
+        {
+          "name": "Diego Domínguez Mejía",
+          "affiliation": "Flinders University",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-04-16T00:08:52.599Z",
+      "updatedAt": "2022-11-17T22:50:06.678Z",
+      "filePath": "./data/consortium/pdfs/48bmtkg0.pdf",
+      "fileSize": 1809756,
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/uadyloh7/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.pdf",
+        "tex": "https://assets.pubpub.org/u8ecbesg/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.tex",
+        "markdown": "https://assets.pubpub.org/05wyr5on/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.md",
+        "epub": "https://assets.pubpub.org/7i0hp4vp/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.epub",
+        "odt": "https://assets.pubpub.org/dvadjyvr/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.odt",
+        "plain": "https://assets.pubpub.org/6r9cwg9z/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.txt",
+        "jats": "https://assets.pubpub.org/wt2qusgf/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.xml",
+        "html": "https://assets.pubpub.org/8ka4ei9q/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.html",
+        "docx": "https://assets.pubpub.org/iq3fny9i/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.docx",
+        "json": "https://assets.pubpub.org/tg6gqz5u/5f335e6f-0c3e-4483-bba7-67bab9a4a75c.json"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/48bmtkg0",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "41445fae-e9cb-4261-9ece-10254de3d691",
+      "slug": "xz4ynah9",
+      "title": "Criminal Careers Prior to Recruitment into Italian Organized Crime",
+      "description": "",
+      "doi": "10.21428/cb6ab371.41445fae",
+      "authors": [
+        {
+          "name": "Cecilia Meneghini",
+          "affiliation": "University of Cambridge, United Kingdom",
+          "orcid": "0000-0001-9634-8367"
+        },
+        {
+          "name": "Gian Maria Campedelli",
+          "affiliation": "Università degli Studi di Trento, Italy",
+          "orcid": "0000-0002-7734-7956"
+        },
+        {
+          "name": "Francesco Calderoni",
+          "affiliation": "Università Cattolica del Sacro Cuore - Transcrime, Milan, Italy",
+          "orcid": "0000-0003-2979-4599"
+        },
+        {
+          "name": "Tommaso Comunale",
+          "affiliation": "Center for the Study of Democracy, Sofia, Bulgaria",
+          "orcid": "0000-0001-6820-784X"
+        }
+      ],
+      "createdAt": "2021-08-09T09:32:16.723Z",
+      "updatedAt": "2022-11-17T22:47:56.330Z",
+      "filePath": "./data/consortium/pdfs/xz4ynah9.pdf",
+      "fileSize": 363648,
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/w1zi06zr/41445fae-e9cb-4261-9ece-10254de3d691.pdf",
+        "plain": "https://assets.pubpub.org/unyzrcrh/41445fae-e9cb-4261-9ece-10254de3d691.txt",
+        "markdown": "https://assets.pubpub.org/7etp07t2/41445fae-e9cb-4261-9ece-10254de3d691.md",
+        "epub": "https://assets.pubpub.org/j2y24eox/41445fae-e9cb-4261-9ece-10254de3d691.epub",
+        "odt": "https://assets.pubpub.org/xf8omkof/41445fae-e9cb-4261-9ece-10254de3d691.odt",
+        "html": "https://assets.pubpub.org/t83pvtx1/41445fae-e9cb-4261-9ece-10254de3d691.html",
+        "jats": "https://assets.pubpub.org/uj530yes/41445fae-e9cb-4261-9ece-10254de3d691.xml",
+        "docx": "https://assets.pubpub.org/db8vy1x0/41445fae-e9cb-4261-9ece-10254de3d691.docx",
+        "tex": "https://assets.pubpub.org/ndq5trin/41445fae-e9cb-4261-9ece-10254de3d691.tex"
+      },
+      "memberAssociations": [
+        "university-of-cambridge"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/xz4ynah9",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71",
+      "slug": "bc7mptfb",
+      "title": "National Institute of Justice Recidivism Forecasting Challenge Team “MCHawks” Performance Analysis",
+      "description": "",
+      "doi": "10.21428/cb6ab371.9aa2c75a",
+      "authors": [
+        {
+          "name": "Andrew Wheeler",
+          "affiliation": "HMS & Georgia State University",
+          "orcid": "0000-0003-2255-1316"
+        },
+        {
+          "name": "Giovanni Circo",
+          "affiliation": "University of New Haven",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-08-30T14:05:52.362Z",
+      "updatedAt": "2022-11-17T22:47:40.133Z",
+      "filePath": "./data/consortium/pdfs/bc7mptfb.pdf",
+      "fileSize": 379105,
+      "downloads": {
+        "odt": "https://assets.pubpub.org/ir3b6hht/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.odt",
+        "tex": "https://assets.pubpub.org/wt31oxhj/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.tex",
+        "docx": "https://assets.pubpub.org/iemwxjfc/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.docx",
+        "markdown": "https://assets.pubpub.org/v78zdx0p/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.md",
+        "html": "https://assets.pubpub.org/lg3tpvec/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.html",
+        "plain": "https://assets.pubpub.org/iqceku9s/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.txt",
+        "epub": "https://assets.pubpub.org/4vqhya87/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.epub",
+        "pdf": "https://assets.pubpub.org/jn6vjh9n/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.pdf",
+        "jats": "https://assets.pubpub.org/e9wy81l6/9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71.xml"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/bc7mptfb",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "4cffda3d-7b71-41b4-84a5-de2dfa11e08d",
+      "slug": "s8erpr3p",
+      "title": "Weaponizing Rhetoric to Legitimate Regulatory Failures",
+      "description": "",
+      "doi": "10.21428/cb6ab371.4cffda3d",
+      "authors": [
+        {
+          "name": "Kaitlyn Filip",
+          "affiliation": "Northwestern University",
+          "orcid": ""
+        },
+        {
+          "name": "Kat Albrecht",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-09-09T09:41:55.586Z",
+      "updatedAt": "2022-11-17T22:47:33.843Z",
+      "filePath": "./data/consortium/pdfs/s8erpr3p.pdf",
+      "fileSize": 326346,
+      "downloads": {
+        "html": "https://assets.pubpub.org/8l9vfhu1/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.html",
+        "markdown": "https://assets.pubpub.org/bgd9pnsm/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.md",
+        "odt": "https://assets.pubpub.org/hwcu783a/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.odt",
+        "jats": "https://assets.pubpub.org/vtap7ebs/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.xml",
+        "plain": "https://assets.pubpub.org/09r42246/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.txt",
+        "tex": "https://assets.pubpub.org/5u5a6exh/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.tex",
+        "epub": "https://assets.pubpub.org/3h38jbi3/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.epub",
+        "docx": "https://assets.pubpub.org/p0s5ea8p/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.docx",
+        "pdf": "https://assets.pubpub.org/1l64kyd4/4cffda3d-7b71-41b4-84a5-de2dfa11e08d.pdf"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/s8erpr3p",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "2b7d065e-6edd-471b-a6b6-e85c91975dbf",
+      "slug": "vwerbomp",
+      "title": "Getting Jumped in Vacationland: The Complicated Rhetoric and Realities of Assault in a Small Town",
+      "description": "",
+      "doi": "10.21428/cb6ab371.2b7d065e",
+      "authors": [
+        {
+          "name": "Kat Albrecht",
+          "affiliation": "Georgia State University",
+          "orcid": ""
+        },
+        {
+          "name": "Andrew Burns",
+          "affiliation": "Louisiana State University at Shreveport",
+          "orcid": "0000-0003-2905-4304"
+        }
+      ],
+      "createdAt": "2021-09-17T08:50:29.404Z",
+      "updatedAt": "2022-11-17T22:47:28.009Z",
+      "filePath": "./data/consortium/pdfs/vwerbomp.pdf",
+      "fileSize": 708346,
+      "downloads": {
+        "odt": "https://assets.pubpub.org/nyfdkdsj/2b7d065e-6edd-471b-a6b6-e85c91975dbf.odt",
+        "pdf": "https://assets.pubpub.org/mje52uk8/2b7d065e-6edd-471b-a6b6-e85c91975dbf.pdf",
+        "html": "https://assets.pubpub.org/fif2ofuv/2b7d065e-6edd-471b-a6b6-e85c91975dbf.html",
+        "jats": "https://assets.pubpub.org/l4vzh1j9/2b7d065e-6edd-471b-a6b6-e85c91975dbf.xml",
+        "markdown": "https://assets.pubpub.org/etlfb863/2b7d065e-6edd-471b-a6b6-e85c91975dbf.md",
+        "tex": "https://assets.pubpub.org/k9yrmgp5/2b7d065e-6edd-471b-a6b6-e85c91975dbf.tex",
+        "plain": "https://assets.pubpub.org/4w1yg0lb/2b7d065e-6edd-471b-a6b6-e85c91975dbf.txt",
+        "docx": "https://assets.pubpub.org/lnqn7pbu/2b7d065e-6edd-471b-a6b6-e85c91975dbf.docx",
+        "epub": "https://assets.pubpub.org/u6xfq5ho/2b7d065e-6edd-471b-a6b6-e85c91975dbf.epub"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/vwerbomp",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "e57177e2-1ede-4691-b588-eef6b8738707",
+      "slug": "b3z46ctr",
+      "title": "The Use of Twitter by Police Officers in Urban and Rural Contexts in Sweden",
+      "description": "The aim of this article is to investigate the nature of information sharing via Twitter by police officers. We examine the content of Tweets in urban and rural contexts using a sample of 20 police-related Twitter accounts, comparing official and personal accounts active in ...",
+      "doi": "10.21428/cb6ab371.e57177e2",
+      "authors": [
+        {
+          "name": "Reka Solymosi",
+          "affiliation": "University of Manchester",
+          "orcid": ""
+        },
+        {
+          "name": "Oskar Muller",
+          "affiliation": "",
+          "orcid": ""
+        },
+        {
+          "name": "Vania Ceccato",
+          "affiliation": "",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2021-10-21T11:53:45.763Z",
+      "updatedAt": "2023-09-29T01:23:00.214Z",
+      "filePath": "./data/consortium/pdfs/b3z46ctr.pdf",
+      "fileSize": 28447,
+      "downloads": {
+        "markdown": "https://assets.pubpub.org/3zovc7i9/e57177e2-1ede-4691-b588-eef6b8738707.md",
+        "epub": "https://assets.pubpub.org/1pzo2pab/e57177e2-1ede-4691-b588-eef6b8738707.epub",
+        "jats": "https://assets.pubpub.org/psmoasgg/e57177e2-1ede-4691-b588-eef6b8738707.xml",
+        "docx": "https://assets.pubpub.org/rrry398q/e57177e2-1ede-4691-b588-eef6b8738707.docx",
+        "pdf": "https://assets.pubpub.org/ve4debpx/e57177e2-1ede-4691-b588-eef6b8738707.pdf",
+        "odt": "https://assets.pubpub.org/2kso6jad/e57177e2-1ede-4691-b588-eef6b8738707.odt",
+        "html": "https://assets.pubpub.org/hfkqpttm/e57177e2-1ede-4691-b588-eef6b8738707.html",
+        "plain": "https://assets.pubpub.org/z84cv9yy/e57177e2-1ede-4691-b588-eef6b8738707.txt",
+        "json": "https://assets.pubpub.org/4uzdcdoh/e57177e2-1ede-4691-b588-eef6b8738707.json",
+        "tex": "https://assets.pubpub.org/judqe20x/e57177e2-1ede-4691-b588-eef6b8738707.tex"
+      },
+      "memberAssociations": [
+        "university-of-manchester"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/b3z46ctr",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "929bb60a-7bd2-49d3-b608-05fd5e758514",
+      "slug": "bz2oe0yw",
+      "title": "Tainted ties: the structure and dynamics of corruption networks extracted from deferred prosecution agreements",
+      "description": "An exploratory study analysing the networks of corporate and public sector bribery. ",
+      "doi": "10.21428/cb6ab371.929bb60a",
+      "authors": [
+        {
+          "name": "Tomáš Diviák",
+          "affiliation": "University of Manchester",
+          "orcid": ""
+        },
+        {
+          "name": "Nicholas Lord",
+          "affiliation": "University of Manchester",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-02-16T16:46:34.412Z",
+      "updatedAt": "2022-11-17T22:42:03.465Z",
+      "filePath": "./data/consortium/pdfs/bz2oe0yw.pdf",
+      "fileSize": 34095,
+      "downloads": {
+        "plain": "https://assets.pubpub.org/qp0axl5k/929bb60a-7bd2-49d3-b608-05fd5e758514.txt",
+        "jats": "https://assets.pubpub.org/0okd0au6/929bb60a-7bd2-49d3-b608-05fd5e758514.xml",
+        "odt": "https://assets.pubpub.org/q7swz6qk/929bb60a-7bd2-49d3-b608-05fd5e758514.odt",
+        "markdown": "https://assets.pubpub.org/eytkbptg/929bb60a-7bd2-49d3-b608-05fd5e758514.md",
+        "html": "https://assets.pubpub.org/6fkbx5mj/929bb60a-7bd2-49d3-b608-05fd5e758514.html",
+        "docx": "https://assets.pubpub.org/ql0zy6gx/929bb60a-7bd2-49d3-b608-05fd5e758514.docx",
+        "epub": "https://assets.pubpub.org/37i0pel6/929bb60a-7bd2-49d3-b608-05fd5e758514.epub",
+        "json": "https://assets.pubpub.org/ackhqrdf/929bb60a-7bd2-49d3-b608-05fd5e758514.json",
+        "pdf": "https://assets.pubpub.org/s3ylbyhu/929bb60a-7bd2-49d3-b608-05fd5e758514.pdf",
+        "tex": "https://assets.pubpub.org/c6l9o59y/929bb60a-7bd2-49d3-b608-05fd5e758514.tex"
+      },
+      "memberAssociations": [
+        "university-of-manchester"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/bz2oe0yw",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "20b1f578-b633-4fd0-b47d-ee2c0b2fc28c",
+      "slug": "37mewmkk",
+      "title": "Routine activity theory",
+      "description": "Andresen, M.A., & Ha, O.K. (2017). Routine activity theory. In A. Brisman, E. Carrabine, & N. South (Eds.), Routledge companion to criminological theory and concepts (pp. 536 – 539). New York, NY: Routledge.",
+      "doi": "10.21428/cb6ab371.20b1f578",
+      "authors": [
+        {
+          "name": "Martin A. Andresen",
+          "affiliation": "Simon Fraser University",
+          "orcid": "0000-0002-4767-7276"
+        },
+        {
+          "name": "Olivia K. Ha",
+          "affiliation": "Simon Fraser University",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-03-06T17:25:05.263Z",
+      "updatedAt": "2022-11-17T22:41:42.835Z",
+      "filePath": "./data/consortium/pdfs/37mewmkk.pdf",
+      "fileSize": 63017,
+      "downloads": {
+        "epub": "https://assets.pubpub.org/8z19vyj9/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.epub",
+        "json": "https://assets.pubpub.org/4lxre6cl/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.json",
+        "odt": "https://assets.pubpub.org/jwlfmuhk/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.odt",
+        "docx": "https://assets.pubpub.org/y004sbb4/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.docx",
+        "plain": "https://assets.pubpub.org/h5o1p4dp/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.txt",
+        "html": "https://assets.pubpub.org/s0ef37ai/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.html",
+        "markdown": "https://assets.pubpub.org/2kqz3np4/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.md",
+        "jats": "https://assets.pubpub.org/4q83jg7z/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.xml",
+        "tex": "https://assets.pubpub.org/5so1tocd/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.tex",
+        "pdf": "https://assets.pubpub.org/lfcf3zan/20b1f578-b633-4fd0-b47d-ee2c0b2fc28c.pdf"
+      },
+      "memberAssociations": [
+        "simon-fraser-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/37mewmkk",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "2e2eac22-8bd6-4dfd-a96c-4f9e556aa979",
+      "slug": "1ljidc1o",
+      "title": "CORRELATES OF CLIENT-PERPETRATED VIOLENCE AGAINST FEMALE SEX WORKERS IN BOGOTÁ",
+      "description": "This paper aims to estimate the prevalence of client-perpetrated sexual and physical violence against female sex workers (FSW) in Bogotá, and to understand what structural and environmental factors are associated with such victimisation. The project looked at secondary data ... ",
+      "doi": "10.21428/cb6ab371.2e2eac22",
+      "authors": [
+        {
+          "name": "Reka Solymosi",
+          "affiliation": "University of Manchester",
+          "orcid": ""
+        },
+        {
+          "name": "Carlos Iglesias",
+          "affiliation": "University of Manchester",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-03-24T11:15:15.172Z",
+      "updatedAt": "2023-09-29T01:22:31.407Z",
+      "filePath": "./data/consortium/pdfs/1ljidc1o.pdf",
+      "fileSize": 30922,
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/p6yt3lqh/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.pdf",
+        "jats": "https://assets.pubpub.org/5f61b2yu/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.xml",
+        "plain": "https://assets.pubpub.org/j4alj2cx/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.txt",
+        "epub": "https://assets.pubpub.org/wzl26g2k/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.epub",
+        "markdown": "https://assets.pubpub.org/zsyolqg8/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.md",
+        "tex": "https://assets.pubpub.org/6zl8jkj8/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.tex",
+        "odt": "https://assets.pubpub.org/2ydhlime/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.odt",
+        "html": "https://assets.pubpub.org/w1smz442/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.html",
+        "docx": "https://assets.pubpub.org/1ha748y1/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.docx",
+        "json": "https://assets.pubpub.org/66qoqs2w/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.json"
+      },
+      "memberAssociations": [
+        "university-of-manchester"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/1ljidc1o",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91",
+      "slug": "jaq5x0b3",
+      "title": "Irreducibly Social: Why biocriminology’s ontoepistemology is incompatible with the social reality of crime",
+      "description": "",
+      "doi": "10.21428/cb6ab371.ebd51fd5",
+      "authors": [
+        {
+          "name": "Callie Burt",
+          "affiliation": "Georgia State University",
+          "orcid": "0000-0001-7191-9602"
+        }
+      ],
+      "createdAt": "2022-03-25T22:00:56.144Z",
+      "updatedAt": "2022-11-17T22:41:16.747Z",
+      "filePath": "./data/consortium/pdfs/jaq5x0b3.pdf",
+      "fileSize": 709592,
+      "downloads": {
+        "markdown": "https://assets.pubpub.org/oqyalzrj/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.md",
+        "odt": "https://assets.pubpub.org/pv03eo79/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.odt",
+        "jats": "https://assets.pubpub.org/njx473vw/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.xml",
+        "html": "https://assets.pubpub.org/d1gskd3j/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.html",
+        "tex": "https://assets.pubpub.org/frsqeoeq/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.tex",
+        "docx": "https://assets.pubpub.org/cb5xnt6n/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.docx",
+        "plain": "https://assets.pubpub.org/hagmwj17/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.txt",
+        "epub": "https://assets.pubpub.org/zydppczp/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.epub",
+        "json": "https://assets.pubpub.org/mtk0gyqd/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.json",
+        "pdf": "https://assets.pubpub.org/yxlnu8go/ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91.pdf"
+      },
+      "memberAssociations": [
+        "georgia-state-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/jaq5x0b3",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "87c7cf45-2146-455b-8bac-8c6d7b162162",
+      "slug": "cwa2ufv2",
+      "title": "Time After Time: Factors Predicting Murder Series' Duration",
+      "description": "",
+      "doi": "10.21428/cb6ab371.87c7cf45",
+      "authors": [
+        {
+          "name": "Francis Fortin",
+          "affiliation": "Centre International de Criminologie Comparée, Université de Montréal, Montréal, Canada",
+          "orcid": ""
+        },
+        {
+          "name": "Ashley Hewitt",
+          "affiliation": "School of Criminal Justice and Criminology, Texas State University, San Marcos, USA",
+          "orcid": ""
+        },
+        {
+          "name": "David Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X"
+        },
+        {
+          "name": "Enzo Yaksic",
+          "affiliation": "Atypical Homicide Research Group, Boston, MA, USA",
+          "orcid": ""
+        },
+        {
+          "name": "April Miin MiinChai",
+          "affiliation": "School of Criminal Justice and Criminology, Texas State University, San Marcos, USA",
+          "orcid": ""
+        },
+        {
+          "name": "Julien Chopin",
+          "affiliation": "Centre International de Criminologie Comparée, Université de Montréal, Montréal, Canada",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-04-03T13:37:38.732Z",
+      "updatedAt": "2022-11-17T22:41:08.816Z",
+      "filePath": "./data/consortium/pdfs/cwa2ufv2.pdf",
+      "fileSize": 267276,
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/6o30fwyc/87c7cf45-2146-455b-8bac-8c6d7b162162.pdf",
+        "odt": "https://assets.pubpub.org/dpv15k3f/87c7cf45-2146-455b-8bac-8c6d7b162162.odt",
+        "markdown": "https://assets.pubpub.org/1hqb0nnn/87c7cf45-2146-455b-8bac-8c6d7b162162.md",
+        "html": "https://assets.pubpub.org/k2xp0iam/87c7cf45-2146-455b-8bac-8c6d7b162162.html",
+        "jats": "https://assets.pubpub.org/pkkn6kmh/87c7cf45-2146-455b-8bac-8c6d7b162162.xml",
+        "epub": "https://assets.pubpub.org/5v73vcmk/87c7cf45-2146-455b-8bac-8c6d7b162162.epub",
+        "docx": "https://assets.pubpub.org/cfy7zxvj/87c7cf45-2146-455b-8bac-8c6d7b162162.docx",
+        "tex": "https://assets.pubpub.org/fafqgpy8/87c7cf45-2146-455b-8bac-8c6d7b162162.tex",
+        "json": "https://assets.pubpub.org/8symgm1q/87c7cf45-2146-455b-8bac-8c6d7b162162.json",
+        "plain": "https://assets.pubpub.org/6nfyo976/87c7cf45-2146-455b-8bac-8c6d7b162162.txt"
+      },
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/cwa2ufv2",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+      "slug": "0n5d3cbl",
+      "title": "Geeks and Newbies: Investigating the Criminal Expertise of Online Sex Offenders",
+      "description": "",
+      "doi": "10.21428/cb6ab371.836c9216",
+      "authors": [
+        {
+          "name": "Francis Fortin",
+          "affiliation": "Université de Montréal",
+          "orcid": ""
+        },
+        {
+          "name": "Julien Chopin",
+          "affiliation": "Université de Montréal",
+          "orcid": ""
+        },
+        {
+          "name": "Sarah Paquette",
+          "affiliation": "Sûreté du Québec",
+          "orcid": ""
+        },
+        {
+          "name": "David Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X"
+        }
+      ],
+      "createdAt": "2022-04-10T15:03:07.819Z",
+      "updatedAt": "2022-11-17T22:41:04.201Z",
+      "filePath": "./data/consortium/pdfs/0n5d3cbl.pdf",
+      "fileSize": 304648,
+      "downloads": {
+        "tex": "https://assets.pubpub.org/apoi8eca/836c9216-15a4-4f65-a98d-ec5164fd7beb.tex",
+        "docx": "https://assets.pubpub.org/1jwztf5l/836c9216-15a4-4f65-a98d-ec5164fd7beb.docx",
+        "html": "https://assets.pubpub.org/0ussad9f/836c9216-15a4-4f65-a98d-ec5164fd7beb.html",
+        "json": "https://assets.pubpub.org/qadjige9/836c9216-15a4-4f65-a98d-ec5164fd7beb.json",
+        "jats": "https://assets.pubpub.org/zhm1merk/836c9216-15a4-4f65-a98d-ec5164fd7beb.xml",
+        "pdf": "https://assets.pubpub.org/gsitnoxv/836c9216-15a4-4f65-a98d-ec5164fd7beb.pdf",
+        "odt": "https://assets.pubpub.org/cxe4s2i5/836c9216-15a4-4f65-a98d-ec5164fd7beb.odt",
+        "epub": "https://assets.pubpub.org/4ue1cu7f/836c9216-15a4-4f65-a98d-ec5164fd7beb.epub",
+        "markdown": "https://assets.pubpub.org/7fs6qu4n/836c9216-15a4-4f65-a98d-ec5164fd7beb.md",
+        "plain": "https://assets.pubpub.org/v7pnpsw4/836c9216-15a4-4f65-a98d-ec5164fd7beb.txt"
+      },
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/0n5d3cbl",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+      "slug": "2gs6roi2",
+      "title": "Association of childhood bullying victimization with suicide deaths: Findings from a 50-year nationwide cohort study",
+      "description": "",
+      "doi": "10.21428/cb6ab371.0ba7dae1",
+      "authors": [
+        {
+          "name": "David Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X"
+        },
+        {
+          "name": "Marie-Claude Geoffroy",
+          "affiliation": "McGill University",
+          "orcid": ""
+        },
+        {
+          "name": "Louise Arseneault",
+          "affiliation": "King's College London",
+          "orcid": ""
+        },
+        {
+          "name": "Alain Girard",
+          "affiliation": "CHU Sainte-Juste Research Center",
+          "orcid": ""
+        },
+        {
+          "name": "Isabelle Ouellet-Morin",
+          "affiliation": "Université de Montréal",
+          "orcid": ""
+        },
+        {
+          "name": "Chris Power",
+          "affiliation": "UCL",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-04-16T01:45:01.667Z",
+      "updatedAt": "2022-11-17T22:40:42.276Z",
+      "filePath": "./data/consortium/pdfs/2gs6roi2.pdf",
+      "fileSize": 174444,
+      "downloads": {
+        "epub": "https://assets.pubpub.org/m08b9m1z/0ba7dae1-f2ed-4788-aab5-18ecdac293db.epub",
+        "odt": "https://assets.pubpub.org/06w95ui8/0ba7dae1-f2ed-4788-aab5-18ecdac293db.odt",
+        "plain": "https://assets.pubpub.org/l5a1d30b/0ba7dae1-f2ed-4788-aab5-18ecdac293db.txt",
+        "docx": "https://assets.pubpub.org/v3yr37el/0ba7dae1-f2ed-4788-aab5-18ecdac293db.docx",
+        "pdf": "https://assets.pubpub.org/f6wgzzs5/0ba7dae1-f2ed-4788-aab5-18ecdac293db.pdf",
+        "tex": "https://assets.pubpub.org/3bqtenzl/0ba7dae1-f2ed-4788-aab5-18ecdac293db.tex",
+        "html": "https://assets.pubpub.org/6yz00lyu/0ba7dae1-f2ed-4788-aab5-18ecdac293db.html",
+        "jats": "https://assets.pubpub.org/za1gvepg/0ba7dae1-f2ed-4788-aab5-18ecdac293db.xml",
+        "markdown": "https://assets.pubpub.org/kar1jcdq/0ba7dae1-f2ed-4788-aab5-18ecdac293db.md",
+        "json": "https://assets.pubpub.org/zxt6b363/0ba7dae1-f2ed-4788-aab5-18ecdac293db.json"
+      },
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/2gs6roi2",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "942d2e26-682a-495c-98a7-378ce6f953e3",
+      "slug": "u7kmdb5j",
+      "title": "Do risk and protective factors for chronic offending vary across Indigenous and White youth followed prospectively through full adulthood?",
+      "description": "",
+      "doi": "10.21428/cb6ab371.942d2e26",
+      "authors": [
+        {
+          "name": "Raymond Corrado",
+          "affiliation": "",
+          "orcid": ""
+        },
+        {
+          "name": "Evan McCuish",
+          "affiliation": "Simon Fraser University",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-05-14T14:42:42.175Z",
+      "updatedAt": "2022-11-17T22:40:13.871Z",
+      "filePath": "./data/consortium/pdfs/u7kmdb5j.pdf",
+      "fileSize": 193113,
+      "downloads": {
+        "tex": "https://assets.pubpub.org/sermzfsu/942d2e26-682a-495c-98a7-378ce6f953e3.tex",
+        "pdf": "https://assets.pubpub.org/fsk75fc5/942d2e26-682a-495c-98a7-378ce6f953e3.pdf",
+        "html": "https://assets.pubpub.org/thtxgeor/942d2e26-682a-495c-98a7-378ce6f953e3.html",
+        "markdown": "https://assets.pubpub.org/qg2mv6ds/942d2e26-682a-495c-98a7-378ce6f953e3.md",
+        "odt": "https://assets.pubpub.org/qt8hbcqw/942d2e26-682a-495c-98a7-378ce6f953e3.odt",
+        "epub": "https://assets.pubpub.org/5a364jk0/942d2e26-682a-495c-98a7-378ce6f953e3.epub",
+        "jats": "https://assets.pubpub.org/r99ydkh1/942d2e26-682a-495c-98a7-378ce6f953e3.xml",
+        "docx": "https://assets.pubpub.org/p6bit3de/942d2e26-682a-495c-98a7-378ce6f953e3.docx",
+        "plain": "https://assets.pubpub.org/0uwdfmf1/942d2e26-682a-495c-98a7-378ce6f953e3.txt",
+        "json": "https://assets.pubpub.org/58ha7wh1/942d2e26-682a-495c-98a7-378ce6f953e3.json"
+      },
+      "memberAssociations": [
+        "simon-fraser-university"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/u7kmdb5j",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "128a98c0-1a08-4057-8c08-5dcd04b0d095",
+      "slug": "jailandlabormarkets",
+      "title": "The Racialized Consequences of Jail Incarceration on Local Labor Markets",
+      "description": "Race and Justice (2022)",
+      "doi": "10.21428/cb6ab371.128a98c0",
+      "authors": [
+        {
+          "name": "Christopher Thomas",
+          "affiliation": "Department of Criminal Justice, John Jay College of Criminal Justice",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-05-23T13:44:42.376Z",
+      "updatedAt": "2022-11-17T22:40:07.160Z",
+      "filePath": "./data/consortium/pdfs/jailandlabormarkets.pdf",
+      "fileSize": 476723,
+      "downloads": {
+        "epub": "https://assets.pubpub.org/wdqulsq5/128a98c0-1a08-4057-8c08-5dcd04b0d095.epub",
+        "html": "https://assets.pubpub.org/3i616mg9/128a98c0-1a08-4057-8c08-5dcd04b0d095.html",
+        "markdown": "https://assets.pubpub.org/bj8ash7k/128a98c0-1a08-4057-8c08-5dcd04b0d095.md",
+        "odt": "https://assets.pubpub.org/42q1aw9v/128a98c0-1a08-4057-8c08-5dcd04b0d095.odt",
+        "docx": "https://assets.pubpub.org/cs9tf6du/128a98c0-1a08-4057-8c08-5dcd04b0d095.docx",
+        "pdf": "https://assets.pubpub.org/51655x8f/128a98c0-1a08-4057-8c08-5dcd04b0d095.pdf",
+        "jats": "https://assets.pubpub.org/t2op4y41/128a98c0-1a08-4057-8c08-5dcd04b0d095.xml",
+        "tex": "https://assets.pubpub.org/ni355h5e/128a98c0-1a08-4057-8c08-5dcd04b0d095.tex",
+        "json": "https://assets.pubpub.org/ynq9a523/128a98c0-1a08-4057-8c08-5dcd04b0d095.json",
+        "plain": "https://assets.pubpub.org/wrd3a12y/128a98c0-1a08-4057-8c08-5dcd04b0d095.txt"
+      },
+      "memberAssociations": [
+        "john-jay-college"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/jailandlabormarkets",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "d228871d-d62e-4819-aa62-e405c403cdad",
+      "slug": "izo5rvq0",
+      "title": "Criminal nomadism: A neglected dimension of spatial mobility in sex offending",
+      "description": "",
+      "doi": "",
+      "authors": [
+        {
+          "name": "David Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X"
+        },
+        {
+          "name": "Patrick Michaud",
+          "affiliation": "Université de Montréal",
+          "orcid": ""
+        },
+        {
+          "name": "Éric Beauregard",
+          "affiliation": "Simon Fraser University",
+          "orcid": ""
+        },
+        {
+          "name": "Jean Proulx",
+          "affiliation": "Université de Montréal",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-06-03T08:10:28.206Z",
+      "updatedAt": "2022-11-17T22:39:47.090Z",
+      "filePath": "./data/consortium/pdfs/izo5rvq0.pdf",
+      "fileSize": 385915,
+      "downloads": {
+        "html": "https://assets.pubpub.org/9zm1oxt6/d228871d-d62e-4819-aa62-e405c403cdad.html",
+        "epub": "https://assets.pubpub.org/e00scho2/d228871d-d62e-4819-aa62-e405c403cdad.epub",
+        "markdown": "https://assets.pubpub.org/2pg0kunl/d228871d-d62e-4819-aa62-e405c403cdad.md",
+        "odt": "https://assets.pubpub.org/xfwsu5my/d228871d-d62e-4819-aa62-e405c403cdad.odt",
+        "plain": "https://assets.pubpub.org/ldh1w7iz/d228871d-d62e-4819-aa62-e405c403cdad.txt",
+        "pdf": "https://assets.pubpub.org/7ltrfmvu/d228871d-d62e-4819-aa62-e405c403cdad.pdf",
+        "jats": "https://assets.pubpub.org/0yfwj1tb/d228871d-d62e-4819-aa62-e405c403cdad.xml",
+        "json": "https://assets.pubpub.org/f7deyb3l/d228871d-d62e-4819-aa62-e405c403cdad.json",
+        "tex": "https://assets.pubpub.org/aky37x70/d228871d-d62e-4819-aa62-e405c403cdad.tex"
+      },
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/izo5rvq0",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    },
+    {
+      "id": "75598f0c-6c9d-450d-be9a-15d62343d1fe",
+      "slug": "rqqkyfuu",
+      "title": "Who counts? The invisibility of mothers as victims of femicide",
+      "description": "This article focuses on the important and persistent phenomenon of women killed by their sons. We argue that parricide (the killing of parents) is a gendered form of violence. ",
+      "doi": "10.21428/cb6ab371.75598f0c",
+      "authors": [
+        {
+          "name": "Caroline Miles",
+          "affiliation": "University of Manchester",
+          "orcid": ""
+        },
+        {
+          "name": "Rachel Condry",
+          "affiliation": "",
+          "orcid": ""
+        }
+      ],
+      "createdAt": "2022-07-07T12:03:37.213Z",
+      "updatedAt": "2022-11-17T22:38:11.094Z",
+      "filePath": "./data/consortium/pdfs/rqqkyfuu.pdf",
+      "fileSize": 29378,
+      "downloads": {
+        "tex": "https://assets.pubpub.org/2yh396si/75598f0c-6c9d-450d-be9a-15d62343d1fe.tex",
+        "pdf": "https://assets.pubpub.org/qhht0hlj/75598f0c-6c9d-450d-be9a-15d62343d1fe.pdf",
+        "html": "https://assets.pubpub.org/mdpc4qr5/75598f0c-6c9d-450d-be9a-15d62343d1fe.html",
+        "docx": "https://assets.pubpub.org/1c5ynm35/75598f0c-6c9d-450d-be9a-15d62343d1fe.docx",
+        "odt": "https://assets.pubpub.org/pimjja26/75598f0c-6c9d-450d-be9a-15d62343d1fe.odt",
+        "plain": "https://assets.pubpub.org/l9qetcd8/75598f0c-6c9d-450d-be9a-15d62343d1fe.txt",
+        "epub": "https://assets.pubpub.org/qujq1spn/75598f0c-6c9d-450d-be9a-15d62343d1fe.epub",
+        "markdown": "https://assets.pubpub.org/6ckajdm1/75598f0c-6c9d-450d-be9a-15d62343d1fe.md",
+        "jats": "https://assets.pubpub.org/92i093u8/75598f0c-6c9d-450d-be9a-15d62343d1fe.xml",
+        "json": "https://assets.pubpub.org/zaqs0729/75598f0c-6c9d-450d-be9a-15d62343d1fe.json"
+      },
+      "memberAssociations": [
+        "university-of-manchester"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "originalUrl": "https://www.crimrxiv.com/pub/rqqkyfuu",
+      "arfsFileId": null,
+      "arweaveId": null,
+      "uploadedAt": null
+    }
+  ],
+  "costs": {
+    "estimatedSize": "74MB",
+    "estimatedArCost": "37.000000",
+    "estimatedUsdCost": "0.00"
+  }
+}

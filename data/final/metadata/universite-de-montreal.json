@@ -1,0 +1,840 @@
+{
+  "member": {
+    "id": "universite-de-montreal",
+    "name": "Université de Montréal",
+    "keywords": [
+      "Université de Montréal",
+      "University of Montreal"
+    ],
+    "slug": "universite-de-montreal",
+    "publications": [
+      "0bcce0c6-f745-441a-abec-47b7eb633cd1",
+      "87c7cf45-2146-455b-8bac-8c6d7b162162",
+      "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+      "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+      "d228871d-d62e-4819-aa62-e405c403cdad",
+      "5a8937f1-0bd4-419c-9830-027b064a4607",
+      "8e4da5be-350f-418d-b30a-26a7afa32589",
+      "0f13c885-9d8c-42a4-bee0-a03e9036cfb5",
+      "a72d098a-3d9a-4f8d-9389-edcd68a42465",
+      "4ea1692a-4d7a-4301-b604-6e879404728c",
+      "1e4ff939-bf95-4c6f-a0ec-382bd8a2803f",
+      "17477cbe-8f40-444c-9c88-1ad129f74739",
+      "e7dfe773-3df2-4d78-81d6-fee6c2493452",
+      "b39a5e06-0460-48ef-b117-e6feb314cae1"
+    ],
+    "publicationCount": 14,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  "publications": [
+    {
+      "id": "0bcce0c6-f745-441a-abec-47b7eb633cd1",
+      "slug": "gf7zjbgf",
+      "title": "Les sites de réseautage social et la présence des groupes criminels",
+      "description": "Revue internationale de criminologie et de police technique et scientifique",
+      "doi": "10.21428/cb6ab371.0bcce0c6",
+      "avatar": "https://assets.pubpub.org/9osglq5y/01594245199687.png",
+      "authors": [
+        {
+          "name": "David Décary-Hétu",
+          "firstName": "David",
+          "lastName": "Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Carlo Morselli",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Université de Montréal",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "c8d61b0e-9f82-488a-966d-4fcc7b3f0355",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.625,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": null,
+          "orcid": null,
+          "userId": "df353749-62ef-4002-b17e-2d275a65858e",
+          "pubId": "0bcce0c6-f745-441a-abec-47b7eb633cd1",
+          "createdAt": "2020-07-08T00:46:47.285Z",
+          "updatedAt": "2020-07-08T00:48:25.095Z",
+          "user": {
+            "id": "df353749-62ef-4002-b17e-2d275a65858e",
+            "firstName": "David",
+            "lastName": "Décary-Hétu",
+            "fullName": "David Décary-Hétu",
+            "avatar": "https://assets.pubpub.org/z7930vt1/61594169020637.jpg",
+            "slug": "david-decary-hetu",
+            "initials": "DD",
+            "title": "Associate Professor",
+            "orcid": "0000-0002-4360-140X"
+          }
+        },
+        {
+          "id": "f2a0553a-7b24-4b11-8cde-d41e99c37484",
+          "name": "Carlo Morselli",
+          "avatar": null,
+          "title": null,
+          "order": 0.25,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Université de Montréal",
+          "orcid": null,
+          "userId": null,
+          "pubId": "0bcce0c6-f745-441a-abec-47b7eb633cd1",
+          "createdAt": "2020-07-08T00:48:09.032Z",
+          "updatedAt": "2020-07-08T00:48:27.523Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "docx": "https://assets.pubpub.org/1zrt42rr/0bcce0c6-f745-441a-abec-47b7eb633cd1.docx",
+        "pdf": "https://assets.pubpub.org/qunhmxm1/0bcce0c6-f745-441a-abec-47b7eb633cd1.pdf",
+        "plain": "https://assets.pubpub.org/b5ktry53/0bcce0c6-f745-441a-abec-47b7eb633cd1.txt",
+        "odt": "https://assets.pubpub.org/01fk30pj/0bcce0c6-f745-441a-abec-47b7eb633cd1.odt"
+      },
+      "createdAt": "2020-07-08T00:46:47.276Z",
+      "updatedAt": "2022-11-17T22:57:58.415Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2020",
+        "month": "07",
+        "monthName": "july",
+        "path": "2020/07-july"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/gf7zjbgf",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:36.989Z",
+      "filePath": "./data/consortium/pdfs/gf7zjbgf.pdf",
+      "fileSize": 233261
+    },
+    {
+      "id": "87c7cf45-2146-455b-8bac-8c6d7b162162",
+      "slug": "cwa2ufv2",
+      "title": "Time After Time: Factors Predicting Murder Series' Duration",
+      "description": "",
+      "doi": "10.21428/cb6ab371.87c7cf45",
+      "avatar": "https://assets.pubpub.org/znh9c5oj/71648994101849.png",
+      "authors": [
+        {
+          "name": "Francis Fortin",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Centre International de Criminologie Comparée, Université de Montréal, Montréal, Canada",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Ashley Hewitt",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "School of Criminal Justice and Criminology, Texas State University, San Marcos, USA",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "David Décary-Hétu",
+          "firstName": "David",
+          "lastName": "Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X",
+          "roles": [],
+          "isAuthor": false
+        },
+        {
+          "name": "Enzo Yaksic",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Atypical Homicide Research Group, Boston, MA, USA",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "April Miin MiinChai",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "School of Criminal Justice and Criminology, Texas State University, San Marcos, USA",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Julien Chopin",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Centre International de Criminologie Comparée, Université de Montréal, Montréal, Canada",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "158557e6-a674-4a90-87ea-900a7ba1fabe",
+          "name": "Francis Fortin",
+          "avatar": null,
+          "title": null,
+          "order": 0.96875,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Centre International de Criminologie Comparée, Université de Montréal, Montréal, Canada",
+          "orcid": null,
+          "userId": null,
+          "pubId": "87c7cf45-2146-455b-8bac-8c6d7b162162",
+          "createdAt": "2022-04-03T13:40:09.936Z",
+          "updatedAt": "2022-04-03T13:40:20.182Z",
+          "user": null
+        },
+        {
+          "id": "047deb90-3a53-4634-b18e-c0f21870e605",
+          "name": "Ashley Hewitt",
+          "avatar": null,
+          "title": null,
+          "order": 0.984375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "School of Criminal Justice and Criminology, Texas State University, San Marcos, USA",
+          "orcid": null,
+          "userId": null,
+          "pubId": "87c7cf45-2146-455b-8bac-8c6d7b162162",
+          "createdAt": "2022-04-03T13:40:23.271Z",
+          "updatedAt": "2022-04-03T13:40:29.499Z",
+          "user": null
+        },
+        {
+          "id": "9c08b210-f57f-4697-be20-5233e9472e96",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.5,
+          "isAuthor": false,
+          "roles": null,
+          "affiliation": null,
+          "orcid": null,
+          "userId": "df353749-62ef-4002-b17e-2d275a65858e",
+          "pubId": "87c7cf45-2146-455b-8bac-8c6d7b162162",
+          "createdAt": "2022-04-03T13:37:38.941Z",
+          "updatedAt": "2022-04-03T13:38:58.017Z",
+          "user": {
+            "id": "df353749-62ef-4002-b17e-2d275a65858e",
+            "firstName": "David",
+            "lastName": "Décary-Hétu",
+            "fullName": "David Décary-Hétu",
+            "avatar": "https://assets.pubpub.org/z7930vt1/61594169020637.jpg",
+            "slug": "david-decary-hetu",
+            "initials": "DD",
+            "title": "Associate Professor",
+            "orcid": "0000-0002-4360-140X"
+          }
+        },
+        {
+          "id": "7ecabdaf-8212-4d29-ac2c-7105a1a13e02",
+          "name": "Enzo Yaksic",
+          "avatar": null,
+          "title": null,
+          "order": 0.875,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Atypical Homicide Research Group, Boston, MA, USA",
+          "orcid": null,
+          "userId": null,
+          "pubId": "87c7cf45-2146-455b-8bac-8c6d7b162162",
+          "createdAt": "2022-04-03T13:39:17.430Z",
+          "updatedAt": "2022-04-03T13:39:42.575Z",
+          "user": null
+        },
+        {
+          "id": "32fa3a20-35de-457b-9147-8320bd2e7e88",
+          "name": "April Miin MiinChai",
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "School of Criminal Justice and Criminology, Texas State University, San Marcos, USA",
+          "orcid": null,
+          "userId": null,
+          "pubId": "87c7cf45-2146-455b-8bac-8c6d7b162162",
+          "createdAt": "2022-04-03T13:38:56.342Z",
+          "updatedAt": "2022-04-03T13:39:51.091Z",
+          "user": null
+        },
+        {
+          "id": "e76cf6f8-8450-4c7c-8f11-f0fd61e63050",
+          "name": "Julien Chopin",
+          "avatar": null,
+          "title": null,
+          "order": 0.9375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Centre International de Criminologie Comparée, Université de Montréal, Montréal, Canada",
+          "orcid": null,
+          "userId": null,
+          "pubId": "87c7cf45-2146-455b-8bac-8c6d7b162162",
+          "createdAt": "2022-04-03T13:39:55.163Z",
+          "updatedAt": "2022-04-03T13:40:06.973Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/6o30fwyc/87c7cf45-2146-455b-8bac-8c6d7b162162.pdf",
+        "odt": "https://assets.pubpub.org/dpv15k3f/87c7cf45-2146-455b-8bac-8c6d7b162162.odt",
+        "markdown": "https://assets.pubpub.org/1hqb0nnn/87c7cf45-2146-455b-8bac-8c6d7b162162.md",
+        "html": "https://assets.pubpub.org/k2xp0iam/87c7cf45-2146-455b-8bac-8c6d7b162162.html",
+        "jats": "https://assets.pubpub.org/pkkn6kmh/87c7cf45-2146-455b-8bac-8c6d7b162162.xml",
+        "epub": "https://assets.pubpub.org/5v73vcmk/87c7cf45-2146-455b-8bac-8c6d7b162162.epub",
+        "docx": "https://assets.pubpub.org/cfy7zxvj/87c7cf45-2146-455b-8bac-8c6d7b162162.docx",
+        "tex": "https://assets.pubpub.org/fafqgpy8/87c7cf45-2146-455b-8bac-8c6d7b162162.tex",
+        "json": "https://assets.pubpub.org/8symgm1q/87c7cf45-2146-455b-8bac-8c6d7b162162.json",
+        "plain": "https://assets.pubpub.org/6nfyo976/87c7cf45-2146-455b-8bac-8c6d7b162162.txt"
+      },
+      "createdAt": "2022-04-03T13:37:38.732Z",
+      "updatedAt": "2022-11-17T22:41:08.816Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2022",
+        "month": "04",
+        "monthName": "april",
+        "path": "2022/04-april"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/cwa2ufv2",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:53.696Z",
+      "filePath": "./data/consortium/pdfs/cwa2ufv2.pdf",
+      "fileSize": 267276
+    },
+    {
+      "id": "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+      "slug": "0n5d3cbl",
+      "title": "Geeks and Newbies: Investigating the Criminal Expertise of Online Sex Offenders",
+      "description": "",
+      "doi": "10.21428/cb6ab371.836c9216",
+      "avatar": "https://assets.pubpub.org/08f1rfh2/41649603738235.png",
+      "authors": [
+        {
+          "name": "Francis Fortin",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Université de Montréal",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Julien Chopin",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Université de Montréal",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Sarah Paquette",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Sûreté du Québec",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "David Décary-Hétu",
+          "firstName": "David",
+          "lastName": "Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X",
+          "roles": [],
+          "isAuthor": false
+        }
+      ],
+      "attributions": [
+        {
+          "id": "bd9c76c1-0877-41a0-934c-a3b7f4e8f39f",
+          "name": "Francis Fortin",
+          "avatar": null,
+          "title": null,
+          "order": 0.9375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Université de Montréal",
+          "orcid": null,
+          "userId": null,
+          "pubId": "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+          "createdAt": "2022-04-10T15:04:12.802Z",
+          "updatedAt": "2022-04-10T15:04:36.205Z",
+          "user": null
+        },
+        {
+          "id": "d353fec4-ecd0-4240-8f6a-aa00183a8a2a",
+          "name": "Julien Chopin",
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Université de Montréal",
+          "orcid": "",
+          "userId": null,
+          "pubId": "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+          "createdAt": "2022-04-10T15:04:04.761Z",
+          "updatedAt": "2022-04-10T15:04:23.223Z",
+          "user": null
+        },
+        {
+          "id": "468de35d-c7ac-4006-9b83-3cd062d40895",
+          "name": "Sarah Paquette",
+          "avatar": null,
+          "title": null,
+          "order": 0.875,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Sûreté du Québec",
+          "orcid": "",
+          "userId": null,
+          "pubId": "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+          "createdAt": "2022-04-10T15:04:10.432Z",
+          "updatedAt": "2022-04-10T15:04:30.397Z",
+          "user": null
+        },
+        {
+          "id": "8a9326b1-cb7a-4fa5-af47-28e6480bdd77",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.5,
+          "isAuthor": false,
+          "roles": null,
+          "affiliation": null,
+          "orcid": null,
+          "userId": "df353749-62ef-4002-b17e-2d275a65858e",
+          "pubId": "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+          "createdAt": "2022-04-10T15:03:08.038Z",
+          "updatedAt": "2022-04-10T15:03:58.755Z",
+          "user": {
+            "id": "df353749-62ef-4002-b17e-2d275a65858e",
+            "firstName": "David",
+            "lastName": "Décary-Hétu",
+            "fullName": "David Décary-Hétu",
+            "avatar": "https://assets.pubpub.org/z7930vt1/61594169020637.jpg",
+            "slug": "david-decary-hetu",
+            "initials": "DD",
+            "title": "Associate Professor",
+            "orcid": "0000-0002-4360-140X"
+          }
+        }
+      ],
+      "downloads": {
+        "tex": "https://assets.pubpub.org/apoi8eca/836c9216-15a4-4f65-a98d-ec5164fd7beb.tex",
+        "docx": "https://assets.pubpub.org/1jwztf5l/836c9216-15a4-4f65-a98d-ec5164fd7beb.docx",
+        "html": "https://assets.pubpub.org/0ussad9f/836c9216-15a4-4f65-a98d-ec5164fd7beb.html",
+        "json": "https://assets.pubpub.org/qadjige9/836c9216-15a4-4f65-a98d-ec5164fd7beb.json",
+        "jats": "https://assets.pubpub.org/zhm1merk/836c9216-15a4-4f65-a98d-ec5164fd7beb.xml",
+        "pdf": "https://assets.pubpub.org/gsitnoxv/836c9216-15a4-4f65-a98d-ec5164fd7beb.pdf",
+        "odt": "https://assets.pubpub.org/cxe4s2i5/836c9216-15a4-4f65-a98d-ec5164fd7beb.odt",
+        "epub": "https://assets.pubpub.org/4ue1cu7f/836c9216-15a4-4f65-a98d-ec5164fd7beb.epub",
+        "markdown": "https://assets.pubpub.org/7fs6qu4n/836c9216-15a4-4f65-a98d-ec5164fd7beb.md",
+        "plain": "https://assets.pubpub.org/v7pnpsw4/836c9216-15a4-4f65-a98d-ec5164fd7beb.txt"
+      },
+      "createdAt": "2022-04-10T15:03:07.819Z",
+      "updatedAt": "2022-11-17T22:41:04.201Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2022",
+        "month": "04",
+        "monthName": "april",
+        "path": "2022/04-april"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/0n5d3cbl",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:54.104Z",
+      "filePath": "./data/consortium/pdfs/0n5d3cbl.pdf",
+      "fileSize": 304648
+    },
+    {
+      "id": "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+      "slug": "2gs6roi2",
+      "title": "Association of childhood bullying victimization with suicide deaths: Findings from a 50-year nationwide cohort study",
+      "description": "",
+      "doi": "10.21428/cb6ab371.0ba7dae1",
+      "avatar": "https://assets.pubpub.org/re1phei0/01650074398117.png",
+      "authors": [
+        {
+          "name": "David Décary-Hétu",
+          "firstName": "David",
+          "lastName": "Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X",
+          "roles": [],
+          "isAuthor": false
+        },
+        {
+          "name": "Marie-Claude Geoffroy",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "McGill University",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Louise Arseneault",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "King's College London",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Alain Girard",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "CHU Sainte-Juste Research Center",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Isabelle Ouellet-Morin",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Université de Montréal",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Chris Power",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "UCL",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "9a9fd854-214c-4e37-866f-9b041a9174bf",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.5,
+          "isAuthor": false,
+          "roles": null,
+          "affiliation": null,
+          "orcid": null,
+          "userId": "df353749-62ef-4002-b17e-2d275a65858e",
+          "pubId": "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+          "createdAt": "2022-04-16T01:45:02.136Z",
+          "updatedAt": "2022-04-16T01:48:12.590Z",
+          "user": {
+            "id": "df353749-62ef-4002-b17e-2d275a65858e",
+            "firstName": "David",
+            "lastName": "Décary-Hétu",
+            "fullName": "David Décary-Hétu",
+            "avatar": "https://assets.pubpub.org/z7930vt1/61594169020637.jpg",
+            "slug": "david-decary-hetu",
+            "initials": "DD",
+            "title": "Associate Professor",
+            "orcid": "0000-0002-4360-140X"
+          }
+        },
+        {
+          "id": "fe448f88-b926-4e50-a683-0d062b42ea9b",
+          "name": "Marie-Claude Geoffroy",
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "McGill University",
+          "orcid": null,
+          "userId": null,
+          "pubId": "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+          "createdAt": "2022-04-16T01:47:56.617Z",
+          "updatedAt": "2022-04-16T01:48:59.260Z",
+          "user": null
+        },
+        {
+          "id": "5bb34910-19a4-47b2-b340-70e2f71e197e",
+          "name": "Louise Arseneault",
+          "avatar": null,
+          "title": null,
+          "order": 0.875,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "King's College London",
+          "orcid": null,
+          "userId": null,
+          "pubId": "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+          "createdAt": "2022-04-16T01:48:10.553Z",
+          "updatedAt": "2022-04-16T01:49:17.734Z",
+          "user": null
+        },
+        {
+          "id": "7f0b20d6-6dee-47c6-a401-95df9b1024da",
+          "name": "Alain Girard",
+          "avatar": null,
+          "title": null,
+          "order": 0.9375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "CHU Sainte-Juste Research Center",
+          "orcid": null,
+          "userId": null,
+          "pubId": "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+          "createdAt": "2022-04-16T01:48:19.530Z",
+          "updatedAt": "2022-04-16T01:49:33.222Z",
+          "user": null
+        },
+        {
+          "id": "34fed95b-b127-4e15-9039-8e12fd96311d",
+          "name": "Isabelle Ouellet-Morin",
+          "avatar": null,
+          "title": null,
+          "order": 0.96875,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Université de Montréal",
+          "orcid": null,
+          "userId": null,
+          "pubId": "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+          "createdAt": "2022-04-16T01:48:29.361Z",
+          "updatedAt": "2022-04-16T01:49:50.523Z",
+          "user": null
+        },
+        {
+          "id": "7a3c6cf6-69e1-49af-9857-4d804cce2e05",
+          "name": "Chris Power",
+          "avatar": null,
+          "title": null,
+          "order": 0.984375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "UCL",
+          "orcid": null,
+          "userId": null,
+          "pubId": "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+          "createdAt": "2022-04-16T01:48:35.881Z",
+          "updatedAt": "2022-04-16T01:50:02.259Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "epub": "https://assets.pubpub.org/m08b9m1z/0ba7dae1-f2ed-4788-aab5-18ecdac293db.epub",
+        "odt": "https://assets.pubpub.org/06w95ui8/0ba7dae1-f2ed-4788-aab5-18ecdac293db.odt",
+        "plain": "https://assets.pubpub.org/l5a1d30b/0ba7dae1-f2ed-4788-aab5-18ecdac293db.txt",
+        "docx": "https://assets.pubpub.org/v3yr37el/0ba7dae1-f2ed-4788-aab5-18ecdac293db.docx",
+        "pdf": "https://assets.pubpub.org/f6wgzzs5/0ba7dae1-f2ed-4788-aab5-18ecdac293db.pdf",
+        "tex": "https://assets.pubpub.org/3bqtenzl/0ba7dae1-f2ed-4788-aab5-18ecdac293db.tex",
+        "html": "https://assets.pubpub.org/6yz00lyu/0ba7dae1-f2ed-4788-aab5-18ecdac293db.html",
+        "jats": "https://assets.pubpub.org/za1gvepg/0ba7dae1-f2ed-4788-aab5-18ecdac293db.xml",
+        "markdown": "https://assets.pubpub.org/kar1jcdq/0ba7dae1-f2ed-4788-aab5-18ecdac293db.md",
+        "json": "https://assets.pubpub.org/zxt6b363/0ba7dae1-f2ed-4788-aab5-18ecdac293db.json"
+      },
+      "createdAt": "2022-04-16T01:45:01.667Z",
+      "updatedAt": "2022-11-17T22:40:42.276Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2022",
+        "month": "04",
+        "monthName": "april",
+        "path": "2022/04-april"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/2gs6roi2",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:54.454Z",
+      "filePath": "./data/consortium/pdfs/2gs6roi2.pdf",
+      "fileSize": 174444
+    },
+    {
+      "id": "d228871d-d62e-4819-aa62-e405c403cdad",
+      "slug": "izo5rvq0",
+      "title": "Criminal nomadism: A neglected dimension of spatial mobility in sex offending",
+      "description": "",
+      "doi": "",
+      "avatar": null,
+      "authors": [
+        {
+          "name": "David Décary-Hétu",
+          "firstName": "David",
+          "lastName": "Décary-Hétu",
+          "affiliation": "",
+          "orcid": "0000-0002-4360-140X",
+          "roles": [],
+          "isAuthor": false
+        },
+        {
+          "name": "Patrick Michaud",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Université de Montréal",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Éric Beauregard",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Simon Fraser University",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Jean Proulx",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "Université de Montréal",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "89a7cf6b-7481-49f5-8f75-c94411862873",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.5,
+          "isAuthor": false,
+          "roles": null,
+          "affiliation": null,
+          "orcid": null,
+          "userId": "df353749-62ef-4002-b17e-2d275a65858e",
+          "pubId": "d228871d-d62e-4819-aa62-e405c403cdad",
+          "createdAt": "2022-06-03T08:10:28.547Z",
+          "updatedAt": "2022-06-03T08:11:47.171Z",
+          "user": {
+            "id": "df353749-62ef-4002-b17e-2d275a65858e",
+            "firstName": "David",
+            "lastName": "Décary-Hétu",
+            "fullName": "David Décary-Hétu",
+            "avatar": "https://assets.pubpub.org/z7930vt1/61594169020637.jpg",
+            "slug": "david-decary-hetu",
+            "initials": "DD",
+            "title": "Associate Professor",
+            "orcid": "0000-0002-4360-140X"
+          }
+        },
+        {
+          "id": "bf49a0a9-56b8-46ad-a199-c515a443f91c",
+          "name": "Patrick Michaud",
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Université de Montréal",
+          "orcid": null,
+          "userId": null,
+          "pubId": "d228871d-d62e-4819-aa62-e405c403cdad",
+          "createdAt": "2022-06-03T08:11:44.778Z",
+          "updatedAt": "2022-06-03T08:12:21.720Z",
+          "user": null
+        },
+        {
+          "id": "7f51aeac-c4b3-4215-9f20-6af0f6b594e3",
+          "name": "Éric Beauregard",
+          "avatar": null,
+          "title": null,
+          "order": 0.875,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Simon Fraser University",
+          "orcid": null,
+          "userId": null,
+          "pubId": "d228871d-d62e-4819-aa62-e405c403cdad",
+          "createdAt": "2022-06-03T08:11:56.713Z",
+          "updatedAt": "2022-06-03T08:12:29.893Z",
+          "user": null
+        },
+        {
+          "id": "63e73b15-10d4-4325-b1e0-493492c1d5fe",
+          "name": "Jean Proulx",
+          "avatar": null,
+          "title": null,
+          "order": 0.9375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "Université de Montréal",
+          "orcid": null,
+          "userId": null,
+          "pubId": "d228871d-d62e-4819-aa62-e405c403cdad",
+          "createdAt": "2022-06-03T08:12:01.299Z",
+          "updatedAt": "2022-06-03T08:12:40.901Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "html": "https://assets.pubpub.org/9zm1oxt6/d228871d-d62e-4819-aa62-e405c403cdad.html",
+        "epub": "https://assets.pubpub.org/e00scho2/d228871d-d62e-4819-aa62-e405c403cdad.epub",
+        "markdown": "https://assets.pubpub.org/2pg0kunl/d228871d-d62e-4819-aa62-e405c403cdad.md",
+        "odt": "https://assets.pubpub.org/xfwsu5my/d228871d-d62e-4819-aa62-e405c403cdad.odt",
+        "plain": "https://assets.pubpub.org/ldh1w7iz/d228871d-d62e-4819-aa62-e405c403cdad.txt",
+        "pdf": "https://assets.pubpub.org/7ltrfmvu/d228871d-d62e-4819-aa62-e405c403cdad.pdf",
+        "jats": "https://assets.pubpub.org/0yfwj1tb/d228871d-d62e-4819-aa62-e405c403cdad.xml",
+        "json": "https://assets.pubpub.org/f7deyb3l/d228871d-d62e-4819-aa62-e405c403cdad.json",
+        "tex": "https://assets.pubpub.org/aky37x70/d228871d-d62e-4819-aa62-e405c403cdad.tex"
+      },
+      "createdAt": "2022-06-03T08:10:28.206Z",
+      "updatedAt": "2022-11-17T22:39:47.090Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "universite-de-montreal"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2022",
+        "month": "06",
+        "monthName": "june",
+        "path": "2022/06-june"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/izo5rvq0",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:57.136Z",
+      "filePath": "./data/consortium/pdfs/izo5rvq0.pdf",
+      "fileSize": 385915
+    }
+  ],
+  "publicationCount": 5
+}

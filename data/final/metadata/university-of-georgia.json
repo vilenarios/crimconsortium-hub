@@ -1,0 +1,20 @@
+{
+  "member": {
+    "id": "university-of-georgia",
+    "name": "University of Georgia",
+    "keywords": [
+      "University of Georgia",
+      "UGA"
+    ],
+    "slug": "university-of-georgia",
+    "publications": [
+      "02dbfd78-5013-4775-94b8-9006ebe538b8",
+      "489e30b2-fad6-4909-80d6-eead7aa54288",
+      "8138f3e4-be2e-4b33-aa3a-5d82752092eb"
+    ],
+    "publicationCount": 3,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  "publications": [],
+  "publicationCount": 0
+}

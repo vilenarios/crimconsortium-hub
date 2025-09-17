@@ -1,0 +1,454 @@
+{
+  "member": {
+    "id": "university-of-manchester",
+    "name": "University of Manchester",
+    "keywords": [
+      "University of Manchester",
+      "Manchester University"
+    ],
+    "slug": "university-of-manchester",
+    "publications": [
+      "64bc853e-5c8c-4e25-8478-1b4c6b0a150f",
+      "e57177e2-1ede-4691-b588-eef6b8738707",
+      "929bb60a-7bd2-49d3-b608-05fd5e758514",
+      "2e2eac22-8bd6-4dfd-a96c-4f9e556aa979",
+      "75598f0c-6c9d-450d-be9a-15d62343d1fe",
+      "6b2206bd-ae32-468a-9b0d-cde1f6bc3fb7",
+      "647a9e61-9b61-4331-b981-87bcdd433e91",
+      "d848147d-1131-493c-aee4-87148bfb15df",
+      "7b92990e-7e18-454b-a1f4-bf4358f4cb82",
+      "10ee04d2-9cb9-466c-a7b9-270de3b8d31e",
+      "9a026b9f-d77a-4af5-b002-f7f4cf6e887a",
+      "8d50382d-295c-4b08-8309-cb610269152e",
+      "1489adbc-52bc-4ac3-9bda-b79b1ad958f2",
+      "06cb27fc-33c8-4ac6-88e7-abf834adb088",
+      "e0ff7944-00a7-4b14-acc8-c0be9d2229ca",
+      "587b9c68-560e-4e41-b1e8-449df3019e23",
+      "aba1ae7a-ad36-449f-8d93-551e99d2aba1",
+      "3347bcba-d4cc-43ab-a806-e68a7c0c9cb9",
+      "a9708ebe-229c-4b39-8191-d1f0ac95543c"
+    ],
+    "publicationCount": 19,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  "publications": [
+    {
+      "id": "e57177e2-1ede-4691-b588-eef6b8738707",
+      "slug": "b3z46ctr",
+      "title": "The Use of Twitter by Police Officers in Urban and Rural Contexts in Sweden",
+      "description": "The aim of this article is to investigate the nature of information sharing via Twitter by police officers. We examine the content of Tweets in urban and rural contexts using a sample of 20 police-related Twitter accounts, comparing official and personal accounts active in ...",
+      "doi": "10.21428/cb6ab371.e57177e2",
+      "avatar": "https://assets.pubpub.org/oqaeyc6i/31635017163789.png",
+      "authors": [
+        {
+          "name": "Reka Solymosi",
+          "firstName": "Reka",
+          "lastName": "Solymosi",
+          "affiliation": "University of Manchester",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Oskar Muller",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Vania Ceccato",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "0f30d6e8-d1c0-4f2f-bf03-bb6bd9af06e3",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University of Manchester",
+          "orcid": null,
+          "userId": "0eeee0c7-d367-45de-aaf8-5a6ea973a8a7",
+          "pubId": "e57177e2-1ede-4691-b588-eef6b8738707",
+          "createdAt": "2021-10-21T11:57:24.597Z",
+          "updatedAt": "2021-10-21T11:58:26.644Z",
+          "user": {
+            "id": "0eeee0c7-d367-45de-aaf8-5a6ea973a8a7",
+            "firstName": "Reka",
+            "lastName": "Solymosi",
+            "fullName": "Reka Solymosi",
+            "avatar": "https://assets.pubpub.org/s8bxhakm/unknown-31737149035854.jpg",
+            "slug": "reka-solymosi",
+            "initials": "RS",
+            "title": "",
+            "orcid": ""
+          }
+        },
+        {
+          "id": "744f0b7c-adc9-4bb8-8d33-2aa95657cf19",
+          "name": "Oskar Muller",
+          "avatar": null,
+          "title": null,
+          "order": 0.9375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": null,
+          "orcid": null,
+          "userId": null,
+          "pubId": "e57177e2-1ede-4691-b588-eef6b8738707",
+          "createdAt": "2021-10-21T11:58:17.308Z",
+          "updatedAt": "2021-10-21T11:58:17.308Z",
+          "user": null
+        },
+        {
+          "id": "fb25bbd2-4e81-4c42-beae-41c5d782b177",
+          "name": "Vania Ceccato",
+          "avatar": null,
+          "title": null,
+          "order": 0.375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": null,
+          "orcid": null,
+          "userId": null,
+          "pubId": "e57177e2-1ede-4691-b588-eef6b8738707",
+          "createdAt": "2021-10-21T11:58:04.979Z",
+          "updatedAt": "2021-10-23T19:25:12.182Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "markdown": "https://assets.pubpub.org/3zovc7i9/e57177e2-1ede-4691-b588-eef6b8738707.md",
+        "epub": "https://assets.pubpub.org/1pzo2pab/e57177e2-1ede-4691-b588-eef6b8738707.epub",
+        "jats": "https://assets.pubpub.org/psmoasgg/e57177e2-1ede-4691-b588-eef6b8738707.xml",
+        "docx": "https://assets.pubpub.org/rrry398q/e57177e2-1ede-4691-b588-eef6b8738707.docx",
+        "pdf": "https://assets.pubpub.org/ve4debpx/e57177e2-1ede-4691-b588-eef6b8738707.pdf",
+        "odt": "https://assets.pubpub.org/2kso6jad/e57177e2-1ede-4691-b588-eef6b8738707.odt",
+        "html": "https://assets.pubpub.org/hfkqpttm/e57177e2-1ede-4691-b588-eef6b8738707.html",
+        "plain": "https://assets.pubpub.org/z84cv9yy/e57177e2-1ede-4691-b588-eef6b8738707.txt",
+        "json": "https://assets.pubpub.org/4uzdcdoh/e57177e2-1ede-4691-b588-eef6b8738707.json",
+        "tex": "https://assets.pubpub.org/judqe20x/e57177e2-1ede-4691-b588-eef6b8738707.tex"
+      },
+      "createdAt": "2021-10-21T11:53:45.763Z",
+      "updatedAt": "2023-09-29T01:23:00.214Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "university-of-manchester"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2021",
+        "month": "10",
+        "monthName": "october",
+        "path": "2021/10-october"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/b3z46ctr",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:45.205Z",
+      "filePath": "./data/consortium/pdfs/b3z46ctr.pdf",
+      "fileSize": 28447
+    },
+    {
+      "id": "929bb60a-7bd2-49d3-b608-05fd5e758514",
+      "slug": "bz2oe0yw",
+      "title": "Tainted ties: the structure and dynamics of corruption networks extracted from deferred prosecution agreements",
+      "description": "An exploratory study analysing the networks of corporate and public sector bribery. ",
+      "doi": "10.21428/cb6ab371.929bb60a",
+      "avatar": "https://assets.pubpub.org/easy63gr/21646766317959.png",
+      "authors": [
+        {
+          "name": "Tomáš Diviák",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "University of Manchester",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Nicholas Lord",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "University of Manchester",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "2cb69a3a-173f-46d0-9c45-be1ef9bac77b",
+          "name": "Tomáš Diviák",
+          "avatar": null,
+          "title": null,
+          "order": 0.5,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University of Manchester",
+          "orcid": null,
+          "userId": null,
+          "pubId": "929bb60a-7bd2-49d3-b608-05fd5e758514",
+          "createdAt": "2022-02-16T17:16:27.336Z",
+          "updatedAt": "2022-02-16T17:16:40.594Z",
+          "user": null
+        },
+        {
+          "id": "deec1fa8-66de-415d-a096-6a63919a6f84",
+          "name": "Nicholas Lord",
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University of Manchester",
+          "orcid": null,
+          "userId": null,
+          "pubId": "929bb60a-7bd2-49d3-b608-05fd5e758514",
+          "createdAt": "2022-02-16T17:16:35.105Z",
+          "updatedAt": "2022-02-16T17:16:46.850Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "plain": "https://assets.pubpub.org/qp0axl5k/929bb60a-7bd2-49d3-b608-05fd5e758514.txt",
+        "jats": "https://assets.pubpub.org/0okd0au6/929bb60a-7bd2-49d3-b608-05fd5e758514.xml",
+        "odt": "https://assets.pubpub.org/q7swz6qk/929bb60a-7bd2-49d3-b608-05fd5e758514.odt",
+        "markdown": "https://assets.pubpub.org/eytkbptg/929bb60a-7bd2-49d3-b608-05fd5e758514.md",
+        "html": "https://assets.pubpub.org/6fkbx5mj/929bb60a-7bd2-49d3-b608-05fd5e758514.html",
+        "docx": "https://assets.pubpub.org/ql0zy6gx/929bb60a-7bd2-49d3-b608-05fd5e758514.docx",
+        "epub": "https://assets.pubpub.org/37i0pel6/929bb60a-7bd2-49d3-b608-05fd5e758514.epub",
+        "json": "https://assets.pubpub.org/ackhqrdf/929bb60a-7bd2-49d3-b608-05fd5e758514.json",
+        "pdf": "https://assets.pubpub.org/s3ylbyhu/929bb60a-7bd2-49d3-b608-05fd5e758514.pdf",
+        "tex": "https://assets.pubpub.org/c6l9o59y/929bb60a-7bd2-49d3-b608-05fd5e758514.tex"
+      },
+      "createdAt": "2022-02-16T16:46:34.412Z",
+      "updatedAt": "2022-11-17T22:42:03.465Z",
+      "customPublishedAt": "2022-02-09T00:00:00.000Z",
+      "memberAssociations": [
+        "university-of-manchester"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2022",
+        "month": "02",
+        "monthName": "february",
+        "path": "2022/02-february"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/bz2oe0yw",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:47.801Z",
+      "filePath": "./data/consortium/pdfs/bz2oe0yw.pdf",
+      "fileSize": 34095
+    },
+    {
+      "id": "2e2eac22-8bd6-4dfd-a96c-4f9e556aa979",
+      "slug": "1ljidc1o",
+      "title": "CORRELATES OF CLIENT-PERPETRATED VIOLENCE AGAINST FEMALE SEX WORKERS IN BOGOTÁ",
+      "description": "This paper aims to estimate the prevalence of client-perpetrated sexual and physical violence against female sex workers (FSW) in Bogotá, and to understand what structural and environmental factors are associated with such victimisation. The project looked at secondary data ... ",
+      "doi": "10.21428/cb6ab371.2e2eac22",
+      "avatar": "https://assets.pubpub.org/9khrwebj/61648498313357.png",
+      "authors": [
+        {
+          "name": "Reka Solymosi",
+          "firstName": "Reka",
+          "lastName": "Solymosi",
+          "affiliation": "University of Manchester",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Carlos Iglesias",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "University of Manchester",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "42d9d529-0d08-42ec-a1b3-3b9c4a567148",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University of Manchester",
+          "orcid": null,
+          "userId": "0eeee0c7-d367-45de-aaf8-5a6ea973a8a7",
+          "pubId": "2e2eac22-8bd6-4dfd-a96c-4f9e556aa979",
+          "createdAt": "2022-03-24T11:22:33.271Z",
+          "updatedAt": "2022-03-24T11:23:15.032Z",
+          "user": {
+            "id": "0eeee0c7-d367-45de-aaf8-5a6ea973a8a7",
+            "firstName": "Reka",
+            "lastName": "Solymosi",
+            "fullName": "Reka Solymosi",
+            "avatar": "https://assets.pubpub.org/s8bxhakm/unknown-31737149035854.jpg",
+            "slug": "reka-solymosi",
+            "initials": "RS",
+            "title": "",
+            "orcid": ""
+          }
+        },
+        {
+          "id": "5f28dd79-0557-43f6-9722-795738761a6d",
+          "name": "Carlos Iglesias",
+          "avatar": null,
+          "title": null,
+          "order": 0.375,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University of Manchester",
+          "orcid": null,
+          "userId": null,
+          "pubId": "2e2eac22-8bd6-4dfd-a96c-4f9e556aa979",
+          "createdAt": "2022-03-24T11:23:05.500Z",
+          "updatedAt": "2022-03-24T11:23:26.045Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/p6yt3lqh/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.pdf",
+        "jats": "https://assets.pubpub.org/5f61b2yu/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.xml",
+        "plain": "https://assets.pubpub.org/j4alj2cx/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.txt",
+        "epub": "https://assets.pubpub.org/wzl26g2k/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.epub",
+        "markdown": "https://assets.pubpub.org/zsyolqg8/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.md",
+        "tex": "https://assets.pubpub.org/6zl8jkj8/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.tex",
+        "odt": "https://assets.pubpub.org/2ydhlime/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.odt",
+        "html": "https://assets.pubpub.org/w1smz442/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.html",
+        "docx": "https://assets.pubpub.org/1ha748y1/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.docx",
+        "json": "https://assets.pubpub.org/66qoqs2w/2e2eac22-8bd6-4dfd-a96c-4f9e556aa979.json"
+      },
+      "createdAt": "2022-03-24T11:15:15.172Z",
+      "updatedAt": "2023-09-29T01:22:31.407Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "university-of-manchester"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2022",
+        "month": "03",
+        "monthName": "march",
+        "path": "2022/03-march"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/1ljidc1o",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:52.815Z",
+      "filePath": "./data/consortium/pdfs/1ljidc1o.pdf",
+      "fileSize": 30922
+    },
+    {
+      "id": "75598f0c-6c9d-450d-be9a-15d62343d1fe",
+      "slug": "rqqkyfuu",
+      "title": "Who counts? The invisibility of mothers as victims of femicide",
+      "description": "This article focuses on the important and persistent phenomenon of women killed by their sons. We argue that parricide (the killing of parents) is a gendered form of violence. ",
+      "doi": "10.21428/cb6ab371.75598f0c",
+      "avatar": "https://assets.pubpub.org/khbme4f1/41657236820724.png",
+      "authors": [
+        {
+          "name": "Caroline Miles",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "University of Manchester",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Rachel Condry",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "0ed683aa-761f-4b78-a33e-bf4ad609b737",
+          "name": "Caroline Miles",
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University of Manchester",
+          "orcid": null,
+          "userId": null,
+          "pubId": "75598f0c-6c9d-450d-be9a-15d62343d1fe",
+          "createdAt": "2022-07-07T12:06:07.249Z",
+          "updatedAt": "2022-07-07T12:06:17.530Z",
+          "user": null
+        },
+        {
+          "id": "7f9ff303-482f-41b6-a16e-53c53b7add77",
+          "name": "Rachel Condry",
+          "avatar": null,
+          "title": null,
+          "order": 0.5,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": null,
+          "orcid": null,
+          "userId": null,
+          "pubId": "75598f0c-6c9d-450d-be9a-15d62343d1fe",
+          "createdAt": "2022-07-07T12:06:01.838Z",
+          "updatedAt": "2022-07-07T12:06:01.838Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "tex": "https://assets.pubpub.org/2yh396si/75598f0c-6c9d-450d-be9a-15d62343d1fe.tex",
+        "pdf": "https://assets.pubpub.org/qhht0hlj/75598f0c-6c9d-450d-be9a-15d62343d1fe.pdf",
+        "html": "https://assets.pubpub.org/mdpc4qr5/75598f0c-6c9d-450d-be9a-15d62343d1fe.html",
+        "docx": "https://assets.pubpub.org/1c5ynm35/75598f0c-6c9d-450d-be9a-15d62343d1fe.docx",
+        "odt": "https://assets.pubpub.org/pimjja26/75598f0c-6c9d-450d-be9a-15d62343d1fe.odt",
+        "plain": "https://assets.pubpub.org/l9qetcd8/75598f0c-6c9d-450d-be9a-15d62343d1fe.txt",
+        "epub": "https://assets.pubpub.org/qujq1spn/75598f0c-6c9d-450d-be9a-15d62343d1fe.epub",
+        "markdown": "https://assets.pubpub.org/6ckajdm1/75598f0c-6c9d-450d-be9a-15d62343d1fe.md",
+        "jats": "https://assets.pubpub.org/92i093u8/75598f0c-6c9d-450d-be9a-15d62343d1fe.xml",
+        "json": "https://assets.pubpub.org/zaqs0729/75598f0c-6c9d-450d-be9a-15d62343d1fe.json"
+      },
+      "createdAt": "2022-07-07T12:03:37.213Z",
+      "updatedAt": "2022-11-17T22:38:11.094Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "university-of-manchester"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2022",
+        "month": "07",
+        "monthName": "july",
+        "path": "2022/07-july"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/rqqkyfuu",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:58.665Z",
+      "filePath": "./data/consortium/pdfs/rqqkyfuu.pdf",
+      "fileSize": 29378
+    }
+  ],
+  "publicationCount": 4
+}

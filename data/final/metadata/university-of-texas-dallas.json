@@ -1,0 +1,118 @@
+{
+  "member": {
+    "id": "university-of-texas-dallas",
+    "name": "University of Texas at Dallas",
+    "keywords": [
+      "University of Texas at Dallas",
+      "UT Dallas",
+      "UTD"
+    ],
+    "slug": "university-of-texas-dallas",
+    "publications": [
+      "515fbf6b-2be3-45cc-9b7d-3a561d395d94",
+      "cc9bbf11-4629-44e3-92b8-c936b71d6ed2"
+    ],
+    "publicationCount": 2,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  "publications": [
+    {
+      "id": "515fbf6b-2be3-45cc-9b7d-3a561d395d94",
+      "slug": "wmelrli9",
+      "title": "Redrawing Hot Spots of Crime in Dallas, Texas",
+      "description": "",
+      "doi": "10.21428/cb6ab371.515fbf6b",
+      "avatar": "https://assets.pubpub.org/2ickfcdw/31594726443963.png",
+      "authors": [
+        {
+          "name": "Andrew Wheeler",
+          "firstName": "Andrew",
+          "lastName": "Wheeler",
+          "affiliation": "HMS",
+          "orcid": "0000-0003-2255-1316",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Sydney Reuter",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "University of Texas at Dallas",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "7ff01dd5-6f22-45f3-b32a-11bd24d25a4f",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.125,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "HMS",
+          "orcid": null,
+          "userId": "7f9cf031-41da-44a9-8b65-a74e31fba7c6",
+          "pubId": "515fbf6b-2be3-45cc-9b7d-3a561d395d94",
+          "createdAt": "2020-07-11T18:47:18.659Z",
+          "updatedAt": "2020-07-14T11:31:05.556Z",
+          "user": {
+            "id": "7f9cf031-41da-44a9-8b65-a74e31fba7c6",
+            "firstName": "Andrew",
+            "lastName": "Wheeler",
+            "fullName": "Andrew Wheeler",
+            "avatar": "https://assets.pubpub.org/rda0pvw1/unknown-61696100235607.jpg",
+            "slug": "andrew-wheeler",
+            "initials": "AW",
+            "title": "Dr.",
+            "orcid": "0000-0003-2255-1316"
+          }
+        },
+        {
+          "id": "327cc3e0-9feb-4069-8de9-29868b9ba5e7",
+          "name": "Sydney Reuter",
+          "avatar": null,
+          "title": null,
+          "order": 0.25,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University of Texas at Dallas",
+          "orcid": null,
+          "userId": null,
+          "pubId": "515fbf6b-2be3-45cc-9b7d-3a561d395d94",
+          "createdAt": "2020-07-11T19:43:57.658Z",
+          "updatedAt": "2020-07-14T11:31:10.578Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "pdf": "https://assets.pubpub.org/hph9kqvp/515fbf6b-2be3-45cc-9b7d-3a561d395d94.pdf",
+        "docx": "https://assets.pubpub.org/aflmwfjz/515fbf6b-2be3-45cc-9b7d-3a561d395d94.docx",
+        "plain": "https://assets.pubpub.org/8i2dvp9x/515fbf6b-2be3-45cc-9b7d-3a561d395d94.txt",
+        "html": "https://assets.pubpub.org/wmauabrk/515fbf6b-2be3-45cc-9b7d-3a561d395d94.html"
+      },
+      "createdAt": "2020-07-11T18:47:18.640Z",
+      "updatedAt": "2022-11-17T22:57:54.207Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "university-of-texas-dallas"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2020",
+        "month": "07",
+        "monthName": "july",
+        "path": "2020/07-july"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/wmelrli9",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:37.073Z",
+      "filePath": "./data/consortium/pdfs/wmelrli9.pdf",
+      "fileSize": 1769574
+    }
+  ],
+  "publicationCount": 1
+}

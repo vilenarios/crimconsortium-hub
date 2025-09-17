@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.crimrxiv.com)",
+      "Bash(node:*)",
+      "Bash(sed:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm install)",
+      "Bash(python3:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

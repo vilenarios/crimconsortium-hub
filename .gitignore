@@ -32,6 +32,12 @@ cache/
 *.tmp
 *.log
 
+# Large data files (team adds locally)
+data/final/pdfs/
+*.pdf
+export/
+PUB-PUB-API.json
+
 # IDE and editor files
 .vscode/
 .idea/

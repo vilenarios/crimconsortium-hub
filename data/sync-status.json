@@ -1,0 +1,18 @@
+{
+  "status": "dataset-ready",
+  "dataset": {
+    "source": "./data/final/consortium-dataset.json",
+    "totalPublications": 37,
+    "totalMembers": 15
+  },
+  "uploadState": {
+    "totalUploaded": 0,
+    "totalCost": 0,
+    "failedUploads": 0,
+    "lastSync": null,
+    "batchNumber": 0,
+    "driveConfigured": false
+  },
+  "lastUpdated": "2025-09-16T22:14:13.030Z",
+  "nextRecommendedSync": "2025-09-23T22:14:13.030Z"
+}

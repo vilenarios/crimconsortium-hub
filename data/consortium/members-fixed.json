@@ -1,0 +1,446 @@
+[
+  {
+    "id": "university-of-manchester",
+    "name": "University of Manchester",
+    "keywords": [
+      "University of Manchester",
+      "Manchester University"
+    ],
+    "slug": "university-of-manchester",
+    "publications": [
+      "64bc853e-5c8c-4e25-8478-1b4c6b0a150f",
+      "e57177e2-1ede-4691-b588-eef6b8738707",
+      "929bb60a-7bd2-49d3-b608-05fd5e758514",
+      "2e2eac22-8bd6-4dfd-a96c-4f9e556aa979",
+      "75598f0c-6c9d-450d-be9a-15d62343d1fe",
+      "6b2206bd-ae32-468a-9b0d-cde1f6bc3fb7",
+      "647a9e61-9b61-4331-b981-87bcdd433e91",
+      "d848147d-1131-493c-aee4-87148bfb15df",
+      "7b92990e-7e18-454b-a1f4-bf4358f4cb82",
+      "10ee04d2-9cb9-466c-a7b9-270de3b8d31e",
+      "9a026b9f-d77a-4af5-b002-f7f4cf6e887a",
+      "8d50382d-295c-4b08-8309-cb610269152e",
+      "1489adbc-52bc-4ac3-9bda-b79b1ad958f2",
+      "06cb27fc-33c8-4ac6-88e7-abf834adb088",
+      "e0ff7944-00a7-4b14-acc8-c0be9d2229ca",
+      "587b9c68-560e-4e41-b1e8-449df3019e23",
+      "aba1ae7a-ad36-449f-8d93-551e99d2aba1",
+      "3347bcba-d4cc-43ab-a806-e68a7c0c9cb9",
+      "a9708ebe-229c-4b39-8191-d1f0ac95543c"
+    ],
+    "publicationCount": 19,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "georgia-state-university",
+    "name": "Georgia State University",
+    "keywords": [
+      "Georgia State University",
+      "GSU"
+    ],
+    "slug": "georgia-state-university",
+    "publications": [
+      "30868967-2f13-440d-bef5-d53176b01ad1",
+      "aab5ffbe-1af7-47cd-8051-266281525c84",
+      "4307e3de-25bc-4ebf-ae4f-823c7aafdf49",
+      "f7b86188-496b-4c37-85ce-2538c97e008a",
+      "0f3fbca8-1bd7-4119-8eab-1d537cc66937",
+      "b687013c-ae1e-481b-9c1a-8660962bfaa1",
+      "c6eae022-c976-43c4-bb10-d31115e56b7e",
+      "e0a7ef02-82b7-4352-8670-ff888ed4928f",
+      "dd7a1c57-2718-437a-bcd8-e5a44a136240",
+      "5f335e6f-0c3e-4483-bba7-67bab9a4a75c",
+      "8298e7d8-8124-4c84-832b-a04d3c1e6df9",
+      "9aa2c75a-6c3b-4af9-82fb-ad6dcca3ac71",
+      "e187aede-9c5f-4028-b057-18fea267fc1c",
+      "4cffda3d-7b71-41b4-84a5-de2dfa11e08d",
+      "2b7d065e-6edd-471b-a6b6-e85c91975dbf",
+      "ebd51fd5-d138-4c8f-9b8c-f90b17c3fa91",
+      "69930b9a-045a-49ea-b9c5-9e8c5c6a7a44",
+      "c8186ce7-1e7a-4348-9562-6638e9658d5c",
+      "76272507-56bc-4e9f-bca8-13a3260f538c",
+      "017a704c-a163-407f-aad7-dc63d8fcfde8",
+      "57ca44a6-08de-425b-a525-bf42645daea9",
+      "be4a2ed5-4d26-4dc5-826a-d4359cf61ae9",
+      "117a25ca-6b49-4044-bc47-99e8d6423634"
+    ],
+    "publicationCount": 23,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "ghent-university",
+    "name": "Ghent University",
+    "keywords": [
+      "Ghent University",
+      "Universiteit Gent"
+    ],
+    "slug": "ghent-university",
+    "publications": [
+      "a832e977-5ee9-4777-953b-8e1c00161868",
+      "5470e177-fa9f-4ce9-a48c-08b03391df43",
+      "c3095be2-6dcb-4a3e-89ee-5f8be0c72b35",
+      "595d51e0-34a6-4666-afc2-6932e5b6af76"
+    ],
+    "publicationCount": 4,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "john-jay-college",
+    "name": "John Jay College",
+    "keywords": [
+      "John Jay College",
+      "John Jay",
+      "CUNY John Jay"
+    ],
+    "slug": "john-jay-college",
+    "publications": [
+      "7ef5f8ad-36e1-4f36-8a08-59d6e863e543",
+      "e1ec4277-3431-424b-99aa-c559fffd4793",
+      "876d7923-ee5b-45c1-b0b4-fb3736a1ecaf",
+      "f5cc6109-de07-4e3b-9bfa-b9321205c6be",
+      "6e58ae84-cece-402f-baff-9824c9bc2207",
+      "ef173b57-f130-4366-8211-64f465769941",
+      "defb1f90-3613-4998-a17f-986ff127aebe",
+      "0387ca3b-471e-448f-90a7-143c28e45527",
+      "916f82c9-a912-4ca0-b98b-9c2b765d1f71",
+      "128a98c0-1a08-4057-8c08-5dcd04b0d095",
+      "5bc3c52a-f13f-4fc2-9492-2680ad88175e",
+      "527b7d37-fea1-47d1-9b3b-629564a16752",
+      "7cc495c8-cd4f-4d17-94d7-0318d4e4fa60",
+      "1121a2ef-3330-44ff-a757-853508563ab9"
+    ],
+    "publicationCount": 14,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "simon-fraser-university",
+    "name": "Simon Fraser University",
+    "keywords": [
+      "Simon Fraser University",
+      "SFU"
+    ],
+    "slug": "simon-fraser-university",
+    "publications": [
+      "e1ca98a9-4116-43b4-bed9-c66adafd8045",
+      "c53e0ad7-8320-4452-a16f-6ba0754b088f",
+      "20b1f578-b633-4fd0-b47d-ee2c0b2fc28c",
+      "942d2e26-682a-495c-98a7-378ce6f953e3",
+      "ad5d8f5b-31b1-491f-9c84-0dce57c5d419",
+      "01a63f76-3a50-4c93-b1e2-39a35efc3358",
+      "92d198f5-8e2e-4987-bdfe-02691e67644d"
+    ],
+    "publicationCount": 7,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "temple-university",
+    "name": "Temple University",
+    "keywords": [
+      "Temple University"
+    ],
+    "slug": "temple-university",
+    "publications": [
+      "b062237a-30db-484b-9487-c019a13619c9",
+      "1a6fe77d-7c36-4f0f-b729-1638039a979d"
+    ],
+    "publicationCount": 2,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "university-of-cambridge",
+    "name": "University of Cambridge",
+    "keywords": [
+      "University of Cambridge",
+      "Cambridge University"
+    ],
+    "slug": "university-of-cambridge",
+    "publications": [
+      "41445fae-e9cb-4261-9ece-10254de3d691",
+      "e1f02603-4d87-41b8-9c88-0e1ea870d8c8",
+      "d79990d9-47da-4a1a-9370-07e711f3b651",
+      "9b03bb0d-5851-4b7f-9f3b-0afe98cb1025",
+      "e8b282d0-50a8-452d-a7b1-364bfb2cc285",
+      "e108b822-4f13-46be-acfb-96a014521ad1",
+      "f349ff69-a221-4cb9-bd01-275e2bbc32f3"
+    ],
+    "publicationCount": 7,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "university-of-georgia",
+    "name": "University of Georgia",
+    "keywords": [
+      "University of Georgia",
+      "UGA"
+    ],
+    "slug": "university-of-georgia",
+    "publications": [
+      "02dbfd78-5013-4775-94b8-9006ebe538b8",
+      "489e30b2-fad6-4909-80d6-eead7aa54288",
+      "8138f3e4-be2e-4b33-aa3a-5d82752092eb"
+    ],
+    "publicationCount": 3,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "university-of-missouri",
+    "name": "University of Missouri",
+    "keywords": [
+      "University of Missouri",
+      "UMSL",
+      "Missouri St. Louis"
+    ],
+    "slug": "university-of-missouri",
+    "publications": [
+      "7476fdd1-f5b2-4f83-8094-5b1397fee42e"
+    ],
+    "publicationCount": 1,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "university-of-texas-dallas",
+    "name": "University of Texas at Dallas",
+    "keywords": [
+      "University of Texas at Dallas",
+      "UT Dallas",
+      "UTD"
+    ],
+    "slug": "university-of-texas-dallas",
+    "publications": [
+      "515fbf6b-2be3-45cc-9b7d-3a561d395d94",
+      "cc9bbf11-4629-44e3-92b8-c936b71d6ed2"
+    ],
+    "publicationCount": 2,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "northeastern-university",
+    "name": "Northeastern University",
+    "keywords": [
+      "Northeastern University"
+    ],
+    "slug": "northeastern-university",
+    "publications": [
+      "aa55b408-9064-4060-82ad-43fd18b643a7",
+      "e001428e-23fd-43eb-bf6f-062db256b2bd",
+      "302274d2-b3bf-411c-8496-1ae19f09465a",
+      "f527651d-d63d-4f43-bd12-bd1195fbe514",
+      "25cf801b-547c-4476-92ea-0a12f7b61b30",
+      "8cad5d7a-260b-4b07-b47f-1c076d576eea",
+      "5aec2535-19ed-4578-a9ae-0a7d305da5e7",
+      "9f78f472-fa9a-4273-8bbf-5a13c8f7ba0e",
+      "8efcc1b9-d7fd-4dbe-a58a-db7119a21e5f",
+      "84e2576c-1a8a-4248-8e29-8bf6ebcaf294"
+    ],
+    "publicationCount": 10,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "max-planck-institute",
+    "name": "Max Planck Institute",
+    "keywords": [
+      "Max Planck Institute",
+      "MPI"
+    ],
+    "slug": "max-planck-institute",
+    "publications": [
+      "e9edd646-ab8b-495d-9c61-b6cdfdadb181",
+      "e8fd9b28-09ec-451a-a40f-fdbd45568c70",
+      "c04b6d1a-b5bc-4abb-9862-2e034e74e28f"
+    ],
+    "publicationCount": 3,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "knowledge-futures",
+    "name": "Knowledge Futures",
+    "keywords": [
+      "Knowledge Futures",
+      "Knowledge Futures Group"
+    ],
+    "slug": "knowledge-futures",
+    "publications": [
+      "dc975be1-e02d-454e-8a82-0732f8a3dad8"
+    ],
+    "publicationCount": 1,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "ucl",
+    "name": "UCL",
+    "keywords": [
+      "UCL",
+      "University College London"
+    ],
+    "slug": "ucl",
+    "publications": [
+      "283a70a2-4f44-4678-a7e6-eab1f62af4a2",
+      "8c79f146-0310-4845-a16e-ec1a0c79e766",
+      "5f56dafb-be8c-48a7-937f-f83b79436207",
+      "73eb841d-aaef-436d-b92a-eef4d9268935",
+      "8c4e3181-b758-429d-8803-601affa0adf4",
+      "46d2b268-3f54-418e-a561-608870f06b8d",
+      "ec343def-b2e5-4ed9-a61c-0ab0a6df00ad",
+      "9745b9d9-9304-4538-8c11-ed15380c2756",
+      "7ff3b742-203c-4e72-bf99-f16b5f06466f",
+      "0cc12e8c-df7e-4f08-a760-ac53f70f57d9",
+      "4fd8c815-6531-4139-ad5d-c9282bba2763",
+      "56b8415f-d6a4-4787-9674-abe3d14c16d2",
+      "c9c8c99a-ed2b-457d-bf47-5b577aff6376"
+    ],
+    "publicationCount": 13,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "universite-de-montreal",
+    "name": "Université de Montréal",
+    "keywords": [
+      "Université de Montréal",
+      "University of Montreal"
+    ],
+    "slug": "universite-de-montreal",
+    "publications": [
+      "0bcce0c6-f745-441a-abec-47b7eb633cd1",
+      "87c7cf45-2146-455b-8bac-8c6d7b162162",
+      "836c9216-15a4-4f65-a98d-ec5164fd7beb",
+      "0ba7dae1-f2ed-4788-aab5-18ecdac293db",
+      "d228871d-d62e-4819-aa62-e405c403cdad",
+      "5a8937f1-0bd4-419c-9830-027b064a4607",
+      "8e4da5be-350f-418d-b30a-26a7afa32589",
+      "0f13c885-9d8c-42a4-bee0-a03e9036cfb5",
+      "a72d098a-3d9a-4f8d-9389-edcd68a42465",
+      "4ea1692a-4d7a-4301-b604-6e879404728c",
+      "1e4ff939-bf95-4c6f-a0ec-382bd8a2803f",
+      "17477cbe-8f40-444c-9c88-1ad129f74739",
+      "e7dfe773-3df2-4d78-81d6-fee6c2493452",
+      "b39a5e06-0460-48ef-b117-e6feb314cae1"
+    ],
+    "publicationCount": 14,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "academy-criminal-justice",
+    "name": "Academy of Criminal Justice Sciences",
+    "keywords": [
+      "Academy of Criminal Justice Sciences",
+      "ACJS"
+    ],
+    "slug": "academy-criminal-justice",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "society-evidence-based-policing",
+    "name": "Society of Evidence Based Policing",
+    "keywords": [
+      "Society of Evidence Based Policing",
+      "SEBP"
+    ],
+    "slug": "society-evidence-based-policing",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "oral-history-criminology",
+    "name": "Oral History of Criminology",
+    "keywords": [
+      "Oral History of Criminology"
+    ],
+    "slug": "oral-history-criminology",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "hawaii-crime-lab",
+    "name": "Hawaii Crime Lab",
+    "keywords": [
+      "Hawaii Crime Lab",
+      "Hawai'i Crime Lab"
+    ],
+    "slug": "hawaii-crime-lab",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "criminology-journal",
+    "name": "Criminology: An Interdisciplinary Journal",
+    "keywords": [
+      "Criminology: An Interdisciplinary Journal"
+    ],
+    "slug": "criminology-journal",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "journal-historical-criminology",
+    "name": "Journal of Historical Criminology",
+    "keywords": [
+      "Journal of Historical Criminology"
+    ],
+    "slug": "journal-historical-criminology",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "south-asian-criminology",
+    "name": "South Asian Society of Criminology",
+    "keywords": [
+      "South Asian Society of Criminology",
+      "SASCV"
+    ],
+    "slug": "south-asian-criminology",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "crime-prevention",
+    "name": "Crime Prevention",
+    "keywords": [
+      "Crime Prevention"
+    ],
+    "slug": "crime-prevention",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "corrections-reentry",
+    "name": "Corrections and Reentry",
+    "keywords": [
+      "Corrections and Reentry"
+    ],
+    "slug": "corrections-reentry",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "violence-justice",
+    "name": "Violence and Justice",
+    "keywords": [
+      "Violence and Justice"
+    ],
+    "slug": "violence-justice",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  {
+    "id": "race-justice",
+    "name": "Race and Justice",
+    "keywords": [
+      "Race and Justice"
+    ],
+    "slug": "race-justice",
+    "publications": [],
+    "publicationCount": 0,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  }
+]

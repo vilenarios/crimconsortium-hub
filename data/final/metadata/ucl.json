@@ -1,0 +1,133 @@
+{
+  "member": {
+    "id": "ucl",
+    "name": "UCL",
+    "keywords": [
+      "UCL",
+      "University College London"
+    ],
+    "slug": "ucl",
+    "publications": [
+      "283a70a2-4f44-4678-a7e6-eab1f62af4a2",
+      "8c79f146-0310-4845-a16e-ec1a0c79e766",
+      "5f56dafb-be8c-48a7-937f-f83b79436207",
+      "73eb841d-aaef-436d-b92a-eef4d9268935",
+      "8c4e3181-b758-429d-8803-601affa0adf4",
+      "46d2b268-3f54-418e-a561-608870f06b8d",
+      "ec343def-b2e5-4ed9-a61c-0ab0a6df00ad",
+      "9745b9d9-9304-4538-8c11-ed15380c2756",
+      "7ff3b742-203c-4e72-bf99-f16b5f06466f",
+      "0cc12e8c-df7e-4f08-a760-ac53f70f57d9",
+      "4fd8c815-6531-4139-ad5d-c9282bba2763",
+      "56b8415f-d6a4-4787-9674-abe3d14c16d2",
+      "c9c8c99a-ed2b-457d-bf47-5b577aff6376"
+    ],
+    "publicationCount": 13,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  "publications": [
+    {
+      "id": "283a70a2-4f44-4678-a7e6-eab1f62af4a2",
+      "slug": "covidhatecrime",
+      "title": "Timing is Everything: The COVID-19 Outbreak as a Trigger Event for Sinophobic Hate Crimes in the United Kingdom",
+      "description": "",
+      "doi": "10.21428/cb6ab371.283a70a2",
+      "avatar": "https://assets.pubpub.org/5hbmslxv/11618506896514.png",
+      "authors": [
+        {
+          "name": "Sandy Schumann",
+          "firstName": "Sandy",
+          "lastName": "Schumann",
+          "affiliation": "University College London",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        },
+        {
+          "name": "Ysanne Moore",
+          "firstName": "",
+          "lastName": "",
+          "affiliation": "University College London",
+          "orcid": "",
+          "roles": [],
+          "isAuthor": true
+        }
+      ],
+      "attributions": [
+        {
+          "id": "a9f7275f-7c2a-4772-a391-87115f1234a7",
+          "name": null,
+          "avatar": null,
+          "title": null,
+          "order": 0.5,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University College London",
+          "orcid": null,
+          "userId": "e7b7ef1f-f5b9-4bb6-ba7c-b28e6fd3f545",
+          "pubId": "283a70a2-4f44-4678-a7e6-eab1f62af4a2",
+          "createdAt": "2021-04-13T13:17:24.485Z",
+          "updatedAt": "2021-04-15T17:23:30.136Z",
+          "user": {
+            "id": "e7b7ef1f-f5b9-4bb6-ba7c-b28e6fd3f545",
+            "firstName": "Sandy",
+            "lastName": "Schumann",
+            "fullName": "Sandy Schumann",
+            "avatar": "https://assets.pubpub.org/jz1sjmn6/61585746376913.jpg",
+            "slug": "sandy-schumann",
+            "initials": "SS",
+            "title": "Lecturer in Security and Crime Science",
+            "orcid": ""
+          }
+        },
+        {
+          "id": "5d30edf8-e0bb-4262-808b-eb1b43ddb24b",
+          "name": "Ysanne Moore",
+          "avatar": null,
+          "title": null,
+          "order": 0.75,
+          "isAuthor": true,
+          "roles": null,
+          "affiliation": "University College London",
+          "orcid": null,
+          "userId": null,
+          "pubId": "283a70a2-4f44-4678-a7e6-eab1f62af4a2",
+          "createdAt": "2021-04-15T17:23:11.968Z",
+          "updatedAt": "2021-04-15T17:23:24.047Z",
+          "user": null
+        }
+      ],
+      "downloads": {
+        "html": "https://assets.pubpub.org/31ki4mqt/283a70a2-4f44-4678-a7e6-eab1f62af4a2.html",
+        "epub": "https://assets.pubpub.org/7f24rpri/283a70a2-4f44-4678-a7e6-eab1f62af4a2.epub",
+        "markdown": "https://assets.pubpub.org/ir0h01t1/283a70a2-4f44-4678-a7e6-eab1f62af4a2.md",
+        "plain": "https://assets.pubpub.org/ef6pj6pr/283a70a2-4f44-4678-a7e6-eab1f62af4a2.txt",
+        "odt": "https://assets.pubpub.org/h5mkeegm/283a70a2-4f44-4678-a7e6-eab1f62af4a2.odt",
+        "pdf": "https://assets.pubpub.org/aoz14qsr/283a70a2-4f44-4678-a7e6-eab1f62af4a2.pdf",
+        "jats": "https://assets.pubpub.org/6i5wjq3h/283a70a2-4f44-4678-a7e6-eab1f62af4a2.xml",
+        "tex": "https://assets.pubpub.org/euvmglqu/283a70a2-4f44-4678-a7e6-eab1f62af4a2.tex",
+        "docx": "https://assets.pubpub.org/jyi7ags1/283a70a2-4f44-4678-a7e6-eab1f62af4a2.docx"
+      },
+      "createdAt": "2021-04-13T13:17:24.477Z",
+      "updatedAt": "2022-11-17T22:50:09.954Z",
+      "customPublishedAt": null,
+      "memberAssociations": [
+        "ucl"
+      ],
+      "detectionMethod": "affiliation",
+      "detectionConfidence": 0.9,
+      "publicationPath": {
+        "year": "2021",
+        "month": "04",
+        "monthName": "april",
+        "path": "2021/04-april"
+      },
+      "originalUrl": "https://www.crimrxiv.com/pub/covidhatecrime",
+      "exportSource": "PubPub",
+      "processedAt": "2025-09-16T22:01:38.592Z",
+      "filePath": "./data/consortium/pdfs/covidhatecrime.pdf",
+      "fileSize": 491245
+    }
+  ],
+  "publicationCount": 1
+}

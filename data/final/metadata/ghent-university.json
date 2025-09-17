@@ -1,0 +1,21 @@
+{
+  "member": {
+    "id": "ghent-university",
+    "name": "Ghent University",
+    "keywords": [
+      "Ghent University",
+      "Universiteit Gent"
+    ],
+    "slug": "ghent-university",
+    "publications": [
+      "a832e977-5ee9-4777-953b-8e1c00161868",
+      "5470e177-fa9f-4ce9-a48c-08b03391df43",
+      "c3095be2-6dcb-4a3e-89ee-5f8be0c72b35",
+      "595d51e0-34a6-4666-afc2-6932e5b6af76"
+    ],
+    "publicationCount": 4,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  "publications": [],
+  "publicationCount": 0
+}

@@ -1,0 +1,26 @@
+{
+  "member": {
+    "id": "northeastern-university",
+    "name": "Northeastern University",
+    "keywords": [
+      "Northeastern University"
+    ],
+    "slug": "northeastern-university",
+    "publications": [
+      "aa55b408-9064-4060-82ad-43fd18b643a7",
+      "e001428e-23fd-43eb-bf6f-062db256b2bd",
+      "302274d2-b3bf-411c-8496-1ae19f09465a",
+      "f527651d-d63d-4f43-bd12-bd1195fbe514",
+      "25cf801b-547c-4476-92ea-0a12f7b61b30",
+      "8cad5d7a-260b-4b07-b47f-1c076d576eea",
+      "5aec2535-19ed-4578-a9ae-0a7d305da5e7",
+      "9f78f472-fa9a-4273-8bbf-5a13c8f7ba0e",
+      "8efcc1b9-d7fd-4dbe-a58a-db7119a21e5f",
+      "84e2576c-1a8a-4248-8e29-8bf6ebcaf294"
+    ],
+    "publicationCount": 10,
+    "scrapedAt": "2025-09-16T22:01:36.982Z"
+  },
+  "publications": [],
+  "publicationCount": 0
+}

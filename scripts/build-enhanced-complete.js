@@ -767,24 +767,28 @@ class CompleteEnhancedBuilder {
   
   <div id="articles-list">
     ${this.dataset.publications
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt) : new Date();
+        const dateB = b.createdAt ? new Date(b.createdAt) : new Date();
+        return dateB - dateA;
+      })
       .map(article => {
         const member = this.dataset.members.find(m => 
           article.memberAssociations && article.memberAssociations.includes(m.id)
         );
         
         return `
-          <article class="article" data-member="${member?.id || ''}" data-year="${new Date(article.createdAt).getFullYear()}">
-            <a href="/articles/${article.slug}" class="article-title">${article.title}</a>
+          <article class="article" data-member="${member?.id || ''}" data-year="${article.createdAt ? new Date(article.createdAt).getFullYear() : new Date().getFullYear()}">
+            <a href="/articles/${article.slug}" class="article-title">${article.title || `Article: ${article.slug}`}</a>
             <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
-              <strong>Authors:</strong> ${article.authors.map(a => a.name).join(', ')} • 
-              <strong>Institution:</strong> ${member?.name || 'Multiple institutions'} • 
-              <strong>Published:</strong> ${new Date(article.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              <strong>Authors:</strong> ${article.authors ? article.authors.map(a => typeof a === 'string' ? a : a.name).join(', ') : 'Pending'} •
+              <strong>Institution:</strong> ${member?.name || 'Multiple institutions'} •
+              <strong>Published:</strong> ${article.createdAt ? new Date(article.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Recent'}
               ${article.doi ? ` • <strong>DOI:</strong> ${article.doi}` : ''}
             </div>
             ${article.description ? `<div style="margin-bottom: 1rem; line-height: 1.5;">${article.description.substring(0, 400)}${article.description.length > 400 ? '...' : ''}</div>` : ''}
             <div>
-              <a href="${article.originalUrl}" class="btn" target="_blank">View on CrimRxiv</a>
+              <a href="${article.originalUrl || article.url || `https://www.crimrxiv.com/pub/${article.slug}`}" class="btn" target="_blank">View on CrimRxiv</a>
             </div>
           </article>
         `;

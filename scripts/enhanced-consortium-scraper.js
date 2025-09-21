@@ -654,8 +654,22 @@ class EnhancedConsortiumScraper {
           // Check if it's a consortium publication
           const isConsortium = await this.isConsortiumPublication(pub.url);
           if (isConsortium) {
-            consortiumPubs.push(pub);
-            tracker.success(`✅ Found consortium pub: ${pub.slug}`);
+            // Fetch full article details for main feed articles
+            this.logger.info(`Fetching full details for main feed article: ${pub.slug}`);
+            const fullArticle = await this.scrapePublicationDetails(pub.url);
+
+            if (fullArticle) {
+              consortiumPubs.push({
+                ...fullArticle,
+                slug: pub.slug,
+                url: pub.url
+              });
+              tracker.success(`✅ Found and fetched consortium pub: ${pub.slug}`);
+            } else {
+              // If we can't fetch details, still add the basic info
+              consortiumPubs.push(pub);
+              tracker.success(`✅ Found consortium pub (basic info): ${pub.slug}`);
+            }
           } else {
             tracker.increment(`❌ Not consortium: ${pub.slug}`);
           }

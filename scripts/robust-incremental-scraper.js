@@ -788,13 +788,28 @@ class RobustIncrementalScraper {
           // Check if it's a consortium publication
           const isConsortium = await this.isConsortiumPublication(pub.url);
           if (isConsortium) {
-            newConsortiumPubs.push({
-              ...pub,
-              memberAssociations: ['detected-from-main-feed'],
-              memberNames: ['Consortium Affiliation Detected'],
-              source: 'main-feed'
-            });
-            tracker.success(`✅ Found consortium pub: ${pub.slug}`);
+            // Fetch full article details for main feed articles
+            this.logger.info(`Fetching full details for main feed article: ${pub.slug}`);
+            const fullArticle = await this.extractEnhancedContent(pub);
+
+            if (fullArticle) {
+              newConsortiumPubs.push({
+                ...fullArticle,
+                memberAssociations: ['detected-from-main-feed'],
+                memberNames: ['Consortium Affiliation Detected'],
+                source: 'main-feed'
+              });
+              tracker.success(`✅ Found and fetched consortium pub: ${pub.slug}`);
+            } else {
+              // If we can't fetch details, still add the basic info
+              newConsortiumPubs.push({
+                ...pub,
+                memberAssociations: ['detected-from-main-feed'],
+                memberNames: ['Consortium Affiliation Detected'],
+                source: 'main-feed'
+              });
+              tracker.success(`✅ Found consortium pub (basic info): ${pub.slug}`);
+            }
           } else {
             tracker.increment(`❌ Not consortium: ${pub.slug}`);
           }

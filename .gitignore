@@ -32,9 +32,22 @@ cache/
 *.tmp
 *.log
 
-# Large data files (team adds locally)
-data/final/pdfs/
-*.pdf
+# Data management
+# Include the complete dataset (56MB) for easy team setup
+# GitHub allows files up to 100MB
+!data/final/consortium-dataset.json
+!data/final/pdfs/
+
+# Ignore temporary scraping data
+data/final/batches/
+data/final/members/
+data/final/progress/
+data/temp/
+data/state/
+
+# Keep backup data too
+!data_backup/
+
 export/
 PUB-PUB-API.json
 
@@ -62,10 +75,12 @@ deployment-state.json
 arns-configuration.json
 upload-state.json
 
-# Debug files
+# Debug and test files
 debug-*.json
 test-*.json
+test-*.js
 validation-*.json
+verify-*.js
 
 # Large export files (keep structure but not content for repo)
 # Note: Keep export structure in repo but not the large files

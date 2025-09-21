@@ -284,10 +284,12 @@ export class ARFSClient {
       
       return {
         success: true,
-        fileId: result.created[0]?.fileId,
-        arweaveId: result.created[0]?.dataTxId,
+        fileId: result.created[0]?.fileId,        // ARFS File ID (UUID)
+        dataTxId: result.created[0]?.dataTxId,    // Arweave Transaction ID
+        arweaveId: result.created[0]?.dataTxId,   // Alias for compatibility
         cost: result.cost || 0,
-        skipped: result.created.length === 0 // File was unchanged
+        skipped: result.created.length === 0,    // File was unchanged
+        memberFolder: folderId?.toString()       // Folder where uploaded
       };
       
     } catch (error) {

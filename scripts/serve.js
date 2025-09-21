@@ -19,6 +19,7 @@ class CrimConsortiumDevServer {
     // Simulate ArNS undernames locally
     this.undernamePaths = {
       'crimconsortium': './dist/main',
+      'admin_crimconsortium': './admin',
       'data_crimconsortium': './dist/data',
       'search_crimconsortium': './dist/search', 
       'members_crimconsortium': './dist/members',
@@ -39,10 +40,23 @@ class CrimConsortiumDevServer {
 
   async start() {
     this.logger.info('🚀 Starting CrimConsortium development server...');
-    
+
     // Check if build exists
     if (!await fs.exists('./dist/main/index.html')) {
-      this.logger.error('Build not found. Run "npm run build" first.');
+      console.log('');
+      this.logger.error('❌ Build not found!');
+      console.log('');
+      console.log('The static site has not been built yet. Please run:');
+      console.log('');
+      console.log('  1. npm run import-legacy  (scrape data - 30-45 mins)');
+      console.log('  2. npm run build          (build site - 15 secs)');
+      console.log('  3. npm run dev            (start server)');
+      console.log('');
+      console.log('Or if you have data_backup/, you can restore it:');
+      console.log('  cp -r data_backup/final/* data/final/');
+      console.log('  npm run build');
+      console.log('  npm run dev');
+      console.log('');
       process.exit(1);
     }
     
@@ -53,6 +67,7 @@ class CrimConsortiumDevServer {
       console.log('');
       console.log('🌐 Local ArNS Undername Simulation:');
       console.log(`   Main Site: http://localhost:${this.port}/`);
+      console.log(`   Admin App: http://localhost:${this.port}/admin_crimconsortium/`);
       console.log(`   Data API: http://localhost:${this.port}/data_crimconsortium/`);
       console.log(`   Search: http://localhost:${this.port}/search_crimconsortium/`);
       console.log(`   Members: http://localhost:${this.port}/members_crimconsortium/`);
@@ -84,7 +99,9 @@ class CrimConsortiumDevServer {
       let filePath = null;
       
       // Route ArNS undername simulation
-      if (url.pathname.startsWith('/data_crimconsortium')) {
+      if (url.pathname.startsWith('/admin_crimconsortium')) {
+        filePath = this.resolveUndernamePath('admin_crimconsortium', url.pathname.replace('/admin_crimconsortium', ''));
+      } else if (url.pathname.startsWith('/data_crimconsortium')) {
         filePath = this.resolveUndernamePath('data_crimconsortium', url.pathname.replace('/data_crimconsortium', ''));
       } else if (url.pathname.startsWith('/search_crimconsortium')) {
         filePath = this.resolveUndernamePath('search_crimconsortium', url.pathname.replace('/search_crimconsortium', ''));
@@ -114,7 +131,16 @@ class CrimConsortiumDevServer {
     const basePath = this.undernamePaths[undername];
     if (!basePath) return null;
     
-    // Default to index.json for undername roots
+    // Special handling for admin app (HTML app, not JSON API)
+    if (undername === 'admin_crimconsortium') {
+      if (pathname === '/' || pathname === '') {
+        return path.join(basePath, 'index.html');
+      }
+      // For admin app, resolve paths normally (CSS, JS, etc.)
+      return path.join(basePath, pathname.substring(1));
+    }
+    
+    // Data undernames serve JSON files
     if (pathname === '/' || pathname === '') {
       return path.join(basePath, 'index.json');
     }
@@ -204,7 +230,11 @@ class CrimConsortiumDevServer {
 }
 
 // Start server if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Handle both Unix and Windows paths
+const isMainModule = import.meta.url === `file://${process.argv[1]}` ||
+                     import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`;
+
+if (isMainModule) {
   const server = new CrimConsortiumDevServer();
   server.start().catch(error => {
     console.error('Server failed to start:', error);

@@ -6,7 +6,12 @@
       "Bash(sed:*)",
       "WebFetch(domain:github.com)",
       "Bash(npm install)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(curl:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run import:*)",
+      "Bash(cp:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

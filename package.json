@@ -4,18 +4,17 @@
   "description": "Static site generator for CrimConsortium member publications on Arweave",
   "main": "index.js",
   "scripts": {
-    "test-foundation": "node scripts/test-foundation.js",
-    "verify-setup": "node scripts/test-foundation.js",
-    "analyze-consortium": "node scripts/analyze-consortium.js",
-    "import": "node scripts/finalize-consortium-data.js",
-    "scrape": "node scripts/scrape-consortium-robust.js",
-    "sync": "node scripts/sync-ardrive.js", 
-    "build": "node scripts/build-site-robust.js",
-    "validate": "node scripts/validate-build.js",
+    "import": "node scripts/robust-incremental-scraper.js",
+    "import-legacy": "node scripts/enhanced-consortium-scraper.js",
+    "status": "node scripts/scraping-status.js",
+    "build": "node scripts/build-enhanced-complete.js",
+    "sync": "node scripts/sync-ardrive-fixed.js", 
     "deploy": "node scripts/deploy-arweave.js",
     "dev": "node scripts/serve.js",
-    "full": "npm run analyze-consortium && npm run import && npm run sync && npm run build && npm run deploy",
-    "help": "node scripts/show-help.js"
+    "validate": "node scripts/validate-build.js",
+    "preview": "npm run build && npm run dev",
+    "reset": "rm -rf data/final/* && npm run import",
+    "full": "npm run import && npm run build && npm run sync && npm run deploy"
   },
   "dependencies": {
     "ardrive-core-js": "^1.1.0",

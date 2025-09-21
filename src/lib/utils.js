@@ -111,6 +111,15 @@ export class FileHelper {
     }
   }
 
+  async readdir(dirPath) {
+    try {
+      return await fs.readdir(dirPath);
+    } catch (error) {
+      this.logger.error(`Failed to read directory: ${dirPath}`, error.message);
+      return [];
+    }
+  }
+
   async getFileSize(filePath) {
     try {
       const stats = await fs.stat(filePath);

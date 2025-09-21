@@ -462,11 +462,16 @@ class CompleteEnhancedBuilder {
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Recent Publications</h2>
-          <span class="section-count">Latest research</span>
+          <span class="section-count">Showing 25 most recent</span>
         </div>
         <div id="recent-publications">
           ${this.dataset.publications
-            .slice(0, 10)
+            .sort((a, b) => {
+              const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+              const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+              return dateB - dateA;
+            })
+            .slice(0, 25)
             .map(article => {
               const member = this.dataset.members.find(m =>
                 article.memberAssociations && article.memberAssociations.includes(m.id)

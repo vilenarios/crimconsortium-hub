@@ -7,6 +7,7 @@
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import fs from 'fs-extra';
 import { Logger, FileHelper, ProgressTracker, withRetry } from '../src/lib/utils.js';
 
 class RobustIncrementalScraper {
@@ -715,15 +716,124 @@ class RobustIncrementalScraper {
     }
   }
 
+  async downloadPDF(publication) {
+    const pdfUrl = publication.downloads?.pdf;
+
+    if (!pdfUrl) {
+      return { success: false, error: 'No PDF URL' };
+    }
+
+    try {
+      const fileName = `${publication.slug || publication.id}.pdf`;
+      const filePath = `./data/final/pdfs/${fileName}`;
+
+      // Check if already exists
+      if (await this.fileHelper.exists(filePath)) {
+        const stats = await fs.stat(filePath);
+        if (stats.size > 0) {
+          return { success: true, filePath, fileSize: stats.size, fileName, skipped: true };
+        }
+      }
+
+      // Download file
+      const response = await axios.get(pdfUrl, {
+        responseType: 'stream',
+        timeout: 60000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      });
+
+      const writer = fs.createWriteStream(filePath);
+      response.data.pipe(writer);
+
+      return new Promise((resolve, reject) => {
+        writer.on('finish', async () => {
+          const stats = await fs.stat(filePath);
+          resolve({ success: true, filePath, fileSize: stats.size, fileName });
+        });
+
+        writer.on('error', (error) => {
+          reject({ success: false, error: error.message });
+        });
+      });
+
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  async downloadAllPDFs() {
+    // Load the final dataset
+    const dataset = await this.fileHelper.readJSON('./data/final/consortium-dataset.json');
+    if (!dataset || !dataset.publications) {
+      this.logger.warning('No dataset found or no publications to process');
+      return;
+    }
+
+    const publicationsWithPDFs = dataset.publications.filter(pub =>
+      pub.downloads && pub.downloads.pdf
+    );
+
+    if (publicationsWithPDFs.length === 0) {
+      this.logger.info('No publications with PDFs found');
+      return;
+    }
+
+    this.logger.info(`📥 Downloading ${publicationsWithPDFs.length} PDFs...`);
+
+    await this.fileHelper.ensureDir('./data/final/pdfs');
+
+    let downloadedCount = 0;
+    let skippedCount = 0;
+    let failedCount = 0;
+
+    for (const pub of publicationsWithPDFs) {
+      try {
+        const result = await this.downloadPDF(pub);
+
+        if (result.success) {
+          if (result.skipped) {
+            skippedCount++;
+            this.logger.info(`⏭️ Already exists: ${result.fileName}`);
+          } else {
+            downloadedCount++;
+            pub.localPDFPath = result.filePath;
+            pub.pdfFileSize = result.fileSize;
+            this.logger.success(`✅ Downloaded: ${result.fileName} (${(result.fileSize / 1024 / 1024).toFixed(2)} MB)`);
+          }
+        } else {
+          failedCount++;
+          this.logger.warning(`❌ Failed to download PDF for ${pub.slug}: ${result.error}`);
+        }
+
+        // Rate limiting
+        await this.delay(1000);
+
+      } catch (error) {
+        failedCount++;
+        this.logger.warning(`❌ Error downloading PDF for ${pub.slug}: ${error.message}`);
+      }
+    }
+
+    this.logger.success(`PDF Downloads Complete: ${downloadedCount} downloaded, ${skippedCount} skipped, ${failedCount} failed`);
+
+    // Update the dataset with local PDF paths
+    await this.fileHelper.writeJSON('./data/final/consortium-dataset.json', dataset);
+  }
+
   async assembleFinalDataset() {
     this.logger.info('🔧 Assembling final dataset from all batches...');
-    
+
     await this.updateMasterDataset();
-    
+
+    // Download PDFs after assembling the dataset
+    await this.downloadAllPDFs();
+
     this.progress.phase = 'complete';
     this.progress.completedAt = new Date().toISOString();
     await this.saveProgress();
-    
+
     this.logger.success('Final dataset assembly complete');
   }
 

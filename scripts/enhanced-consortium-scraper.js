@@ -7,6 +7,7 @@
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import fs from 'fs-extra';
 import { Logger, FileHelper, ProgressTracker, withRetry } from '../src/lib/utils.js';
 
 class EnhancedConsortiumScraper {
@@ -98,7 +99,10 @@ class EnhancedConsortiumScraper {
       // Step 3: Get enhanced publication details
       await this.getEnhancedPublicationDetails();
 
-      // Step 4: Create clean final dataset
+      // Step 4: Download PDFs for all publications
+      await this.downloadAllPDFs();
+
+      // Step 5: Create clean final dataset
       await this.createCleanDataset();
 
       this.logger.success('Enhanced consortium scraping complete');
@@ -541,9 +545,105 @@ class EnhancedConsortiumScraper {
     }
   }
 
+  async downloadPDF(publication) {
+    const pdfUrl = publication.downloads?.pdf;
+
+    if (!pdfUrl) {
+      return { success: false, error: 'No PDF URL' };
+    }
+
+    try {
+      const fileName = `${publication.slug || publication.id}.pdf`;
+      const filePath = `./data/final/pdfs/${fileName}`;
+
+      // Check if already exists
+      if (await this.fileHelper.exists(filePath)) {
+        const stats = await fs.stat(filePath);
+        if (stats.size > 0) {
+          return { success: true, filePath, fileSize: stats.size, fileName, skipped: true };
+        }
+      }
+
+      // Download file
+      const response = await axios.get(pdfUrl, {
+        responseType: 'stream',
+        timeout: 60000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      });
+
+      const writer = fs.createWriteStream(filePath);
+      response.data.pipe(writer);
+
+      return new Promise((resolve, reject) => {
+        writer.on('finish', async () => {
+          const stats = await fs.stat(filePath);
+          resolve({ success: true, filePath, fileSize: stats.size, fileName });
+        });
+
+        writer.on('error', (error) => {
+          reject({ success: false, error: error.message });
+        });
+      });
+
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  async downloadAllPDFs() {
+    const publicationsWithPDFs = this.results.publications.filter(pub =>
+      pub.downloads && pub.downloads.pdf
+    );
+
+    if (publicationsWithPDFs.length === 0) {
+      this.logger.info('No publications with PDFs found');
+      return;
+    }
+
+    this.logger.info(`📥 Downloading ${publicationsWithPDFs.length} PDFs...`);
+
+    await this.fileHelper.ensureDir('./data/final/pdfs');
+
+    let downloadedCount = 0;
+    let skippedCount = 0;
+    let failedCount = 0;
+
+    for (const pub of publicationsWithPDFs) {
+      try {
+        const result = await this.downloadPDF(pub);
+
+        if (result.success) {
+          if (result.skipped) {
+            skippedCount++;
+            this.logger.info(`⏭️ Already exists: ${result.fileName}`);
+          } else {
+            downloadedCount++;
+            pub.localPDFPath = result.filePath;
+            pub.pdfFileSize = result.fileSize;
+            this.logger.success(`✅ Downloaded: ${result.fileName} (${(result.fileSize / 1024 / 1024).toFixed(2)} MB)`);
+          }
+        } else {
+          failedCount++;
+          this.logger.warning(`❌ Failed to download PDF for ${pub.slug}: ${result.error}`);
+        }
+
+        // Rate limiting
+        await this.delay(1000);
+
+      } catch (error) {
+        failedCount++;
+        this.logger.warning(`❌ Error downloading PDF for ${pub.slug}: ${error.message}`);
+      }
+    }
+
+    this.logger.success(`PDF Downloads Complete: ${downloadedCount} downloaded, ${skippedCount} skipped, ${failedCount} failed`);
+  }
+
   async createCleanDataset() {
     this.logger.info('🧹 Creating clean final dataset...');
-    
+
     const cleanDataset = {
       metadata: {
         name: 'CrimConsortium Enhanced Complete Dataset',
@@ -552,7 +652,7 @@ class EnhancedConsortiumScraper {
         createdAt: new Date().toISOString(),
         scrapingMethod: 'Enhanced member page analysis with full content extraction'
       },
-      
+
       summary: {
         totalMembers: 30,
         researchInstitutions: this.results.allMembers.filter(m => m.publicationCount > 0).length,
@@ -561,17 +661,17 @@ class EnhancedConsortiumScraper {
         publicationsWithMultipleFormats: this.results.publications.filter(p => p.hasMultipleFormats).length,
         dateRange: this.calculateDateRange(this.results.publications)
       },
-      
+
       // All 30 members properly categorized
       members: this.results.allMembers.sort((a, b) => b.publicationCount - a.publicationCount),
-      
+
       // Enhanced publications with full content
       publications: this.results.publications,
-      
+
       // Organization by type for UI
       researchInstitutions: this.results.allMembers.filter(m => m.publicationCount > 0),
       supportingOrganizations: this.results.allMembers.filter(m => m.publicationCount === 0),
-      
+
       // Scraping metadata
       scrapingReport: {
         totalMembersChecked: this.results.allMembers.length,
@@ -580,11 +680,11 @@ class EnhancedConsortiumScraper {
         enhancedContentExtracted: this.results.publications.filter(p => p.fullContent && p.fullContent.length > 100).length
       }
     };
-    
+
     // Save clean dataset
     await this.fileHelper.ensureDir('./data/final');
     await this.fileHelper.writeJSON('./data/final/consortium-dataset.json', cleanDataset);
-    
+
     this.logger.success('Clean enhanced dataset saved');
     return cleanDataset;
   }

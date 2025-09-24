@@ -6,9 +6,10 @@
   "scripts": {
     "import": "node scripts/robust-incremental-scraper.js",
     "import-legacy": "node scripts/enhanced-consortium-scraper.js",
+    "import-pdfs": "node scripts/download-pdfs-only.js",
     "status": "node scripts/scraping-status.js",
     "build": "node scripts/build-enhanced-complete.js",
-    "sync": "node scripts/sync-ardrive-fixed.js", 
+    "sync": "node scripts/sync-ardrive-fixed.js",
     "deploy": "node scripts/deploy-arweave.js",
     "dev": "node scripts/serve.js",
     "validate": "node scripts/validate-build.js",

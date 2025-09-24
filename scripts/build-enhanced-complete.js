@@ -373,7 +373,7 @@ class CompleteEnhancedBuilder {
           <img src="./assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
         </a>
         <div>
-          <a href="/" class="site-title">CrimConsortium</a>
+          <a href="./" class="site-title">CrimConsortium</a>
           <p class="tagline">Leaders, providers, and supporters of open criminology</p>
         </div>
       </div>
@@ -383,9 +383,9 @@ class CompleteEnhancedBuilder {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="/">Home</a></li>
-        <li class="nav-item"><a href="/articles">Publications</a></li>
-        <li class="nav-item"><a href="/members">All Members</a></li>
+        <li class="nav-item"><a href="./">Home</a></li>
+        <li class="nav-item"><a href="./articles">Publications</a></li>
+        <li class="nav-item"><a href="./members">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -447,7 +447,7 @@ class CompleteEnhancedBuilder {
               const fullName = member.name;
 
               return `
-              <a href="/members/${member.id}" class="member-square">
+              <a href="./members/${member.id}" class="member-square">
                 <div class="member-short-name">${fullName}</div>
                 <span class="member-pub-count">${member.publicationCount}</span>
               </a>
@@ -485,7 +485,7 @@ class CompleteEnhancedBuilder {
 
               return `
                 <article class="article-card">
-                  <a href="/articles/${article.slug}" class="article-title">${title}</a>
+                  <a href="./articles/${article.slug}" class="article-title">${title}</a>
                   <div class="article-meta">
                     ${authors} •
                     ${member?.name || 'Consortium publication'} •
@@ -500,7 +500,7 @@ class CompleteEnhancedBuilder {
         </div>
 
         <div class="load-more">
-          <a href="/articles" class="load-more-btn">
+          <a href="./articles" class="load-more-btn">
             View All ${this.dataset.publications.length} Publications
           </a>
         </div>
@@ -579,7 +579,7 @@ class CompleteEnhancedBuilder {
         );
         
         // Check if we have a local PDF for this article
-        const localPdfPath = `/assets/pdfs/${article.slug}.pdf`;
+        const localPdfPath = `./assets/pdfs/${article.slug}.pdf`;
         const hasLocalPdf = await this.fileHelper.exists(`./data/final/pdfs/${article.slug}.pdf`);
 
         // Add local PDF info to article if it exists
@@ -709,7 +709,7 @@ class CompleteEnhancedBuilder {
           <img src="../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
         </a>
         <div>
-          <a href="/" class="site-title">CrimConsortium</a>
+          <a href="./" class="site-title">CrimConsortium</a>
           <p class="tagline">Leaders, providers, and supporters of open criminology</p>
         </div>
       </div>
@@ -719,9 +719,9 @@ class CompleteEnhancedBuilder {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="/">Home</a></li>
-        <li class="nav-item"><a href="/articles" class="active">Publications</a></li>
-        <li class="nav-item"><a href="/members">All Members</a></li>
+        <li class="nav-item"><a href="./">Home</a></li>
+        <li class="nav-item"><a href="./articles" class="active">Publications</a></li>
+        <li class="nav-item"><a href="./members">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -784,7 +784,7 @@ class CompleteEnhancedBuilder {
         
         return `
           <article class="article" data-member="${member?.id || ''}" data-year="${article.createdAt ? new Date(article.createdAt).getFullYear() : new Date().getFullYear()}">
-            <a href="/articles/${article.slug}" class="article-title">${article.title || `Article: ${article.slug}`}</a>
+            <a href="./articles/${article.slug}" class="article-title">${article.title || `Article: ${article.slug}`}</a>
             <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
               <strong>Authors:</strong> ${article.authors ? article.authors.map(a => typeof a === 'string' ? a : a.name).join(', ') : 'Pending'} •
               <strong>Institution:</strong> ${member?.name || 'Multiple institutions'} •
@@ -1000,7 +1000,7 @@ class CompleteEnhancedBuilder {
           <img src="../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
         </a>
         <div>
-          <a href="/" class="site-title">CrimConsortium</a>
+          <a href="./" class="site-title">CrimConsortium</a>
           <p class="tagline">Leaders, providers, and supporters of open criminology</p>
         </div>
       </div>
@@ -1010,9 +1010,9 @@ class CompleteEnhancedBuilder {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="/">Home</a></li>
-        <li class="nav-item"><a href="/articles">Publications</a></li>
-        <li class="nav-item"><a href="/members" class="active">All Members</a></li>
+        <li class="nav-item"><a href="./">Home</a></li>
+        <li class="nav-item"><a href="./articles">Publications</a></li>
+        <li class="nav-item"><a href="./members" class="active">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -1036,7 +1036,7 @@ class CompleteEnhancedBuilder {
           ${member.memberType === 'supporting-organization' ? ' • Supporting member' : ''}
         </p>
         ${member.publicationCount > 0 ? 
-          `<a href="/members/${member.id}" class="btn">View Publications</a>` :
+          `<a href="./members/${member.id}" class="btn">View Publications</a>` :
           `<span style="color: #666; font-size: 0.9rem;">Infrastructure & support provider</span>`
         }
       </div>
@@ -1288,7 +1288,7 @@ class CompleteEnhancedBuilder {
           <img src="../../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
         </a>
         <div>
-          <a href="/" class="site-title">CrimConsortium</a>
+          <a href="./" class="site-title">CrimConsortium</a>
           <p class="tagline">Leaders, providers, and supporters of open criminology</p>
         </div>
       </div>
@@ -1298,9 +1298,9 @@ class CompleteEnhancedBuilder {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="/">Home</a></li>
-        <li class="nav-item"><a href="/articles">Publications</a></li>
-        <li class="nav-item"><a href="/members">All Members</a></li>
+        <li class="nav-item"><a href="./">Home</a></li>
+        <li class="nav-item"><a href="./articles">Publications</a></li>
+        <li class="nav-item"><a href="./members">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -1308,8 +1308,8 @@ class CompleteEnhancedBuilder {
   <main class="page-content">
     <div class="container">
       <div class="breadcrumb">
-        <a href="/">CrimConsortium</a> →
-        <a href="/members">Members</a> →
+        <a href="./">CrimConsortium</a> →
+        <a href="./members">Members</a> →
         ${member.name}
       </div>
 
@@ -1321,18 +1321,18 @@ class CompleteEnhancedBuilder {
           <p style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 1rem;">
             ${member.name} is a supporting member of the CrimConsortium, providing infrastructure and support for open criminology research.
           </p>
-          <a href="/members" class="btn" style="display: inline-block; margin-top: 1rem;">← Back to All Members</a>
+          <a href="./members" class="btn" style="display: inline-block; margin-top: 1rem;">← Back to All Members</a>
         </div>
       ` : memberPubs.map(article => `
         <article class="article">
-          <a href="/articles/${article.slug}" class="article-title">${article.title}</a>
+          <a href="./articles/${article.slug}" class="article-title">${article.title}</a>
           <div class="article-meta">
             ${article.authors.map(a => a.name).join(', ')} • ${new Date(article.createdAt).getFullYear()}
             ${article.doi ? ` • DOI: ${article.doi}` : ''}
           </div>
           ${article.description ? `<div class="article-description">${article.description.substring(0, 300)}${article.description.length > 300 ? '...' : ''}</div>` : ''}
           <div>
-            <a href="/articles/${article.slug}" class="btn">Read Article</a>
+            <a href="./articles/${article.slug}" class="btn">Read Article</a>
             <a href="${article.originalUrl}" class="btn" target="_blank">View on CrimRXiv</a>
           </div>
         </article>
@@ -1377,9 +1377,9 @@ class CompleteEnhancedBuilder {
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; margin-top: 1.5rem;">
         <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
-          <a href="/">Home</a>
-          <a href="/articles">Publications</a>
-          <a href="/members">Members</a>
+          <a href="./">Home</a>
+          <a href="./articles">Publications</a>
+          <a href="./members">Members</a>
           <a href="mailto:crimrxiv@manchester.ac.uk" style="color: var(--primary-white); text-decoration: none;">Help</a>
           <a href="https://www.crimrxiv.com/rss.xml" target="_blank">RSS</a>
           <a href="https://www.crimrxiv.com/legal" target="_blank">Legal</a>
@@ -1423,9 +1423,13 @@ class CompleteEnhancedBuilder {
       }
     };
     
-    await this.fileHelper.ensureDir('./dist/data');
-    await this.fileHelper.writeJSON('./dist/data/index.json', articlesData);
-    
+    // Put data inside main folder for Arweave deployment
+    await this.fileHelper.ensureDir('./dist/main/data');
+    await this.fileHelper.writeJSON('./dist/main/data/index.json', articlesData);
+
+    // Also copy the full consortium dataset for reference
+    await this.fileHelper.writeJSON('./dist/main/data/consortium.json', this.dataset);
+
     this.buildStats.endpointsGenerated++;
   }
 

@@ -105,5 +105,7 @@ pids/
 # Optional: Keep structure but ignore large content
 # Uncomment if you want to keep directory structure in repo
 # but ignore large data files:
-# data/final/pdfs/*
+data/final/pdfs/*
+data/final/pdfs
+data/final/consortium-dataset.json
 # !data/final/pdfs/.gitkeep

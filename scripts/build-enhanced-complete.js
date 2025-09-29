@@ -8,6 +8,7 @@
 import fs from 'fs-extra';
 import { Logger, FileHelper } from '../src/lib/utils.js';
 import { generateImprovedArticlePage } from './improved-article-template.js';
+import { generateRouter } from './router-template.js';
 
 class CompleteEnhancedBuilder {
   constructor() {
@@ -17,12 +18,40 @@ class CompleteEnhancedBuilder {
     this.buildStats = { pagesGenerated: 0, endpointsGenerated: 0 };
   }
 
+  // Unified article card generation for consistent display
+  generateArticleCard(article, basePath = './') {
+    const title = article.title || 'Untitled';
+    const authors = article.authors?.map(a => a.name).join(', ') || 'Unknown Authors';
+    const date = article.createdAt ?
+      new Date(article.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      }) : 'Recent';
+    const description = article.description || article.abstract || '';
+    const truncatedDesc = description.length > 200 ?
+      description.substring(0, 200).trim() + '...' :
+      description;
+
+    return `
+      <article class="article-card">
+        <h3 class="article-title">
+          <a href="${basePath}articles/${article.slug}">${title}</a>
+        </h3>
+        <div class="article-authors">by ${authors}</div>
+        <div class="article-date">Published: ${date}</div>
+        ${truncatedDesc ? `<div class="article-abstract">${truncatedDesc}</div>` : ''}
+      </article>
+    `;
+  }
+
   async buildComplete() {
     this.logger.info('🏗️ Building complete enhanced consortium site...');
-    
+
     try {
       await this.loadDataset();
       await this.generateHomepage();
+      await this.generateRouter();
       await this.generateEnhancedArticlePages();
       await this.generateMemberPages();
       await this.generateDataEndpoints();
@@ -295,7 +324,7 @@ class CompleteEnhancedBuilder {
       .members-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    /* Article Cards */
+    /* Article Cards - Unified Style */
     .article-card {
       padding: 2rem 0;
       border-bottom: 1px solid var(--border-gray);
@@ -304,16 +333,32 @@ class CompleteEnhancedBuilder {
       border-bottom: none;
     }
     .article-title {
+      margin: 0 0 0.5rem 0;
+    }
+    .article-title a {
       font-size: 1.35rem;
       font-weight: 700;
       color: var(--primary-black);
       text-decoration: none;
-      display: block;
-      margin-bottom: 0.75rem;
       line-height: 1.3;
     }
-    .article-title:hover {
+    .article-title a:hover {
       color: var(--accent-orange);
+    }
+    .article-authors {
+      color: var(--text-gray);
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+    .article-date {
+      color: var(--text-gray);
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+    }
+    .article-abstract {
+      line-height: 1.6;
+      color: var(--primary-black);
+      font-size: 0.95rem;
     }
     .article-meta {
       color: var(--text-gray);
@@ -383,9 +428,9 @@ class CompleteEnhancedBuilder {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="./">Home</a></li>
-        <li class="nav-item"><a href="./articles">Publications</a></li>
-        <li class="nav-item"><a href="./members">All Members</a></li>
+        <li class="nav-item"><a href="/">Home</a></li>
+        <li class="nav-item"><a href="/articles">Publications</a></li>
+        <li class="nav-item"><a href="/members">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -447,7 +492,7 @@ class CompleteEnhancedBuilder {
               const fullName = member.name;
 
               return `
-              <a href="./members/${member.id}" class="member-square">
+              <a href="/members/${member.id}" class="member-square">
                 <div class="member-short-name">${fullName}</div>
                 <span class="member-pub-count">${member.publicationCount}</span>
               </a>
@@ -472,35 +517,12 @@ class CompleteEnhancedBuilder {
               return dateB - dateA;
             })
             .slice(0, 25)
-            .map(article => {
-              const member = this.dataset.members.find(m =>
-                article.memberAssociations && article.memberAssociations.includes(m.id)
-              );
-
-              // Handle articles with only URLs (from new scraper)
-              const title = article.title || `Article: ${article.slug}`;
-              const authors = article.authors ? article.authors.map(a => a.name || a).join(', ') : 'Author information pending';
-              const date = article.createdAt ? new Date(article.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recent';
-              const description = article.description || `View this publication from ${member?.name || 'consortium member'} on CrimRxiv`;
-
-              return `
-                <article class="article-card">
-                  <a href="./articles/${article.slug}" class="article-title">${title}</a>
-                  <div class="article-meta">
-                    ${authors} •
-                    ${member?.name || 'Consortium publication'} •
-                    ${date}
-                  </div>
-                  <div class="article-abstract">
-                    ${description.substring(0, 250)}${description.length > 250 ? '...' : ''}
-                  </div>
-                </article>
-              `;
-            }).join('')}
+            .map(article => this.generateArticleCard(article))
+            .join('')}
         </div>
 
         <div class="load-more">
-          <a href="./articles" class="load-more-btn">
+          <a href="/articles" class="load-more-btn">
             View All ${this.dataset.publications.length} Publications
           </a>
         </div>
@@ -564,6 +586,16 @@ class CompleteEnhancedBuilder {
     this.buildStats.pagesGenerated++;
   }
 
+  async generateRouter() {
+    this.logger.info('🔀 Generating router/fallback page...');
+
+    const routerHtml = generateRouter();
+    await fs.writeFile('./dist/main/router.html', routerHtml);
+    this.buildStats.pagesGenerated++;
+
+    this.logger.success('Router page generated (will be used as manifest fallback)');
+  }
+
   async generateEnhancedArticlePages() {
     this.logger.info('📄 Generating enhanced article pages with full content...');
     
@@ -574,18 +606,10 @@ class CompleteEnhancedBuilder {
     let enhanced = 0;
     for (const article of this.dataset.publications) {
       try {
-        const member = this.dataset.members.find(m => 
+        const member = this.dataset.members.find(m =>
           article.memberAssociations && article.memberAssociations.includes(m.id)
         );
-        
-        // Check if we have a local PDF for this article
-        const localPdfPath = `./assets/pdfs/${article.slug}.pdf`;
-        const hasLocalPdf = await this.fileHelper.exists(`./data/final/pdfs/${article.slug}.pdf`);
 
-        // Add local PDF info to article if it exists
-        if (hasLocalPdf) {
-          article.localPdf = localPdfPath;
-        }
 
         // Use improved template (fixes redundant content and references)
         const articleHTML = generateImprovedArticlePage(article, member);
@@ -687,10 +711,43 @@ class CompleteEnhancedBuilder {
     .page-subtitle { color: var(--text-gray); margin-bottom: 2rem; }
     .filter-bar { background: var(--light-gray); padding: 1rem; border-radius: 4px; margin: 1rem 0; display: flex; gap: 1rem; flex-wrap: wrap; }
     .filter-bar select { padding: 0.5rem; border: 1px solid var(--border-gray); border-radius: 4px; }
-    .article { border: 1px solid var(--border-gray); border-radius: 4px; padding: 1.5rem; margin-bottom: 1rem; }
-    .article-title { font-size: 1.1rem; font-weight: 600; color: var(--primary-black); text-decoration: none; display: block; margin-bottom: 0.5rem; }
-    .article-title:hover { color: var(--accent-orange); }
-    .format-tag { background: var(--primary-black); color: var(--primary-white); padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.7rem; margin-right: 0.25rem; font-weight: 600; text-transform: uppercase; }
+
+    /* Article Cards - Unified Style */
+    .article-card {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border-gray);
+    }
+    .article-card:last-child {
+      border-bottom: none;
+    }
+    .article-title {
+      margin: 0 0 0.5rem 0;
+    }
+    .article-title a {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary-black);
+      text-decoration: none;
+      line-height: 1.3;
+    }
+    .article-title a:hover {
+      color: var(--accent-orange);
+    }
+    .article-authors {
+      color: var(--text-gray);
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+    .article-date {
+      color: var(--text-gray);
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+    }
+    .article-abstract {
+      line-height: 1.6;
+      color: var(--primary-black);
+      font-size: 0.95rem;
+    }
 
     /* Footer */
     footer {
@@ -778,43 +835,34 @@ class CompleteEnhancedBuilder {
         return dateB - dateA;
       })
       .map(article => {
-        const member = this.dataset.members.find(m => 
+        const member = this.dataset.members.find(m =>
           article.memberAssociations && article.memberAssociations.includes(m.id)
         );
-        
+        const year = article.createdAt ? new Date(article.createdAt).getFullYear() : new Date().getFullYear();
+
         return `
-          <article class="article" data-member="${member?.id || ''}" data-year="${article.createdAt ? new Date(article.createdAt).getFullYear() : new Date().getFullYear()}">
-            <a href="./articles/${article.slug}" class="article-title">${article.title || `Article: ${article.slug}`}</a>
-            <div style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">
-              <strong>Authors:</strong> ${article.authors ? article.authors.map(a => typeof a === 'string' ? a : a.name).join(', ') : 'Pending'} •
-              <strong>Institution:</strong> ${member?.name || 'Multiple institutions'} •
-              <strong>Published:</strong> ${article.createdAt ? new Date(article.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Recent'}
-              ${article.doi ? ` • <strong>DOI:</strong> ${article.doi}` : ''}
-            </div>
-            ${article.description ? `<div style="margin-bottom: 1rem; line-height: 1.5;">${article.description.substring(0, 400)}${article.description.length > 400 ? '...' : ''}</div>` : ''}
-            <div>
-              <a href="${article.originalUrl || article.url || `https://www.crimrxiv.com/pub/${article.slug}`}" class="btn" target="_blank">View on CrimRxiv</a>
-            </div>
-          </article>
+          <div data-member="${member?.id || ''}" data-year="${year}">
+            ${this.generateArticleCard(article, './')}
+          </div>
         `;
       }).join('')}
   </div>
-  
+
   <script>
     function filterByMember(memberId) {
-      const articles = document.querySelectorAll('.article');
+      const articles = document.querySelectorAll('#articles-list > div');
       articles.forEach(article => {
         article.style.display = (!memberId || article.dataset.member === memberId) ? 'block' : 'none';
       });
     }
-    
+
     function filterByYear(year) {
-      const articles = document.querySelectorAll('.article');
+      const articles = document.querySelectorAll('#articles-list > div');
       articles.forEach(article => {
         article.style.display = (!year || article.dataset.year === year) ? 'block' : 'none';
       });
     }
-    
+
     function sortArticles(sortBy) {
       const container = document.getElementById('articles-list');
       const articles = Array.from(container.children);
@@ -1205,35 +1253,41 @@ class CompleteEnhancedBuilder {
       color: var(--text-gray);
       margin-bottom: 2rem;
     }
-    .article {
-      border: 1px solid var(--border-gray);
-      border-radius: 4px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      transition: box-shadow 0.2s;
+    /* Article Cards - Unified Style */
+    .article-card {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border-gray);
     }
-    .article:hover {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    .article-card:last-child {
+      border-bottom: none;
     }
     .article-title {
-      font-weight: 600;
+      margin: 0 0 0.5rem 0;
+    }
+    .article-title a {
+      font-size: 1.35rem;
+      font-weight: 700;
       color: var(--primary-black);
       text-decoration: none;
-      display: block;
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
+      line-height: 1.3;
     }
-    .article-title:hover {
-      color: var(--accent-blue);
+    .article-title a:hover {
+      color: var(--accent-orange);
     }
-    .article-meta {
+    .article-authors {
       color: var(--text-gray);
-      margin-bottom: 1rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+    .article-date {
+      color: var(--text-gray);
+      margin-bottom: 0.75rem;
       font-size: 0.9rem;
     }
-    .article-description {
-      margin-bottom: 1rem;
-      line-height: 1.5;
+    .article-abstract {
+      line-height: 1.6;
+      color: var(--primary-black);
+      font-size: 0.95rem;
     }
     .btn {
       display: inline-block;
@@ -1288,7 +1342,7 @@ class CompleteEnhancedBuilder {
           <img src="../../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
         </a>
         <div>
-          <a href="./" class="site-title">CrimConsortium</a>
+          <a href="../" class="site-title">CrimConsortium</a>
           <p class="tagline">Leaders, providers, and supporters of open criminology</p>
         </div>
       </div>
@@ -1298,9 +1352,9 @@ class CompleteEnhancedBuilder {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="./">Home</a></li>
-        <li class="nav-item"><a href="./articles">Publications</a></li>
-        <li class="nav-item"><a href="./members">All Members</a></li>
+        <li class="nav-item"><a href="../">Home</a></li>
+        <li class="nav-item"><a href="../articles">Publications</a></li>
+        <li class="nav-item"><a href="../members">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -1308,8 +1362,8 @@ class CompleteEnhancedBuilder {
   <main class="page-content">
     <div class="container">
       <div class="breadcrumb">
-        <a href="./">CrimConsortium</a> →
-        <a href="./members">Members</a> →
+        <a href="../">CrimConsortium</a> →
+        <a href="../members">Members</a> →
         ${member.name}
       </div>
 
@@ -1321,22 +1375,13 @@ class CompleteEnhancedBuilder {
           <p style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 1rem;">
             ${member.name} is a supporting member of the CrimConsortium, providing infrastructure and support for open criminology research.
           </p>
-          <a href="./members" class="btn" style="display: inline-block; margin-top: 1rem;">← Back to All Members</a>
+          <a href="../members" class="btn" style="display: inline-block; margin-top: 1rem;">← Back to All Members</a>
         </div>
-      ` : memberPubs.map(article => `
-        <article class="article">
-          <a href="./articles/${article.slug}" class="article-title">${article.title}</a>
-          <div class="article-meta">
-            ${article.authors.map(a => a.name).join(', ')} • ${new Date(article.createdAt).getFullYear()}
-            ${article.doi ? ` • DOI: ${article.doi}` : ''}
-          </div>
-          ${article.description ? `<div class="article-description">${article.description.substring(0, 300)}${article.description.length > 300 ? '...' : ''}</div>` : ''}
-          <div>
-            <a href="./articles/${article.slug}" class="btn">Read Article</a>
-            <a href="${article.originalUrl}" class="btn" target="_blank">View on CrimRXiv</a>
-          </div>
-        </article>
-      `).join('')}
+      ` : `
+        <div class="articles-list">
+          ${memberPubs.map(article => this.generateArticleCard(article, '../')).join('')}
+        </div>
+      `}
     </div>
   </main>
 
@@ -1435,7 +1480,6 @@ class CompleteEnhancedBuilder {
 
   async copyAssets() {
     await this.fileHelper.ensureDir('./dist/main/assets/images');
-    await this.fileHelper.ensureDir('./dist/main/assets/pdfs');
 
     // Copy images
     if (await this.fileHelper.exists('./src/assets/images/crimxriv-logo.png')) {
@@ -1446,10 +1490,11 @@ class CompleteEnhancedBuilder {
       await fs.copy('./src/assets/images/favicon.ico', './dist/main/favicon.ico');
     }
 
-    // Copy local PDFs if they exist
+    // Copy PDFs if they exist
     if (await this.fileHelper.exists('./data/final/pdfs')) {
+      await this.fileHelper.ensureDir('./dist/main/assets/pdfs');
       const pdfFiles = await fs.readdir('./data/final/pdfs');
-      this.logger.info(`📁 Copying ${pdfFiles.length} PDF attachments to dist folder...`);
+      this.logger.info(`📥 Copying ${pdfFiles.length} PDF attachments to dist folder...`);
 
       for (const pdfFile of pdfFiles) {
         await fs.copy(
@@ -1457,7 +1502,6 @@ class CompleteEnhancedBuilder {
           `./dist/main/assets/pdfs/${pdfFile}`
         );
       }
-
       this.logger.success(`✅ Copied ${pdfFiles.length} PDFs to /assets/pdfs/`);
     }
   }

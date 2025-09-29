@@ -167,7 +167,7 @@ class RobustIncrementalScraper {
     
     for (const member of this.allConsortiumMembers) {
       try {
-        await this.delay(1000);
+        await this.delay(300); // Reduced from 1000ms to 300ms
         
         const memberData = await this.processMemberIncremental(member);
         
@@ -364,7 +364,7 @@ class RobustIncrementalScraper {
     
     for (const pub of batch) {
       try {
-        await this.delay(2000);
+        await this.delay(250);
         
         const enhancedPub = await this.extractEnhancedContent(pub);
         
@@ -673,23 +673,27 @@ class RobustIncrementalScraper {
   }
 
   extractAllDownloads($) {
+    // Only extract actual file attachments, not the auto-generated PDF download button
+    // CrimRXiv auto-generates PDFs for all articles at /pub/{slug}/download/pdf
+    // We only want actual uploaded attachments
     const downloads = {};
-    $('a[href*="download"], a[href*=".pdf"], a[href*=".docx"], a[href*=".epub"]').each((index, element) => {
+
+    // Look for attachment/supplementary file sections specifically
+    // These are usually in a dedicated attachments area, not the main download buttons
+    $('.attachments a, .supplementary-files a, .additional-files a').each((index, element) => {
       const href = $(element).attr('href');
       const text = $(element).text().toLowerCase();
-      
-      if (href) {
-        let format = 'unknown';
-        if (href.includes('/download/pdf') || text.includes('pdf')) format = 'pdf';
-        else if (href.includes('/download/docx') || text.includes('word')) format = 'word';
-        else if (href.includes('/download/epub') || text.includes('epub')) format = 'epub';
-        else if (href.includes('/download/html') || text.includes('html')) format = 'html';
-        
-        if (format !== 'unknown' && !downloads[format]) {
-          downloads[format] = href.startsWith('http') ? href : 'https://www.crimrxiv.com' + href;
-        }
+
+      if (href && !href.includes('/download/pdf')) {
+        // Only process if it's NOT the auto-generated PDF endpoint
+        if (href.endsWith('.pdf')) downloads.pdf = href.startsWith('http') ? href : 'https://www.crimrxiv.com' + href;
+        else if (href.endsWith('.docx')) downloads.word = href.startsWith('http') ? href : 'https://www.crimrxiv.com' + href;
+        else if (href.endsWith('.epub')) downloads.epub = href.startsWith('http') ? href : 'https://www.crimrxiv.com' + href;
       }
     });
+
+    // Return empty object if no real attachments found
+    // This will prevent downloading auto-generated PDFs
     return downloads;
   }
 
@@ -716,7 +720,7 @@ class RobustIncrementalScraper {
     }
   }
 
-  async downloadPDF(publication) {
+async downloadPDF(publication) {
     const pdfUrl = publication.downloads?.pdf;
 
     if (!pdfUrl) {
@@ -763,7 +767,7 @@ class RobustIncrementalScraper {
     }
   }
 
-  async downloadAllPDFs() {
+  async downloadAllArticleContent() {
     // Load the final dataset
     const dataset = await this.fileHelper.readJSON('./data/final/consortium-dataset.json');
     if (!dataset || !dataset.publications) {
@@ -771,55 +775,52 @@ class RobustIncrementalScraper {
       return;
     }
 
+    // Download PDFs for publications that have PDF attachments
     const publicationsWithPDFs = dataset.publications.filter(pub =>
       pub.downloads && pub.downloads.pdf
     );
 
-    if (publicationsWithPDFs.length === 0) {
-      this.logger.info('No publications with PDFs found');
-      return;
-    }
+    if (publicationsWithPDFs.length > 0) {
+      this.logger.info(`📥 Downloading ${publicationsWithPDFs.length} PDF attachments...`);
+      await this.fileHelper.ensureDir('./data/final/pdfs');
 
-    this.logger.info(`📥 Downloading ${publicationsWithPDFs.length} PDFs...`);
+      let downloadedCount = 0;
+      let skippedCount = 0;
+      let failedCount = 0;
 
-    await this.fileHelper.ensureDir('./data/final/pdfs');
+      for (const pub of publicationsWithPDFs) {
+        try {
+          const result = await this.downloadPDF(pub);
 
-    let downloadedCount = 0;
-    let skippedCount = 0;
-    let failedCount = 0;
-
-    for (const pub of publicationsWithPDFs) {
-      try {
-        const result = await this.downloadPDF(pub);
-
-        if (result.success) {
-          if (result.skipped) {
-            skippedCount++;
-            this.logger.info(`⏭️ Already exists: ${result.fileName}`);
+          if (result.success) {
+            if (result.skipped) {
+              skippedCount++;
+              this.logger.info(`⏭️ Already exists: ${result.fileName}`);
+            } else {
+              downloadedCount++;
+              pub.localPDFPath = result.filePath;
+              pub.pdfFileSize = result.fileSize;
+              this.logger.success(`✅ Downloaded: ${result.fileName} (${(result.fileSize / 1024 / 1024).toFixed(2)} MB)`);
+            }
           } else {
-            downloadedCount++;
-            pub.localPDFPath = result.filePath;
-            pub.pdfFileSize = result.fileSize;
-            this.logger.success(`✅ Downloaded: ${result.fileName} (${(result.fileSize / 1024 / 1024).toFixed(2)} MB)`);
+            failedCount++;
+            this.logger.warning(`❌ Failed to download PDF for ${pub.slug}: ${result.error}`);
           }
-        } else {
+
+          // Rate limiting
+          await this.delay(200);
+
+        } catch (error) {
           failedCount++;
-          this.logger.warning(`❌ Failed to download PDF for ${pub.slug}: ${result.error}`);
+          this.logger.warning(`❌ Error downloading PDF for ${pub.slug}: ${error.message}`);
         }
-
-        // Rate limiting
-        await this.delay(1000);
-
-      } catch (error) {
-        failedCount++;
-        this.logger.warning(`❌ Error downloading PDF for ${pub.slug}: ${error.message}`);
       }
+
+      this.logger.success(`PDF Downloads Complete: ${downloadedCount} downloaded, ${skippedCount} skipped, ${failedCount} failed`);
+
+      // Update the dataset with local PDF paths
+      await this.fileHelper.writeJSON('./data/final/consortium-dataset.json', dataset);
     }
-
-    this.logger.success(`PDF Downloads Complete: ${downloadedCount} downloaded, ${skippedCount} skipped, ${failedCount} failed`);
-
-    // Update the dataset with local PDF paths
-    await this.fileHelper.writeJSON('./data/final/consortium-dataset.json', dataset);
   }
 
   async assembleFinalDataset() {
@@ -827,12 +828,16 @@ class RobustIncrementalScraper {
 
     await this.updateMasterDataset();
 
-    // Download PDFs after assembling the dataset
-    await this.downloadAllPDFs();
+    // Download article content (HTML + PDFs) after assembling the dataset
+    await this.downloadAllArticleContent();
 
+    // Mark as complete
     this.progress.phase = 'complete';
     this.progress.completedAt = new Date().toISOString();
     await this.saveProgress();
+
+    // Update master dataset one more time to reflect completion status
+    await this.updateMasterDataset();
 
     this.logger.success('Final dataset assembly complete');
   }
@@ -887,7 +892,7 @@ class RobustIncrementalScraper {
 
       for (const pub of additionalPubs) {
         try {
-          await this.delay(1500); // Be respectful
+          await this.delay(300); // Be respectful
 
           // Skip if we already have it
           if (existingSlugs.has(pub.slug)) {
@@ -1037,7 +1042,8 @@ class RobustIncrementalScraper {
 }
 
 // Run robust incremental scraper
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Windows-compatible check: looks for script name in process.argv[1]
+if (process.argv[1] && process.argv[1].includes('robust-incremental-scraper')) {
   const scraper = new RobustIncrementalScraper();
   scraper.startRobustScraping().catch(error => {
     console.error('Robust scraping failed:', error.message);

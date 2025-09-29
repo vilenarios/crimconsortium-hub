@@ -16,7 +16,7 @@ function generateImprovedArticlePage(article, member) {
   <meta name="description" content="${(article.description || '').substring(0, 160)}">
   
   <!-- CrimRXiv favicon -->
-  <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
   
   <!-- Academic metadata -->
   <meta name="citation_title" content="${article.title}">
@@ -45,9 +45,14 @@ function generateImprovedArticlePage(article, member) {
     }
     
     .container {
-      max-width: 800px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 1.5rem;
+    }
+
+    .article-container {
+      max-width: 800px;
+      margin: 0 auto;
     }
     
     /* Header Styles */
@@ -261,51 +266,7 @@ function generateImprovedArticlePage(article, member) {
     .btn-primary:hover {
       background: #005a8a;
     }
-    
-    /* Downloads Section */
-    .downloads-section {
-      background: var(--light-gray);
-      padding: 2rem;
-      border-radius: 8px;
-      margin: 2rem 0;
-    }
-    
-    .downloads-section h3 {
-      margin-bottom: 1rem;
-      color: var(--primary-black);
-    }
-    
-    .downloads-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-    
-    .download-btn {
-      padding: 0.75rem 1rem;
-      background: white;
-      border: 1px solid var(--border-gray);
-      border-radius: 6px;
-      text-decoration: none;
-      color: var(--primary-black);
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    
-    .download-btn:hover {
-      background: #e9ecef;
-      border-color: var(--accent-blue);
-    }
-    
-    .download-btn.primary {
-      background: var(--accent-blue);
-      color: white;
-      border-color: var(--accent-blue);
-    }
-    
+
     /* Content Sections */
     .content-section {
       margin: 3rem 0;
@@ -556,10 +517,10 @@ function generateImprovedArticlePage(article, member) {
     <div class="container">
       <div class="site-brand">
         <a href="https://www.crimrxiv.com" style="display: flex; align-items: center;">
-          <img src="../../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
+          <img src="../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
         </a>
         <div>
-          <a href="../../" class="site-title">CrimConsortium</a>
+          <a href="../" class="site-title">CrimConsortium</a>
           <p class="tagline">Leaders, providers, and supporters of open criminology</p>
         </div>
       </div>
@@ -569,16 +530,16 @@ function generateImprovedArticlePage(article, member) {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="../../">Home</a></li>
-        <li class="nav-item"><a href="../../articles">Publications</a></li>
-        <li class="nav-item"><a href="../../members">All Members</a></li>
+        <li class="nav-item"><a href="../">Home</a></li>
+        <li class="nav-item"><a href="../articles">Publications</a></li>
+        <li class="nav-item"><a href="../members">All Members</a></li>
       </ul>
     </div>
   </nav>
   
   <!-- Dark Hero Section (CrimRXiv Style) -->
   <header class="article-header">
-    <div class="container">
+    <div class="article-container">
       <h1 class="article-title">${article.title}</h1>
       
       <!-- Hero Description (Truncated like CrimRXiv) -->
@@ -611,9 +572,9 @@ function generateImprovedArticlePage(article, member) {
       <button onclick="shareArticle()" class="floating-btn">
         🔗 SOCIAL
       </button>
-      <a href="${article.originalUrl}" class="floating-btn" target="_blank">
+      <button onclick="downloadPage()" class="floating-btn">
         📥 DOWNLOAD
-      </a>
+      </button>
       <a href="#content" class="floating-btn">
         📋 CONTENTS
       </a>
@@ -647,7 +608,7 @@ function generateImprovedArticlePage(article, member) {
   
   
   <!-- Article Content -->
-  <main class="container" id="content">
+  <main class="article-container" id="content">
     
     
     <!-- Abstract (Special Treatment) -->
@@ -921,34 +882,6 @@ function generateImprovedArticlePage(article, member) {
       return '';
     })()}
 
-    <!-- Download Section (if local PDF available) -->
-    ${article.localPdf ? `
-    <section class="downloads-section">
-      <h3>📥 Download Attachment</h3>
-      <div class="downloads-grid">
-        <a href="${article.localPdf}" target="_blank" class="download-btn" style="text-decoration: none;">
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10,17L8,13H10L12,17H10M14,17L12,13H14L16,17H14Z"/>
-            </svg>
-            <span>Download PDF</span>
-          </div>
-        </a>
-        <a href="${article.originalUrl}" target="_blank" class="download-btn" style="text-decoration: none;">
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76V7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.54,8.71 19.54,6.81 18.36,5.64C17.19,4.46 15.29,4.46 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,9.17C13.8,8.78 14.44,8.78 14.83,9.17C16.78,11.12 16.78,14.29 14.83,16.24V16.24L11.29,19.78C9.34,21.73 6.17,21.73 4.22,19.78C2.27,17.83 2.27,14.66 4.22,12.71L5.71,11.22C5.7,12.04 5.83,12.86 6.11,13.65L5.64,14.12C4.46,15.29 4.46,17.19 5.64,18.36C6.81,19.54 8.71,19.54 9.88,18.36L13.41,14.83C14.59,13.66 14.59,11.76 13.41,10.59C13,10.2 13,9.56 13.41,9.17Z"/>
-            </svg>
-            <span>View on CrimRxiv</span>
-          </div>
-        </a>
-      </div>
-      <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-gray);">
-        This PDF attachment is permanently archived.
-      </p>
-    </section>
-    ` : ''}
-
   </main>
 
   <!-- Citation Modal -->
@@ -1000,6 +933,26 @@ ${article.authors[0]?.name || 'Unknown'}${article.authors.length > 1 ? ', et al.
       });
     }
     
+    function downloadPage() {
+      // Get the current page HTML
+      const pageHTML = document.documentElement.outerHTML;
+
+      // Create a Blob with the HTML content
+      const blob = new Blob([pageHTML], { type: 'text/html' });
+
+      // Create a download link
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '${article.slug || 'article'}.html';
+
+      // Trigger the download
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
     function shareArticle() {
       if (navigator.share) {
         navigator.share({
@@ -1020,11 +973,11 @@ ${article.authors[0]?.name || 'Unknown'}${article.authors.length > 1 ? ', et al.
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.2);">
         <div style="display: flex; align-items: center; gap: 1.5rem;">
           <a href="https://www.crimrxiv.com">
-            <img src="../../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 40px; filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+            <img src="../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 40px; filter: brightness(0) invert(1);" onerror="this.style.display='none'">
           </a>
           <div>
-            <p style="margin: 0; font-weight: 600;">CrimConsortium Archive</p>
-            <p style="margin: 0; font-size: 0.85rem; opacity: 0.8;">ISSN 2766-7170</p>
+            <p style="margin: 0; font-weight: 600;">CrimConsortium</p>
+            <p style="margin: 0; font-size: 0.85rem; opacity: 0.8;">Permanent decentralized archive • ISSN 2766-7170</p>
           </div>
         </div>
         <div style="display: flex; gap: 1rem; align-items: center;">
@@ -1052,9 +1005,9 @@ ${article.authors[0]?.name || 'Unknown'}${article.authors.length > 1 ? ', et al.
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; margin-top: 1.5rem;">
         <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
-          <a href="../../" style="color: var(--primary-white); text-decoration: none;">Home</a>
-          <a href="../../articles" style="color: var(--primary-white); text-decoration: none;">Publications</a>
-          <a href="../../members" style="color: var(--primary-white); text-decoration: none;">Members</a>
+          <a href="../" style="color: var(--primary-white); text-decoration: none;">Home</a>
+          <a href="../articles" style="color: var(--primary-white); text-decoration: none;">Publications</a>
+          <a href="../members" style="color: var(--primary-white); text-decoration: none;">Members</a>
           <a href="mailto:crimrxiv@manchester.ac.uk" style="color: var(--primary-white); text-decoration: none;">Help</a>
           <a href="https://www.crimrxiv.com/rss.xml" target="_blank" style="color: var(--primary-white); text-decoration: none;">RSS</a>
           <a href="https://www.crimrxiv.com/legal" target="_blank" style="color: var(--primary-white); text-decoration: none;">Legal</a>

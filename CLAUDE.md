@@ -4,48 +4,94 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-**Development:**
+**Core Development:**
 ```bash
-npm run build     # Generate complete static site (868 pages)
+npm run build     # Generate complete static site (916+ pages)
 npm run dev       # Local server at http://localhost:3000
-npm run import    # Process consortium data from CrimRXiv exports
+npm run preview   # Build and run dev server (npm run build && npm run dev)
 npm run validate  # Verify build integrity
 ```
 
-**Testing:**
-- No automated tests configured
-- Manual testing via `npm run dev` and checking localhost:3000
-- Verify homepage displays 25 recent publications
-- Check member pages and article pages load correctly
+**Data Import:**
+```bash
+npm run import         # Process consortium data from CrimRXiv (30-45 min)
+npm run import-legacy  # Use enhanced-consortium-scraper.js (faster)
+npm run import-html    # Download HTML articles (replaces PDFs, saves ~120MB)
+npm run import-pdfs    # Download PDF attachments (large, ~126MB)
+npm run status         # Check scraping progress
+npm run reset          # Clear data and reimport (rm -rf data/final/* && import)
+```
+
+**Deployment:**
+```bash
+npm run sync     # Sync with ArDrive
+npm run deploy   # Deploy to Arweave
+npm run full     # Complete pipeline (import + build + sync + deploy)
+```
 
 ## Architecture
 
-**Static Site Generator:**
-- Builds 868 static HTML pages from a 56MB consortium dataset
-- 835 publications from 30 consortium members
-- 37 PDF attachments archived locally in `data/final/pdfs/`
-- Output directory: `dist/main/`
+**Static Site Generator for Arweave:**
+- Generates 916+ static HTML pages from a 56MB consortium dataset
+- 835 publications from 30 consortium members (17 research + 13 supporting)
+- HTML articles archived in `data/final/articles-html/` (~5-10MB vs 126MB for PDFs)
+- Output directory: `dist/main/` (~20-30MB for Arweave deployment)
+- Uses ES6 modules (`type: "module"` in package.json)
 
-**Main Build Script:** `scripts/build-enhanced-complete.js`
-- Loads consortium dataset from `data/final/consortium-dataset.json`
-- Generates homepage with 25 recent publications
-- Creates article pages using `improved-article-template.js`
-- Generates member profile pages with publication counts
-- Copies PDFs from `data/final/pdfs/` to `dist/main/assets/pdfs/`
+**Build Pipeline:**
+1. **Import**: `scripts/robust-incremental-scraper.js` scrapes CrimRXiv.com
+   - Member definitions with regex patterns for affiliation detection
+   - Incremental progress saved to `data/scraping-progress.json`
+   - Articles: Use `npm run import-html` for HTML (~5MB) or `import-pdfs` for PDFs (~126MB)
+2. **Process**: Consolidates into `data/final/consortium-dataset.json` (56MB)
+3. **Build**: `scripts/build-enhanced-complete.js` generates static site
+   - Uses `scripts/improved-article-template.js` for article pages
+   - Generates homepage with 25 recent publications
+   - Creates member pages with publication counts
+4. **Deploy**: Upload `dist/main/` to Arweave (~$0.82 one-time cost)
 
-**Templates:**
-- `scripts/improved-article-template.js` - Article page generator with CrimRXiv-style design
-- Inline CSS for Arweave optimization (no external dependencies)
+**Key Components:**
+- `src/lib/utils.js` - Logger and FileHelper utilities
+- `src/lib/consortium-scraper.js` - Data scraping logic
+- `src/lib/export-parser.js` - Parse CrimRXiv export format
+- `src/lib/arfs-client.js` - ArDrive integration
 
-**Data Processing:**
-- Import script: `scripts/robust-incremental-scraper.js` (processes CrimRXiv exports)
-- Dataset location: `data/final/consortium-dataset.json` (56MB)
-- PDF storage: `data/final/pdfs/` (37 files, 26MB total)
+**Dependencies:**
+- `ardrive-core-js` - ArDrive file system integration
+- `cheerio` - HTML parsing for scraping
+- `axios` - HTTP requests
+- `lunr` - Search index generation
+- `handlebars` - Template engine
 
-## Deployment
+## Development Notes
 
-**Arweave Deployment:**
-- Build complete static site: `npm run build`
-- Verify locally: `npm run dev` and check localhost:3000
-- Upload `dist/main/` folder to Arweave (~82MB, ~$0.82 cost)
-- Optional: Configure ArNS domain (crimconsortium.ar)
+**Static Site Requirements:**
+- All CSS must be inline for Arweave compatibility
+- Use gateway-relative links (no absolute URLs)
+- Self-contained HTML with no external dependencies
+- Maintain CrimRXiv visual design consistency
+
+**Data Structure:**
+- Dataset: `data/final/consortium-dataset.json` contains:
+  - `members`: Array of 30 consortium institutions
+  - `publications`: Array of 835 articles with metadata
+  - `summary`: Statistics and counts
+- Member detection via regex patterns in scraper
+- PDFs stored locally for permanent archival
+- HTML articles stored in `data/final/articles-html/` when using `npm run import-html`
+
+**Testing & Development:**
+- Use `npm run dev` for local testing with ArNS simulation
+- Server includes undername routing simulation (e.g., `_subdomain.localhost:3000`)
+- Check progress with `npm run status` during imports
+- Validate build integrity with `npm run validate`
+
+**Verification Checklist:**
+- Homepage displays 25 most recent publications
+- All 30 member pages accessible with correct counts
+- 835 article pages with abstracts and metadata
+- 37 PDFs downloadable from local archive
+- Logo appears in header/footer
+- Mobile responsive design works
+- Internal links use relative paths (no absolute URLs)
+- All CSS is inline (no external stylesheets)

@@ -108,4 +108,6 @@ pids/
 data/final/pdfs/*
 data/final/pdfs
 data/final/consortium-dataset.json
+data/final/scraping-progress.json
+data/final/articles-html
 # !data/final/pdfs/.gitkeep

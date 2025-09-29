@@ -520,7 +520,7 @@ function generateImprovedArticlePage(article, member) {
           <img src="../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
         </a>
         <div>
-          <a href="../" class="site-title">CrimConsortium</a>
+          <a href="../index.html" class="site-title">CrimConsortium</a>
           <p class="tagline">Leaders, providers, and supporters of open criminology</p>
         </div>
       </div>
@@ -530,9 +530,9 @@ function generateImprovedArticlePage(article, member) {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="../">Home</a></li>
-        <li class="nav-item"><a href="../articles">Publications</a></li>
-        <li class="nav-item"><a href="../members">All Members</a></li>
+        <li class="nav-item"><a href="../index.html">Home</a></li>
+        <li class="nav-item"><a href="../articles.html">Publications</a></li>
+        <li class="nav-item"><a href="../members.html">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -1005,9 +1005,9 @@ ${article.authors[0]?.name || 'Unknown'}${article.authors.length > 1 ? ', et al.
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; margin-top: 1.5rem;">
         <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
-          <a href="../" style="color: var(--primary-white); text-decoration: none;">Home</a>
-          <a href="../articles" style="color: var(--primary-white); text-decoration: none;">Publications</a>
-          <a href="../members" style="color: var(--primary-white); text-decoration: none;">Members</a>
+          <a href="../index.html" style="color: var(--primary-white); text-decoration: none;">Home</a>
+          <a href="../articles.html" style="color: var(--primary-white); text-decoration: none;">Publications</a>
+          <a href="../members.html" style="color: var(--primary-white); text-decoration: none;">Members</a>
           <a href="mailto:crimrxiv@manchester.ac.uk" style="color: var(--primary-white); text-decoration: none;">Help</a>
           <a href="https://www.crimrxiv.com/rss.xml" target="_blank" style="color: var(--primary-white); text-decoration: none;">RSS</a>
           <a href="https://www.crimrxiv.com/legal" target="_blank" style="color: var(--primary-white); text-decoration: none;">Legal</a>

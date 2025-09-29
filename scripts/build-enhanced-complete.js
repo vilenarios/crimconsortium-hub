@@ -8,7 +8,6 @@
 import fs from 'fs-extra';
 import { Logger, FileHelper } from '../src/lib/utils.js';
 import { generateImprovedArticlePage } from './improved-article-template.js';
-import { generateRouter } from './router-template.js';
 
 class CompleteEnhancedBuilder {
   constructor() {
@@ -36,7 +35,7 @@ class CompleteEnhancedBuilder {
     return `
       <article class="article-card">
         <h3 class="article-title">
-          <a href="${basePath}articles/${article.slug}">${title}</a>
+          <a href="${basePath}articles/${article.slug}.html">${title}</a>
         </h3>
         <div class="article-authors">by ${authors}</div>
         <div class="article-date">Published: ${date}</div>
@@ -51,7 +50,6 @@ class CompleteEnhancedBuilder {
     try {
       await this.loadDataset();
       await this.generateHomepage();
-      await this.generateRouter();
       await this.generateEnhancedArticlePages();
       await this.generateMemberPages();
       await this.generateDataEndpoints();
@@ -428,9 +426,9 @@ class CompleteEnhancedBuilder {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="/">Home</a></li>
-        <li class="nav-item"><a href="/articles">Publications</a></li>
-        <li class="nav-item"><a href="/members">All Members</a></li>
+        <li class="nav-item"><a href="/index.html">Home</a></li>
+        <li class="nav-item"><a href="/articles.html">Publications</a></li>
+        <li class="nav-item"><a href="/members.html">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -492,7 +490,7 @@ class CompleteEnhancedBuilder {
               const fullName = member.name;
 
               return `
-              <a href="/members/${member.id}" class="member-square">
+              <a href="/members/${member.id}.html" class="member-square">
                 <div class="member-short-name">${fullName}</div>
                 <span class="member-pub-count">${member.publicationCount}</span>
               </a>
@@ -522,7 +520,7 @@ class CompleteEnhancedBuilder {
         </div>
 
         <div class="load-more">
-          <a href="/articles" class="load-more-btn">
+          <a href="/articles.html" class="load-more-btn">
             View All ${this.dataset.publications.length} Publications
           </a>
         </div>
@@ -586,15 +584,6 @@ class CompleteEnhancedBuilder {
     this.buildStats.pagesGenerated++;
   }
 
-  async generateRouter() {
-    this.logger.info('🔀 Generating router/fallback page...');
-
-    const routerHtml = generateRouter();
-    await fs.writeFile('./dist/main/router.html', routerHtml);
-    this.buildStats.pagesGenerated++;
-
-    this.logger.success('Router page generated (will be used as manifest fallback)');
-  }
 
   async generateEnhancedArticlePages() {
     this.logger.info('📄 Generating enhanced article pages with full content...');
@@ -616,6 +605,8 @@ class CompleteEnhancedBuilder {
         
         const articleDir = `./dist/main/articles/${article.slug}`;
         await this.fileHelper.ensureDir(articleDir);
+        // Create both formats for compatibility
+        await fs.writeFile(`./dist/main/articles/${article.slug}.html`, articleHTML);
         await fs.writeFile(`${articleDir}/index.html`, articleHTML);
         
         enhanced++;
@@ -777,8 +768,8 @@ class CompleteEnhancedBuilder {
     <div class="container">
       <ul class="nav-list">
         <li class="nav-item"><a href="./">Home</a></li>
-        <li class="nav-item"><a href="./articles" class="active">Publications</a></li>
-        <li class="nav-item"><a href="./members">All Members</a></li>
+        <li class="nav-item"><a href="./articles.html" class="active">Publications</a></li>
+        <li class="nav-item"><a href="./members.html">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -937,6 +928,8 @@ class CompleteEnhancedBuilder {
 </html>`;
     
     await this.fileHelper.ensureDir('./dist/main/articles');
+    await fs.writeFile('./dist/main/articles.html', articlesHTML);
+    // Also create index.html for backwards compatibility
     await fs.writeFile('./dist/main/articles/index.html', articlesHTML);
   }
 
@@ -1059,8 +1052,8 @@ class CompleteEnhancedBuilder {
     <div class="container">
       <ul class="nav-list">
         <li class="nav-item"><a href="./">Home</a></li>
-        <li class="nav-item"><a href="./articles">Publications</a></li>
-        <li class="nav-item"><a href="./members" class="active">All Members</a></li>
+        <li class="nav-item"><a href="./articles.html">Publications</a></li>
+        <li class="nav-item"><a href="./members.html" class="active">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -1084,7 +1077,7 @@ class CompleteEnhancedBuilder {
           ${member.memberType === 'supporting-organization' ? ' • Supporting member' : ''}
         </p>
         ${member.publicationCount > 0 ? 
-          `<a href="./members/${member.id}" class="btn">View Publications</a>` :
+          `<a href="./members/${member.id}.html" class="btn">View Publications</a>` :
           `<span style="color: #666; font-size: 0.9rem;">Infrastructure & support provider</span>`
         }
       </div>
@@ -1144,6 +1137,8 @@ class CompleteEnhancedBuilder {
 </html>`;
     
     await this.fileHelper.ensureDir('./dist/main/members');
+    await fs.writeFile('./dist/main/members.html', membersHTML);
+    // Also create index.html for backwards compatibility
     await fs.writeFile('./dist/main/members/index.html', membersHTML);
     
     // Individual member pages (for ALL members)
@@ -1342,7 +1337,7 @@ class CompleteEnhancedBuilder {
           <img src="../../assets/images/crimxriv-logo.png" alt="CrimRXiv" style="height: 35px;" onerror="this.style.display='none'">
         </a>
         <div>
-          <a href="../" class="site-title">CrimConsortium</a>
+          <a href="../index.html" class="site-title">CrimConsortium</a>
           <p class="tagline">Leaders, providers, and supporters of open criminology</p>
         </div>
       </div>
@@ -1352,9 +1347,9 @@ class CompleteEnhancedBuilder {
   <nav class="nav-bar">
     <div class="container">
       <ul class="nav-list">
-        <li class="nav-item"><a href="../">Home</a></li>
-        <li class="nav-item"><a href="../articles">Publications</a></li>
-        <li class="nav-item"><a href="../members">All Members</a></li>
+        <li class="nav-item"><a href="../index.html">Home</a></li>
+        <li class="nav-item"><a href="../articles.html">Publications</a></li>
+        <li class="nav-item"><a href="../members.html">All Members</a></li>
       </ul>
     </div>
   </nav>
@@ -1362,8 +1357,8 @@ class CompleteEnhancedBuilder {
   <main class="page-content">
     <div class="container">
       <div class="breadcrumb">
-        <a href="../">CrimConsortium</a> →
-        <a href="../members">Members</a> →
+        <a href="../index.html">CrimConsortium</a> →
+        <a href="../members.html">Members</a> →
         ${member.name}
       </div>
 
@@ -1375,7 +1370,7 @@ class CompleteEnhancedBuilder {
           <p style="font-size: 1.1rem; color: var(--text-gray); margin-bottom: 1rem;">
             ${member.name} is a supporting member of the CrimConsortium, providing infrastructure and support for open criminology research.
           </p>
-          <a href="../members" class="btn" style="display: inline-block; margin-top: 1rem;">← Back to All Members</a>
+          <a href="../members.html" class="btn" style="display: inline-block; margin-top: 1rem;">← Back to All Members</a>
         </div>
       ` : `
         <div class="articles-list">
@@ -1422,9 +1417,9 @@ class CompleteEnhancedBuilder {
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; margin-top: 1.5rem;">
         <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
-          <a href="./">Home</a>
-          <a href="./articles">Publications</a>
-          <a href="./members">Members</a>
+          <a href="../index.html">Home</a>
+          <a href="../articles.html">Publications</a>
+          <a href="../members.html">Members</a>
           <a href="mailto:crimrxiv@manchester.ac.uk" style="color: var(--primary-white); text-decoration: none;">Help</a>
           <a href="https://www.crimrxiv.com/rss.xml" target="_blank">RSS</a>
           <a href="https://www.crimrxiv.com/legal" target="_blank">Legal</a>
@@ -1440,6 +1435,8 @@ class CompleteEnhancedBuilder {
       
       const memberDir = `./dist/main/members/${member.id}`;
       await this.fileHelper.ensureDir(memberDir);
+      // Create both formats for compatibility
+      await fs.writeFile(`./dist/main/members/${member.id}.html`, memberHTML);
       await fs.writeFile(`${memberDir}/index.html`, memberHTML);
     }
     

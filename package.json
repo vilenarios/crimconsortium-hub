@@ -18,14 +18,20 @@
     "full": "npm run import && npm run build && npm run sync && npm run deploy"
   },
   "dependencies": {
+    "@pubpub/sdk": "^1.1.1",
+    "apache-arrow": "^21.1.0",
     "ardrive-core-js": "^1.1.0",
+    "axios": "^1.6.0",
+    "better-sqlite3": "^12.4.1",
+    "chalk": "^4.1.2",
     "cheerio": "1.0.0-rc.12",
-    "axios": "^1.6.0", 
+    "dotenv": "^17.2.3",
+    "duckdb": "^1.4.1",
     "fs-extra": "^11.2.0",
-    "xml2js": "^0.6.2",
-    "lunr": "^2.3.9",
     "handlebars": "^4.7.8",
-    "chalk": "^4.1.2"
+    "lunr": "^2.3.9",
+    "parquetjs-lite": "^0.8.7",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@ar.io/sdk": "^1.0.0"

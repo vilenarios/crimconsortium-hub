@@ -12,7 +12,13 @@
       "Bash(npm run import:*)",
       "Bash(cp:*)",
       "Bash(cat:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "WebFetch(domain:pubpub.org)",
+      "Bash(git check-ignore:*)",
+      "Bash(npm install:*)",
+      "Bash(findstr:*)",
+      "Bash(sqlite3:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

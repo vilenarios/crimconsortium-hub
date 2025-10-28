@@ -32,21 +32,23 @@ cache/
 *.tmp
 *.log
 
-# Data management
-# Include the complete dataset (56MB) for easy team setup
-# GitHub allows files up to 100MB
-!data/final/consortium-dataset.json
-!data/final/pdfs/
-
-# Ignore temporary scraping data
+# Data management - Ignore large generated files
+# These should be generated locally via `npm run import` and `npm run build`
 data/final/batches/
 data/final/members/
 data/final/progress/
+data/final/pdfs/
+data/final/articles-html/
+data/final/consortium-dataset.json
+data/final/scraping-progress.json
 data/temp/
 data/state/
 
-# Keep backup data too
-!data_backup/
+# Optional: Uncomment to include dataset in repo (56MB, useful for team setup)
+# !data/final/consortium-dataset.json
+
+# Optional: Uncomment to include PDFs in repo (126MB)
+# !data/final/pdfs/
 
 export/
 PUB-PUB-API.json
@@ -101,13 +103,3 @@ logs/
 # Runtime files
 pids/
 *.pid
-
-# Optional: Keep structure but ignore large content
-# Uncomment if you want to keep directory structure in repo
-# but ignore large data files:
-data/final/pdfs/*
-data/final/pdfs
-data/final/consortium-dataset.json
-data/final/scraping-progress.json
-data/final/articles-html
-# !data/final/pdfs/.gitkeep

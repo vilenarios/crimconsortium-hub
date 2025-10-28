@@ -4,6 +4,8 @@
   "description": "Static site generator for CrimConsortium member publications on Arweave",
   "main": "index.js",
   "scripts": {
+    "scrape": "node scripts/scrape-to-sqlite.js",
+    "export": "node scripts/export-to-parquet.js",
     "import": "node scripts/robust-incremental-scraper.js",
     "import-legacy": "node scripts/enhanced-consortium-scraper.js",
     "import-pdfs": "node scripts/download-pdfs-only.js",

@@ -7,12 +7,14 @@
 
 import axios from 'axios';
 import fs from 'fs-extra';
+import Database from 'better-sqlite3';
 import { Logger, FileHelper } from '../src/lib/utils.js';
 
 class PDFDownloader {
   constructor() {
     this.logger = new Logger();
     this.fileHelper = new FileHelper();
+    this.db = null;
   }
 
   async downloadPDF(publication) {
@@ -68,36 +70,83 @@ class PDFDownloader {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  async getArticlesFromSQLite(dbPath) {
+    const db = new Database(dbPath, { readonly: true });
+
+    const articles = db.prepare(`
+      SELECT
+        article_id,
+        slug,
+        title,
+        attachments_json
+      FROM articles
+      WHERE attachments_json IS NOT NULL
+        AND attachments_json != '[]'
+        AND attachments_json != ''
+    `).all();
+
+    db.close();
+    return articles;
+  }
+
   async run() {
     console.log('🚀 Starting PDF downloads from existing dataset...\n');
 
-    // Load the existing dataset
-    const datasetPath = './data/final/consortium-dataset.json';
+    // Check for SQLite database
+    const sqlitePath = './data/sqlite/crimrxiv.db';
 
-    if (!await this.fileHelper.exists(datasetPath)) {
-      console.error('❌ Dataset not found! Run "npm run import" first to create the dataset.');
+    if (!await this.fileHelper.exists(sqlitePath)) {
+      console.error('❌ Database not found! Run "npm run import" first to create the database.');
+      console.error(`   Expected: ${sqlitePath}`);
       process.exit(1);
     }
 
-    const dataset = await this.fileHelper.readJSON(datasetPath);
+    console.log('📊 Reading from SQLite database...');
+    const articles = await this.getArticlesFromSQLite(sqlitePath);
 
-    if (!dataset || !dataset.publications) {
-      console.error('❌ Invalid dataset format');
-      process.exit(1);
+    console.log(`📚 Total articles with attachments: ${articles.length}`);
+
+    // Parse attachments and filter for PDFs
+    const publicationsWithPDFs = [];
+
+    for (const article of articles) {
+      try {
+        let pdfUrl = null;
+
+        // Try attachments_json field (from SQLite)
+        if (article.attachments_json) {
+          const attachments = JSON.parse(article.attachments_json);
+          const pdfAttachment = attachments.find(att =>
+            att.type === 'application/pdf' || att.path?.endsWith('.pdf')
+          );
+          if (pdfAttachment?.url) {
+            pdfUrl = pdfAttachment.url;
+          }
+        }
+
+        if (pdfUrl) {
+          publicationsWithPDFs.push({
+            slug: article.slug,
+            id: article.article_id || article.slug,
+            title: article.title,
+            downloads: {
+              pdf: pdfUrl
+            }
+          });
+        }
+      } catch (error) {
+        // Skip articles with invalid JSON
+      }
     }
-
-    // Filter publications with PDF links
-    const publicationsWithPDFs = dataset.publications.filter(pub =>
-      pub.downloads && pub.downloads.pdf
-    );
 
     if (publicationsWithPDFs.length === 0) {
       console.log('ℹ️ No publications with PDF links found in dataset');
+      console.log('💡 PDFs are stored in the manifest metadata on Arweave');
+      console.log('💡 This script only downloads direct PDF URLs from the database');
       return;
     }
 
-    console.log(`📊 Found ${publicationsWithPDFs.length} publications with PDF links`);
-    console.log(`📚 Total publications in dataset: ${dataset.publications.length}\n`);
+    console.log(`📊 Found ${publicationsWithPDFs.length} publications with PDF links\n`);
 
     // Create PDFs directory
     await this.fileHelper.ensureDir('./data/final/pdfs');
@@ -159,7 +208,7 @@ class PDFDownloader {
     }
 
     console.log('\n✅ PDF download process complete!');
-    console.log('💡 Run "npm run build" to include PDFs in the static site');
+    console.log('💡 PDFs saved to data/final/pdfs/');
   }
 }
 

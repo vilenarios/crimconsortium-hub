@@ -26,7 +26,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const CONFIG = {
-  OUTPUT_DIR: path.join(__dirname, '../data/parquet'),
+  OUTPUT_DIR: path.join(__dirname, '../public/data'),
   ARTICLES_PER_BATCH: 1000,  // Target ~30MB per batch
   COMPRESSION: 'ZSTD',       // Best for web delivery
   ROW_GROUP_SIZE: 100000     // Optimize for queries
@@ -64,73 +64,13 @@ class ParquetExporter {
   }
 
   /**
-   * Export article batches
+   * Export article batches (DEPRECATED - No longer creating batches)
+   * Keeping for backward compatibility but returns empty array
    */
   async exportBatches() {
-    // Get unexported articles
-    const unexported = this.db.getUnexportedArticles(999999);
-
-    if (unexported.length === 0) {
-      console.log('ℹ️  No unexported articles found\n');
-      return [];
-    }
-
-    console.log(`📦 Found ${unexported.length} unexported articles\n`);
-
-    // Calculate batches
-    const batchCount = Math.ceil(unexported.length / CONFIG.ARTICLES_PER_BATCH);
-    const exportDate = new Date().toISOString().split('T')[0];
-    const batches = [];
-
-    console.log(`📊 Creating ${batchCount} batch file(s)...\n`);
-
-    // Export each batch
-    for (let i = 0; i < batchCount; i++) {
-      const start = i * CONFIG.ARTICLES_PER_BATCH;
-      const end = Math.min(start + CONFIG.ARTICLES_PER_BATCH, unexported.length);
-      const batchArticles = unexported.slice(start, end);
-
-      const batchName = `${exportDate}_batch-${String(i + 1).padStart(3, '0')}`;
-      const outputPath = path.join(CONFIG.OUTPUT_DIR, 'articles', `${batchName}.parquet`);
-
-      console.log(`  📝 Batch ${i + 1}/${batchCount}: ${batchName}`);
-      console.log(`     Articles: ${batchArticles.length}`);
-
-      // Write batch to Parquet
-      await this.writeBatchParquet(batchArticles, outputPath);
-
-      // Get file stats
-      const stats = await fs.stat(outputPath);
-      const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
-
-      console.log(`     Size: ${sizeMB} MB`);
-      console.log(`     ✅ Written\n`);
-
-      // Record in database
-      this.db.recordExportBatch({
-        batchName,
-        exportDate: new Date().toISOString(),
-        articleCount: batchArticles.length,
-        filePath: outputPath,
-        fileSizeBytes: stats.size,
-        fileSizeMB: parseFloat(sizeMB)
-      });
-
-      // Mark articles as exported
-      this.db.markAsExported(
-        batchArticles.map(a => a.id),
-        batchName
-      );
-
-      batches.push({
-        batchName,
-        articleCount: batchArticles.length,
-        sizeMB: parseFloat(sizeMB),
-        path: outputPath
-      });
-    }
-
-    return batches;
+    // No longer exporting batches - all data goes into metadata.parquet
+    console.log('ℹ️  Batch export skipped (manifest architecture)\n');
+    return [];
   }
 
   /**
@@ -251,10 +191,11 @@ class ParquetExporter {
       versionCounts[row.article_id] = row.count;
     });
 
-    // Add has_multiple_versions flag
+    // Add has_multiple_versions flag and full abstract
     const enrichedArticles = latestArticles.map(article => ({
       ...article,
       has_multiple_versions: (versionCounts[article.article_id] || 1) > 1,
+      abstract: article.abstract || '',
       abstract_preview: article.abstract ? article.abstract.substring(0, 500) : ''
     }));
 
@@ -269,6 +210,7 @@ class ParquetExporter {
             slug VARCHAR,
             title VARCHAR,
             description VARCHAR,
+            abstract VARCHAR,
             abstract_preview VARCHAR,
             authors_json VARCHAR,
             author_count INTEGER,
@@ -276,23 +218,33 @@ class ParquetExporter {
             collections_json VARCHAR,
             collection_count INTEGER,
             doi VARCHAR,
+            license VARCHAR,
             created_at TIMESTAMP,
             updated_at TIMESTAMP,
             published_at TIMESTAMP,
             url VARCHAR,
+            pdf_url VARCHAR,
             version_number INTEGER,
             version_timestamp TIMESTAMP,
             has_multiple_versions BOOLEAN,
             export_batch VARCHAR,
-            arweave_tx_id VARCHAR
+            arweave_tx_id VARCHAR,
+            manifest_tx_id VARCHAR,
+            word_count INTEGER,
+            attachment_count INTEGER,
+            reference_count INTEGER,
+            citation_count INTEGER,
+            content_prosemirror VARCHAR,
+            attachments_json VARCHAR
           )
         `, (err) => {
           if (err) return reject(err);
 
           const stmt = this.duckConn.prepare(`
             INSERT INTO metadata_temp VALUES (
-              ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-              ?, ?, ?, ?, ?, ?, ?, ?, ?
+              ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+              ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+              ?, ?, ?, ?, ?, ?
             )
           `);
 
@@ -302,6 +254,7 @@ class ParquetExporter {
               article.slug,
               article.title,
               article.description,
+              article.abstract,
               article.abstract_preview,
               article.authors_json,
               article.author_count,
@@ -309,15 +262,24 @@ class ParquetExporter {
               article.collections_json,
               article.collection_count,
               article.doi,
+              article.license,
               article.created_at,
               article.updated_at,
               article.published_at,
               article.url,
+              article.pdf_url,
               article.version_number,
               article.version_timestamp,
               article.has_multiple_versions,
               article.export_batch,
-              article.arweave_tx_id
+              article.arweave_tx_id,
+              article.manifest_tx_id,
+              article.word_count || 0,
+              article.attachment_count || 0,
+              article.reference_count || 0,
+              article.citation_count || 0,
+              article.content_prosemirror,
+              article.attachments_json
             );
           }
 
@@ -376,15 +338,16 @@ class ParquetExporter {
     console.log(`  Batches: ${stats.total_batches}`);
     console.log('');
     console.log('Output Files:');
-    console.log(`  Metadata: data/parquet/metadata.parquet`);
+    console.log(`  Metadata: public/data/metadata.parquet`);
     batches.forEach(b => {
-      console.log(`  Batch: data/parquet/articles/${b.batchName}.parquet (${b.sizeMB} MB)`);
+      console.log(`  Batch: public/data/articles/${b.batchName}.parquet (${b.sizeMB} MB)`);
     });
     console.log('='.repeat(60) + '\n');
 
     console.log('💡 Next steps:');
-    console.log('  1. Deploy to Arweave: npm run deploy');
-    console.log('  2. Configure ArNS undernames for each batch\n');
+    console.log('  1. Test locally: npm run dev');
+    console.log('  2. Deploy to Arweave: npm run deploy');
+    console.log('  3. Configure ArNS undernames for parquet files\n');
   }
 
   /**

@@ -6,196 +6,497 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Core Development:**
 ```bash
-npm run build     # Generate complete static site (916+ pages)
-npm run dev       # Local server at http://localhost:3000
-npm run preview   # Build and run dev server (npm run build && npm run dev)
-npm run validate  # Verify build integrity
+npm run dev       # Vite dev server at http://localhost:3005
+npm run build     # Build SPA to dist/
+npm run preview   # Preview production build
 ```
 
-**Data Import:**
+**Data Pipeline:**
 ```bash
-npm run import         # Process consortium data from CrimRXiv (30-45 min, uses robust-incremental-scraper.js)
-npm run import-legacy  # Use enhanced-consortium-scraper.js (faster alternative)
-npm run import-html    # Download HTML articles (saves ~120MB vs PDFs)
-npm run import-pdfs    # Download PDF attachments (large, ~126MB)
-npm run status         # Check scraping progress (reads data/scraping-progress.json)
-npm run reset          # Clear data and reimport (rm -rf data/final/* && import)
+npm run import          # Scrape CrimRXiv → SQLite (30-45 min, uses PubPub SDK)
+npm run import:pdfs     # Download PDF attachments
+npm run export          # SQLite → Parquet for browser queries (~30 sec)
 ```
+
+**Important:** Before running `npm run import`, ensure `.env` file exists with:
+```env
+PUBPUB_EMAIL=your-email@example.com
+PUBPUB_PASSWORD=your-password
+```
+See `docs/SECURITY_CHECKLIST.md` for credential management best practices.
 
 **Deployment:**
 ```bash
-npm run sync     # Sync with ArDrive
-npm run deploy   # Deploy to Arweave
-npm run full     # Complete pipeline (import + build + sync + deploy)
+npm run sync                  # Sync with ArDrive
+npm run generate:manifests    # Generate Arweave manifests
+npm run upload:manifests      # Upload manifests to Arweave
+```
+
+**Development Utilities:**
+```bash
+node scripts/scraping-status.js    # Check import progress
 ```
 
 ## Architecture Overview
 
-**Static Site Generator for Arweave Permaweb:**
-- Generates 916+ static HTML pages from a 56MB consortium dataset
-- 835 publications from 30 consortium members (17 research + 13 supporting)
-- Output directory: `dist/main/` (~20-30MB for Arweave deployment)
-- Uses ES6 modules (`type: "module"` in package.json)
-- Self-contained with inline CSS (no external dependencies for Arweave compatibility)
+**Single Page Application (SPA) with Client-Side Database Queries**
 
-**Core Pipeline (4 Stages):**
+This is a browser-based archive viewer that queries data directly in the browser using DuckDB-WASM. No backend required.
 
-1. **Scrape** (`scripts/robust-incremental-scraper.js`)
-   - Scrapes CrimRXiv.com with incremental resume capability
-   - 30 consortium members defined with regex patterns for affiliation detection
-   - Progress saved to `data/scraping-progress.json` (resume-friendly, saves every 5 items)
-   - Scraper handles: member discovery, article metadata, author affiliations
-   - Optional: Downloads HTML articles (~5MB) or PDFs (~126MB)
+### Tech Stack
+- **Frontend**: Vite + Vanilla JavaScript (ES6 modules)
+- **Database (Build-time)**: SQLite (source of truth)
+- **Database (Runtime)**: DuckDB-WASM (runs in browser)
+- **Data Format**: Apache Parquet (5MB columnar storage)
+- **Routing**: Hash-based routing (`#/article/slug`)
+- **Deployment Target**: Arweave Permaweb
 
-2. **Consolidate** (automatic during scrape)
-   - Merges all scraped data into `data/final/consortium-dataset.json` (56MB)
-   - Structure: `{ members: [], publications: [], summary: {} }`
-   - Members array: 30 institutions with IDs, names, slugs
-   - Publications array: 835 articles with full metadata, abstracts, author lists
+### Key Features
+- Instant page navigation (client-side routing)
+- Full-text search across 3,700+ articles
+- No backend server required
+- Works on decentralized web (Arweave)
+- Mobile-responsive design
 
-3. **Build** (`scripts/build-enhanced-complete.js`)
-   - Generates static HTML pages from dataset
-   - Homepage: 25 most recent publications with article cards
-   - Article pages: Uses `scripts/improved-article-template.js` (academic format with references)
-   - Member pages: 30 institution pages with publication counts and lists
-   - Assets: Copies images, PDFs, favicon to `dist/main/assets/`
+## Data Pipeline (3 Stages)
 
-4. **Deploy** (Arweave upload scripts)
-   - Upload `dist/main/` to Arweave (~$0.82 one-time cost for permanent storage)
-   - Uses ArDrive integration via `src/lib/arfs-client.js`
-   - Result: Permanent, decentralized academic archive
+```
+Stage 1: CrimRXiv.com (PubPub API)
+   ↓
+Stage 2: SQLite Database (source of truth)
+   scripts/scrape-to-sqlite.js → data/sqlite/crimrxiv.db
+   ↓
+Stage 3: Parquet Export (browser-optimized)
+   scripts/export-to-parquet.js → public/data/metadata.parquet (5MB)
+```
 
-**Key Libraries:**
-- `src/lib/utils.js` - Logger (team-friendly output), FileHelper, ProgressTracker, withRetry
-- `src/lib/consortium-scraper.js` - Core scraping logic with member pattern matching
-- `src/lib/export-parser.js` - Parse CrimRXiv export format
-- `src/lib/arfs-client.js` - ArDrive integration for Arweave uploads
+**Critical Architecture Decision**: SQLite is the **single source of truth**. Parquet files are **regenerated exports**, never updated in place. See `docs/PATTERN_GUIDE.md` for the universal pattern.
 
-**Important Dependencies:**
-- `ardrive-core-js` - ArDrive file system integration (Arweave uploads)
-- `cheerio` - HTML parsing for web scraping
-- `axios` - HTTP requests with retry logic
-- `lunr` - Search index generation (if enabled)
-- `handlebars` - Template engine (for future features)
-- `chalk` - Terminal colors for logger output
+### Stage 1: Data Import (PubPub SDK)
+
+**Script**: `scripts/scrape-to-sqlite.js`
+**Source**: CrimRXiv.com (PubPub community)
+**Output**: `data/sqlite/crimrxiv.db`
+**Time**: 30-45 minutes for full import
+
+Uses `@pubpub/sdk` to fetch:
+- Full article metadata (title, abstract, DOI, license)
+- Complete ProseMirror content (not truncated)
+- Author affiliations
+- PDF attachments (URLs and metadata)
+
+**Key Features**:
+- Incremental sync (only fetches new/updated articles)
+- Batch processing (100 articles at a time)
+- Rate limiting (100ms delay between requests)
+- Automatic retry with exponential backoff
+
+### Stage 2: SQLite Database
+
+**File**: `src/lib/database.js`
+**Location**: `data/sqlite/crimrxiv.db`
+**Purpose**: Operational state tracking and single source of truth
+
+**Schema** (`articles` table):
+- Identity: `id`, `article_id`, `slug`, `version_number`
+- Metadata: `title`, `abstract`, `doi`, `license`, `authors_json`
+- Content: `content_prosemirror`, `content_markdown`, `content_text_full`
+- Attachments: `attachments_json` (array of files)
+- Arweave tracking: `article_markdown_tx_id`, `attachments_uploaded_json`
+
+**Important Operations**:
+- `upsertArticle()` - Insert or update article (idempotent)
+- `getLatestArticles()` - Get recent publications
+- `searchArticles()` - Full-text search
+- `getArticleBySlug()` - Get single article
+
+### Stage 3: Parquet Export
+
+**Script**: `scripts/export-to-parquet.js`
+**Input**: `data/sqlite/crimrxiv.db`
+**Output**: `public/data/metadata.parquet` (5MB, committed to repo)
+**Time**: ~30 seconds
+
+Generates a **single Parquet file** with all article metadata optimized for browser queries:
+- ZSTD compression (best for web delivery)
+- Sorted by `published DESC` (most recent first)
+- Row group size: 100,000 (optimized for range queries)
+- Includes derived fields: `year`, `month`, `author_count`
+
+**Why Parquet?**
+- Efficient columnar storage (5MB vs 56MB JSON)
+- DuckDB-WASM can query without downloading entire file (HTTP range requests)
+- Fast filtering, aggregation, and search
+- Perfect for read-heavy workloads (analytics, search)
+
+## Frontend Architecture (SPA)
+
+### Entry Points
+- `index.html` - HTML shell with nav/footer (always visible), loading screen
+- `src/main.js` - Vite entry point, creates and initializes CrimRXivApp
+- `src/app.js` - Main application orchestrator
+
+**Initialization Sequence** (app.js:34-78):
+1. Get `#app` container element
+2. Initialize ParquetDB (loads DuckDB-WASM + metadata.parquet)
+3. Initialize Router (sets up hash change listeners)
+4. Initialize all Components (passing db and router references)
+5. Expose `window.router` globally for onclick handlers
+6. Initialize navigation search bar
+7. Trigger initial route handling
+
+**Critical**: Router must be initialized before components, as components need router reference for navigation.
+
+### Routing System
+
+**File**: `src/lib/router.js`
+**Type**: Hash-based routing (Arweave-compatible)
+
+**Routes**:
+- `#/` or empty → Homepage
+- `#/article/{slug}` → Article detail
+- `#/search?q={query}` → Search results
+- `#/consortium` → Consortium members
+- `#/member/{slug}` → Member publications
+
+**Why hash-based?** Works on static hosting (Arweave) without server-side routing.
+
+### Database Layer (Browser)
+
+**File**: `src/lib/parquet-db.js`
+**Type**: DuckDB-WASM wrapper
+
+**Initialization** (parquet-db.js:56-98):
+1. Configure manual bundles (WASM files must be in `/public/duckdb/`)
+2. Select bundle (MVP or EH) based on browser support
+3. Create worker and initialize AsyncDuckDB
+4. Connect and load metadata.parquet
+
+**Critical**: DuckDB-WASM requires absolute URLs for HTTP range requests. The `getParquetUrls()` method (parquet-db.js:32-51) handles URL resolution:
+- Localhost: `http://localhost:3005/data/metadata.parquet`
+- Arweave: ArNS undername URLs via `gateway.js`
+
+**Key Methods**:
+- `initialize()` - Load DuckDB-WASM and Parquet file
+- `getRecentArticles(limit)` - Homepage query (sorted by published_at DESC)
+- `search(query)` - Full-text search using ILIKE on multiple fields
+- `searchByAffiliation(patterns)` - Find articles by author affiliations
+- `getArticleMetadata(slug)` - Single article lookup
+- `getStats()` - Database statistics (total articles, date range, etc.)
+
+**Gateway Detection**: `src/lib/gateway.js` provides URL helpers for Arweave compatibility:
+- `getAppInfo()` - Detect localhost vs Arweave gateway
+- `getDataParquetUrl(filename)` - Resolve Parquet file URLs
+- `getUndernameUrl(subdomain, path)` - Generate ArNS undername URLs
+
+### Components
+
+**File**: `src/components/*.js`
+**Pattern**: Each component has a `render()` method that returns HTML
+
+**Homepage** (`homepage.js`):
+- Hero section with stats
+- Search bar
+- 25 most recent publications with "Load More"
+
+**Article Detail** (`article-detail.js`):
+- Full metadata display
+- ProseMirror content rendering
+- PDF attachments
+- Author affiliations
+
+**Search** (`search.js`):
+- Full-text search across title, abstract, authors, keywords
+- Highlighting of search terms
+- Results pagination
+
+**Consortium** (`consortium.js`):
+- List of 30+ consortium members
+- Links to member detail pages
+
+**Member Detail** (`member-detail.js`):
+- Publications from specific consortium member
+- Affiliation pattern matching
+
+### Styling
+
+**File**: `src/styles/main.css`
+**Build**: Inlined into `index.html` during Vite build
+**Why inline?** Self-contained HTML for Arweave compatibility (no external dependencies)
 
 ## Development Workflow
 
 **First Time Setup:**
 ```bash
 npm install
-npm run import       # Scrape data (30-45 min), OR restore from backup: cp -r data_backup/final/* data/final/
-npm run build        # Generate static site (~15 sec)
-npm run dev          # Test at http://localhost:3000
+
+# Option 1: Import fresh data (30-45 min)
+npm run import
+
+# Option 2: Use existing SQLite backup (if available)
+# cp backup/crimrxiv.db data/sqlite/
+
+# Export to Parquet (required for SPA)
+npm run export
+
+# Start dev server
+npm run dev  # Opens at http://localhost:3005
 ```
 
 **Incremental Development:**
-- Scraper crashed? Just run `npm run import` again - it resumes from `data/scraping-progress.json`
-- Modify templates? Re-run `npm run build` to regenerate pages
-- Testing locally? `npm run dev` simulates ArNS routing (includes undername paths like `_subdomain.localhost:3000`)
+- Data updated? Re-run `npm run import` (incremental, fast) then `npm run export`
+- UI changes? Just save files, Vite HMR reloads automatically
+- Component changes? No rebuild needed, Vite handles it
+- Add new pages? Update `src/lib/router.js` and create component
 
-**Understanding the Dev Server (`scripts/serve.js`):**
-- Serves from `dist/main/` directory
-- Simulates ArNS undernames for future multi-app deployment
-- Shows helpful startup checklist for verification
-- Requires build to exist (run `npm run build` first)
+**Testing Locally:**
+- Dev server: `npm run dev` (with hot reload)
+- Production build: `npm run build && npm run preview`
+- Check console for DuckDB-WASM initialization logs
+- Test all routes work (homepage, article, search, consortium)
 
 ## Key Architecture Patterns
 
-**Arweave Compatibility Requirements:**
-- All CSS must be inline (no external stylesheets)
-- Use relative paths for all links (no absolute URLs like `/articles/...`)
-- No external dependencies (fonts, CDNs, external scripts)
-- Self-contained HTML files that work without a server
-- Maintain CrimRXiv visual design consistency
+### Data Pattern: SQLite → Parquet
 
-**Member Detection System:**
-- 30 consortium members defined in `robust-incremental-scraper.js` (lines 19-51)
-- Each member has: `id`, `name`, `slug`
-- Affiliation patterns in `consortiumPatterns` array (lines 66-87)
-- Uses regex matching on author affiliations to assign publications to members
-- Example pattern: `['University of Manchester', 'Manchester.*Criminology']`
+**CRITICAL**: SQLite is source of truth, Parquet is read-only export.
 
-**Incremental Scraping (Resume-Friendly):**
-- Progress tracking in `data/scraping-progress.json`
-- Saves after every 5 publications (`config.saveProgressEvery`)
-- Can resume from crash without losing progress
-- Tracks: `{ phase, currentMemberIndex, processedPublications, lastSaved }`
-
-**Data Flow:**
+**Workflow**:
 ```
-CrimRXiv.com → robust-incremental-scraper.js → data/scraping-progress.json
-                                              ↓
-                                data/final/consortium-dataset.json
-                                              ↓
-                            build-enhanced-complete.js
-                                              ↓
-                                       dist/main/ (916+ HTML files)
-                                              ↓
-                                         Arweave
+1. Scrape data → SQLite (npm run import)
+2. Modify/update → SQLite (direct database operations)
+3. Export → Parquet (npm run export)
+4. Never update Parquet directly
 ```
 
-## Testing & Verification
+**Why this pattern?**
+- SQLite handles writes, updates, complex queries
+- Parquet optimized for browser reads, analytics
+- Clear separation: operational vs analytics
+- Re-export is fast (~30 sec) and reproducible
 
-**Pre-Deployment Checklist:**
-- [ ] Homepage (`dist/main/index.html`) displays 25 most recent publications
-- [ ] All 30 member pages exist in `dist/main/members/` with correct counts
-- [ ] 835 article pages in `dist/main/articles/` with abstracts
-- [ ] PDFs copied to `dist/main/assets/pdfs/` (if using `import-pdfs`)
-- [ ] Logo appears in header/footer (`dist/main/assets/images/`)
-- [ ] Mobile responsive design works
-- [ ] All links are relative paths (no absolute URLs)
-- [ ] All CSS is inline (inspect any page's `<style>` tag)
-- [ ] No console errors when viewing pages locally
+See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 
-**Validation Commands:**
-```bash
-npm run status       # Check scraping progress mid-import
-npm run validate     # Verify build integrity after build
-npm run dev          # Manual testing at http://localhost:3000
-```
+### Arweave Compatibility Requirements
+
+**Critical for Permaweb deployment**:
+- All CSS must be inline (Vite handles this)
+- Use relative paths or hash routing (no absolute server paths)
+- No external dependencies (no CDNs, external fonts)
+- Self-contained HTML that works without server
+- Handle gateway URLs correctly (see `src/lib/gateway.js`)
+
+**Gateway Detection** (`src/lib/gateway.js`):
+- Localhost: Use full URLs (`http://localhost:3005/data/...`)
+- Arweave: Use gateway-relative paths (`./data/...` or ArNS undernames)
+- DuckDB-WASM requires absolute URLs for HTTP range requests
+
+### Incremental Data Sync
+
+**Script**: `scripts/scrape-to-sqlite.js`
+**Progress Tracking**: Uses PubPub SDK's pagination
+
+**How it works**:
+1. Fetch all pubs from CrimRXiv community (batch of 100)
+2. For each pub, check if already in database
+3. If exists and unchanged, skip
+4. If new or updated, fetch full content and upsert
+5. Save progress after each batch
+
+**Resume capability**: Can stop/restart without losing progress (state tracked in SQLite)
 
 ## File Organization
 
-**Critical Files (Don't Delete):**
-- `data/final/consortium-dataset.json` - 56MB master dataset (source of truth)
-- `data/scraping-progress.json` - Resume state for incremental scraper
-- `scripts/build-enhanced-complete.js` - Main build orchestrator
-- `scripts/improved-article-template.js` - Article page template generator
-- `src/lib/utils.js` - Shared utilities (Logger, FileHelper)
+**Critical Files (Don't Delete)**:
+- `data/sqlite/crimrxiv.db` - SQLite database (source of truth)
+- `public/data/metadata.parquet` - Exported data for browser (5MB, committed to repo)
+- `public/duckdb/*.wasm` - DuckDB-WASM bundles (required for runtime)
+- `public/duckdb/*.worker.js` - DuckDB-WASM workers (required for runtime)
+- `src/app.js` - Main application orchestrator
+- `src/lib/router.js` - Client-side routing
+- `src/lib/parquet-db.js` - DuckDB-WASM wrapper
+- `src/lib/gateway.js` - URL resolution for localhost vs Arweave
+- `src/lib/database.js` - SQLite schema and operations (build-time only)
+- `vite.config.js` - Build configuration
+- `index.html` - HTML shell with nav, footer, loading screen
 
-**Generated/Replaceable:**
-- `dist/main/**` - Entire build output (regenerated by `npm run build`)
-- `data/final/articles-html/**` - Downloaded HTML articles (regenerated by `npm run import-html`)
-- `data/final/pdfs/**` - Downloaded PDFs (regenerated by `npm run import-pdfs`)
+**Generated/Replaceable**:
+- `dist/**` - Build output (regenerated by `npm run build`)
+- `data/sqlite/crimrxiv.db-shm`, `data/sqlite/crimrxiv.db-wal` - SQLite temp files
+- `data/manifests/**` - Arweave manifest files
 
-**Template Pattern:**
-- Article pages use function-based templates (not Handlebars)
-- See `generateImprovedArticlePage()` in `scripts/improved-article-template.js:6`
-- Inline CSS generation for academic styling
-- Processes references into individual citation entries
+**Key Directories**:
+- `src/components/` - UI components (each exports a class with `render()`)
+- `src/lib/` - Core libraries (router, database, utilities)
+- `src/styles/` - CSS (inlined during build)
+- `scripts/` - Build-time data pipeline scripts
+- `public/` - Static assets served by Vite (Parquet files, images)
+- `docs/` - Architecture documentation
 
 ## Common Tasks
 
-**Adding a New Consortium Member:**
-1. Edit `scripts/robust-incremental-scraper.js:19-51` (add to `allConsortiumMembers`)
-2. Edit `scripts/robust-incremental-scraper.js:66-87` (add affiliation patterns to `consortiumPatterns`)
-3. Run `npm run reset` to re-scrape with new member
-4. Run `npm run build` to regenerate site
+**Adding a New Page**:
+1. Create component in `src/components/new-page.js` with `render()` method
+2. Add route pattern in `src/lib/router.js` (e.g., `newPage: /^#?\/new-page\/?$/`)
+3. Add route handler in `Router.handleRoute()`
+4. Add show method in `src/app.js` (e.g., `showNewPage()`)
+5. Test by navigating to `#/new-page`
 
-**Updating Existing Data:**
+**Updating Article Data**:
 ```bash
-npm run import       # Incremental: only fetches new publications since last run
-npm run build        # Regenerate site with updated data
+npm run import       # Fetch latest from CrimRXiv (incremental)
+npm run export       # Re-export to Parquet
+npm run dev          # Test changes locally
 ```
 
-**Complete Fresh Start:**
-```bash
-npm run reset        # Clears data/final/* and re-runs import
+**Adding New Database Fields**:
+1. Update schema in `src/lib/database.js` (`createSchema()` method)
+2. Add migration in `migrate()` method (use `ALTER TABLE`)
+3. Update `upsertArticle()` to handle new fields
+4. Re-run `npm run import` to populate data
+5. Update Parquet export in `scripts/export-to-parquet.js`
+6. Run `npm run export` to regenerate Parquet
+
+**Modifying UI Components**:
+1. Edit component file in `src/components/`
+2. Vite HMR automatically reloads
+3. Test in browser
+4. No build step needed during development
+
+**Debugging Queries**:
+```javascript
+// In browser console:
+const db = window.app.db;
+const result = await db.query('SELECT * FROM metadata LIMIT 10');
+console.table(result.toArray());
 ```
 
-**Debugging Scraper Issues:**
-- Check `data/scraping-progress.json` for current state
-- Run `npm run status` to see progress statistics
-- Scraper logs show which member/publication currently processing
-- If stuck, delete `data/scraping-progress.json` and re-run `npm run import`
+## Deployment to Arweave
+
+**Why Arweave?**
+- Permanent storage (pay once, stored forever)
+- Decentralized (censorship-resistant)
+- Cost-effective (~$0.82 for entire site one-time)
+
+**Deployment Process**:
+```bash
+# 1. Build SPA
+npm run build  # Creates dist/ folder
+
+# 2. Optional: Generate manifests for individual articles
+npm run generate:manifests
+
+# 3. Optional: Upload manifests
+npm run upload:manifests
+
+# 4. Sync dist/ with ArDrive
+npm run sync
+```
+
+**Deployment Checklist**:
+- [ ] `npm run build` succeeds without errors
+- [ ] `dist/index.html` exists and has inline CSS
+- [ ] `dist/data/metadata.parquet` exists (~5MB)
+- [ ] Test `npm run preview` - all pages load correctly
+- [ ] Check browser console - no errors
+- [ ] Test search functionality
+- [ ] Test article page with content rendering
+
+**ArNS (Arweave Name System)**:
+- Provides human-readable URLs (e.g., `https://crimrxiv.ar-io.dev`)
+- Updatable DNS pointing to transaction IDs
+- See `docs/PATTERN_GUIDE.md` Stage 5 for ArNS integration details
+
+## Performance Notes
+
+**Initial Load**: < 2 seconds (includes DuckDB-WASM initialization)
+**Page Navigation**: Instant (client-side routing)
+**Search**: < 500ms (DuckDB queries 3,700+ articles)
+**Bundle Size**: ~3MB (includes DuckDB-WASM)
+
+**Optimization Strategies**:
+- Parquet sorted by `published DESC` (most common query pattern)
+- ZSTD compression for smaller file size
+- Row groups of 100K for efficient range queries
+- DuckDB-WASM uses HTTP range requests (doesn't download entire file)
+
+## Security Considerations
+
+**Credential Management**:
+- **Never commit** `.env` files (properly ignored in `.gitignore`)
+- **Never commit** wallet files (store outside repository)
+- Required credentials for import: `PUBPUB_EMAIL`, `PUBPUB_PASSWORD`
+- Optional for deployment: `ARWEAVE_WALLET_PATH`
+- See `docs/SECURITY_CHECKLIST.md` for complete security guidance
+
+**XSS Prevention**:
+- Escape user input before rendering HTML (use `app.escapeHtml()`)
+- Use `textContent` for untrusted strings, not `innerHTML`
+- Sanitize search queries before displaying (parquet-db.js escapes quotes)
+
+**SQL Injection**:
+- Use parameterized queries in SQLite operations (database.js)
+- Never concatenate user input into SQL strings
+- DuckDB-WASM queries: search terms are escaped (replace `'` with `''`)
+- Note: Current search uses ILIKE with escaped strings (parquet-db.js:214)
+
+**Content Security Policy**:
+- Inline scripts/styles required for Arweave deployment
+- No external resources loaded (CDNs, fonts, etc.)
+- All assets bundled and self-contained
+- WASM files served from `/public/duckdb/`
+
+## Troubleshooting
+
+**DuckDB-WASM fails to load**:
+- Check browser supports WebAssembly (all modern browsers do)
+- Ensure WASM files exist in `public/duckdb/` directory:
+  - `duckdb-mvp.wasm`, `duckdb-eh.wasm`
+  - `duckdb-browser-mvp.worker.js`, `duckdb-browser-eh.worker.js`
+- Check browser console for specific error messages
+- Verify manual bundle configuration in parquet-db.js:61-70
+- Common issue: WASM files not copied during build (check vite.config.js)
+
+**Parquet file not found**:
+- Run `npm run export` to generate from SQLite
+- Verify file exists: `public/data/metadata.parquet` (~5MB)
+- Check Vite config includes Parquet in `assetsInclude` (vite.config.js:40)
+- Verify URL resolution in parquet-db.js:32-51 works for your environment
+- For Arweave: check gateway detection in gateway.js
+
+**Search returns no results**:
+- Check metadata loaded: Open browser console, run `await window.app.db.query('SELECT COUNT(*) FROM metadata')`
+- Verify search query syntax (case-insensitive ILIKE matching)
+- Check browser console for SQL errors
+- Ensure metadata.parquet has data (should be ~5MB with 3,700+ articles)
+
+**Import script fails**:
+- Verify `.env` file exists with `PUBPUB_EMAIL` and `PUBPUB_PASSWORD`
+- Check PubPub community URL is correct (must include `www.` - see scripts/scrape-to-sqlite.js)
+- Verify SQLite database directory exists: `data/sqlite/`
+- Check network connection to www.crimrxiv.com
+- Review error logs for specific API failures (PubPub SDK errors)
+- Common issue: Invalid credentials or rate limiting
+
+**Component not rendering**:
+- Check initialization order in app.js:34-78 (Router before Components)
+- Verify `window.router` is exposed globally (app.js:65)
+- Check component has `render()` method that returns HTML string
+- Verify component is registered in app.components (app.js:20-27)
+- Check route pattern in router.js:16-23 matches hash format
+
+## Documentation
+
+**Essential Guides**:
+- **docs/PATTERN_GUIDE.md** - Universal data pipeline pattern (SQLite → Parquet → Arweave)
+- **docs/ARCHITECTURE.md** - Detailed technical architecture
+- **docs/PARQUET_SCHEMA.md** - Parquet file schema details
+- **README.md** - Project overview and quick start
+
+**Migration Notes**:
+- This project migrated from Static Site Generator (SSG) to SPA in January 2025
+- Old architecture (archived) generated 900+ static HTML pages from consortium-dataset.json
+- New architecture: Client-side SPA with DuckDB-WASM querying Parquet files
+- Benefits: faster rebuilds (30s vs 5+ min), smaller deployments (5MB vs 80MB), dynamic features (search, filtering)
+- **Note**: README.md still references old SSG approach - current implementation is pure SPA
+- See `docs/ARCHITECTURE.md` for detailed migration information

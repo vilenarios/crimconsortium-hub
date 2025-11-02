@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CrimRXiv Archive - Browse and search 3,721+ criminology research publications">
+  <title>CrimRXiv Archive</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- Critical CSS: Inline styles for immediate render (prevents FOUC) -->
+  <style>
+    :root {
+      --primary-black: #000000;
+      --primary-white: #ffffff;
+      --text-gray: #757575;
+      --light-gray: #fafafa;
+      --border-gray: #e0e0e0;
+      --accent-orange: #ff6b35;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--primary-black);
+      background: var(--primary-white);
+      line-height: 1.6;
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main#app {
+      flex: 1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Header */
+    .header {
+      background: var(--primary-white);
+      border-bottom: 2px solid var(--primary-black);
+      padding: 0.75rem 0;
+    }
+
+    .site-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .site-logo {
+      height: 35px;
+    }
+
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-black);
+      text-decoration: none;
+      display: block;
+    }
+
+    .tagline {
+      font-size: 0.875rem;
+      color: var(--text-gray);
+    }
+
+    /* Navigation */
+    .nav-bar {
+      background: var(--light-gray);
+      border-bottom: 1px solid var(--border-gray);
+      padding: 0.5rem 0;
+    }
+
+    .nav-list {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-item a {
+      color: var(--primary-black);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Search in Nav */
+    .nav-search {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .nav-search-input {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border-gray);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      min-width: 250px;
+      background: var(--primary-white);
+    }
+
+    .nav-search-input:focus {
+      outline: none;
+      border-color: var(--primary-black);
+    }
+
+    .nav-search-button {
+      padding: 0.5rem 1.25rem;
+      background: var(--primary-black);
+      color: var(--primary-white);
+      border: none;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .nav-search-button:hover {
+      background: #333;
+    }
+
+    @media (max-width: 768px) {
+      .nav-list {
+        flex-wrap: wrap;
+      }
+
+      .nav-search {
+        margin-left: 0;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+
+      .nav-search-input {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary-black);
+      color: var(--primary-white);
+      padding: 2rem 0;
+      margin-top: 4rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h3 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-links a {
+      color: var(--primary-white);
+      text-decoration: none;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.9rem;
+    }
+
+    /* Loading spinner */
+    .content-loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 60vh;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border-gray);
+      border-top-color: var(--primary-black);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    .loading-spinner.large {
+      width: 60px;
+      height: 60px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-content p {
+      font-size: 1.1rem;
+      color: var(--primary-black);
+    }
+
+    .loading-subtext {
+      font-size: 0.9rem;
+      color: var(--text-gray);
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header (Always Visible) -->
+  <header class="header" id="site-header">
+    <div class="container">
+      <div class="site-brand">
+        <a href="https://www.crimrxiv.com" style="display: flex; align-items: center;">
+          <img src="/crimxriv-logo.png" alt="CrimRXiv" class="site-logo" onerror="this.style.display='none'">
+        </a>
+        <div>
+          <a href="#/" class="site-title">CrimRXiv Archive</a>
+          <p class="tagline">Permanent, decentralized criminology research archive</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation (Always Visible) -->
+  <nav class="nav-bar" id="site-nav">
+    <div class="container">
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#/">Home</a></li>
+        <li class="nav-item"><a href="#/articles/all">Articles</a></li>
+        <li class="nav-item"><a href="#/consortium">Consortium</a></li>
+        <li class="nav-item"><a href="https://www.crimrxiv.com" target="_blank">CrimRXiv.com</a></li>
+        <li class="nav-item"><a href="https://linktr.ee/crimconsortium" target="_blank">Social Media</a></li>
+
+        <!-- Search Bar -->
+        <li class="nav-search">
+          <input
+            type="search"
+            id="nav-search-input"
+            class="nav-search-input"
+            placeholder="Search articles..."
+            autocomplete="off"
+          />
+          <button id="nav-search-button" class="nav-search-button">Search</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content Area (Database-dependent) -->
+  <main id="app">
+    <!-- Loading screen shown while DuckDB initializes -->
+    <div class="content-loading">
+      <div class="loading-content">
+        <div class="loading-spinner large"></div>
+        <p>Loading database...</p>
+        <p class="loading-subtext">Initializing DuckDB-WASM and loading 3,700+ publications</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer (Always Visible) -->
+  <footer class="footer" id="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About CrimRXiv</h3>
+          <p>A permanent, decentralized archive for criminology research from leading academic institutions worldwide.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Links</h3>
+          <ul class="footer-links">
+            <li><a href="https://www.crimrxiv.com" target="_blank">CrimRXiv.com</a></li>
+            <li><a href="https://linktr.ee/crimconsortium" target="_blank">Social Media</a></li>
+            <li><a href="https://github.com/crimconsortium" target="_blank">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="footer-year">2025</span> CrimRXiv Consortium. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Noscript Fallback -->
+  <noscript>
+    <div class="error-screen">
+      <h1>JavaScript Required</h1>
+      <p>This application requires JavaScript to run. Please enable JavaScript in your browser.</p>
+    </div>
+  </noscript>
+
+  <!-- Set footer year dynamically -->
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Vite Entry Point -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

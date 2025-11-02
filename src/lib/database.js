@@ -38,6 +38,9 @@ export class CrimRXivDatabase {
     // Create schema
     this.createSchema();
 
+    // Run migrations
+    this.migrate();
+
     console.log(`✅ Database initialized: ${this.dbPath}`);
   }
 
@@ -72,9 +75,35 @@ export class CrimRXivDatabase {
         updated_at TEXT NOT NULL,
         published_at TEXT,
 
-        -- Content
+        -- Content (legacy - abstracts only)
         content_text TEXT,
         content_json TEXT,
+
+        -- Full content fields (NEW)
+        content_prosemirror TEXT,       -- ProseMirror JSON document
+        content_markdown TEXT,           -- Converted Markdown
+        content_text_full TEXT,          -- Plain text extraction
+        word_count INTEGER,              -- Derived from content
+
+        -- Attachment tracking
+        attachments_json TEXT,           -- JSON array of {type, url, filename, arweave_tx_id}
+        attachment_count INTEGER DEFAULT 0,
+
+        -- DOI references & citations
+        references_json TEXT,            -- Outbound edges (references this article cites)
+        citations_json TEXT,             -- Inbound edges (articles citing this one)
+        reference_count INTEGER DEFAULT 0,
+        citation_count INTEGER DEFAULT 0,
+
+        -- Article file tracking
+        article_markdown_path TEXT,      -- Local path to generated Markdown
+        article_markdown_size INTEGER,   -- File size in bytes
+
+        -- Status tracking
+        full_content_scraped INTEGER DEFAULT 0,
+        full_content_scraped_at TEXT,
+        markdown_generated INTEGER DEFAULT 0,
+        markdown_generated_at TEXT,
 
         -- Authors (JSON array)
         authors_json TEXT,
@@ -144,6 +173,222 @@ export class CrimRXivDatabase {
   }
 
   /**
+   * Migrate existing database to add new fields
+   */
+  migrate() {
+    console.log('🔄 Running database migration...');
+
+    // Check if columns already exist
+    const tableInfo = this.db.prepare("PRAGMA table_info(articles)").all();
+    const existingColumns = new Set(tableInfo.map(col => col.name));
+
+    const newColumns = [
+      { name: 'content_prosemirror', type: 'TEXT' },
+      { name: 'content_markdown', type: 'TEXT' },
+      { name: 'content_text_full', type: 'TEXT' },
+      { name: 'word_count', type: 'INTEGER' },
+      { name: 'attachments_json', type: 'TEXT' },
+      { name: 'attachment_count', type: 'INTEGER DEFAULT 0' },
+      { name: 'references_json', type: 'TEXT' },
+      { name: 'citations_json', type: 'TEXT' },
+      { name: 'reference_count', type: 'INTEGER DEFAULT 0' },
+      { name: 'citation_count', type: 'INTEGER DEFAULT 0' },
+      { name: 'article_markdown_path', type: 'TEXT' },
+      { name: 'article_markdown_size', type: 'INTEGER' },
+      { name: 'full_content_scraped', type: 'INTEGER DEFAULT 0' },
+      { name: 'full_content_scraped_at', type: 'TEXT' },
+      { name: 'markdown_generated', type: 'INTEGER DEFAULT 0' },
+      { name: 'markdown_generated_at', type: 'TEXT' },
+      // Manifest tracking fields
+      { name: 'manifest_tx_id', type: 'TEXT' },
+      { name: 'manifest_path', type: 'TEXT' },
+      { name: 'manifest_generated', type: 'INTEGER DEFAULT 0' },
+      { name: 'manifest_generated_at', type: 'TEXT' },
+      { name: 'manifest_uploaded', type: 'INTEGER DEFAULT 0' },
+      { name: 'manifest_uploaded_at', type: 'TEXT' },
+    ];
+
+    let migrationCount = 0;
+    for (const col of newColumns) {
+      if (!existingColumns.has(col.name)) {
+        console.log(`  Adding column: ${col.name}`);
+        this.db.exec(`ALTER TABLE articles ADD COLUMN ${col.name} ${col.type}`);
+        migrationCount++;
+      }
+    }
+
+    if (migrationCount > 0) {
+      console.log(`✅ Migration complete: Added ${migrationCount} columns`);
+    } else {
+      console.log('✅ Database is up to date');
+    }
+  }
+
+  /**
+   * Update article with full content
+   */
+  updateArticleFullContent(data) {
+    return this.db.prepare(`
+      UPDATE articles
+      SET
+        content_prosemirror = ?,
+        content_markdown = ?,
+        content_text_full = ?,
+        word_count = ?,
+        attachments_json = ?,
+        attachment_count = ?,
+        references_json = ?,
+        citations_json = ?,
+        reference_count = ?,
+        citation_count = ?,
+        full_content_scraped = 1,
+        full_content_scraped_at = ?
+      WHERE slug = ? AND is_latest_version = 1
+    `).run(
+      data.content_prosemirror,
+      data.content_markdown,
+      data.content_text_full,
+      data.word_count,
+      data.attachments_json,
+      data.attachment_count,
+      data.references_json,
+      data.citations_json,
+      data.reference_count,
+      data.citation_count,
+      new Date().toISOString(),
+      data.slug
+    );
+  }
+
+  /**
+   * Update article markdown generation status
+   */
+  updateArticleMarkdown(slug, markdownPath, markdownSize) {
+    return this.db.prepare(`
+      UPDATE articles
+      SET
+        article_markdown_path = ?,
+        article_markdown_size = ?,
+        markdown_generated = 1,
+        markdown_generated_at = ?
+      WHERE slug = ? AND is_latest_version = 1
+    `).run(markdownPath, markdownSize, new Date().toISOString(), slug);
+  }
+
+  /**
+   * Update article Arweave transaction ID
+   */
+  updateArticleArweave(slug, txId) {
+    return this.db.prepare(`
+      UPDATE articles
+      SET arweave_tx_id = ?
+      WHERE slug = ? AND is_latest_version = 1
+    `).run(txId, slug);
+  }
+
+  /**
+   * Get articles needing full content scraping
+   */
+  getArticlesNeedingFullContent(limit = 100) {
+    return this.db.prepare(`
+      SELECT *
+      FROM articles
+      WHERE is_latest_version = 1
+        AND full_content_scraped = 0
+      ORDER BY published_at DESC
+      LIMIT ?
+    `).all(limit);
+  }
+
+  /**
+   * Get articles needing markdown generation
+   */
+  getArticlesNeedingMarkdown(limit = 100) {
+    return this.db.prepare(`
+      SELECT *
+      FROM articles
+      WHERE is_latest_version = 1
+        AND full_content_scraped = 1
+        AND markdown_generated = 0
+      ORDER BY published_at DESC
+      LIMIT ?
+    `).all(limit);
+  }
+
+  /**
+   * Get articles needing Arweave upload
+   */
+  getArticlesNeedingUpload(limit = 100) {
+    return this.db.prepare(`
+      SELECT *
+      FROM articles
+      WHERE is_latest_version = 1
+        AND markdown_generated = 1
+        AND arweave_tx_id IS NULL
+      ORDER BY published_at DESC
+      LIMIT ?
+    `).all(limit);
+  }
+
+  /**
+   * Update article manifest generation status
+   */
+  updateArticleManifestGenerated(slug, manifestPath) {
+    return this.db.prepare(`
+      UPDATE articles
+      SET
+        manifest_path = ?,
+        manifest_generated = 1,
+        manifest_generated_at = ?
+      WHERE slug = ? AND is_latest_version = 1
+    `).run(manifestPath, new Date().toISOString(), slug);
+  }
+
+  /**
+   * Update article manifest upload status with TX ID
+   */
+  updateArticleManifestUploaded(slug, manifestTxId) {
+    return this.db.prepare(`
+      UPDATE articles
+      SET
+        manifest_tx_id = ?,
+        manifest_uploaded = 1,
+        manifest_uploaded_at = ?
+      WHERE slug = ? AND is_latest_version = 1
+    `).run(manifestTxId, new Date().toISOString(), slug);
+  }
+
+  /**
+   * Get articles needing manifest generation
+   */
+  getArticlesNeedingManifests(limit = 100) {
+    return this.db.prepare(`
+      SELECT *
+      FROM articles
+      WHERE is_latest_version = 1
+        AND full_content_scraped = 1
+        AND manifest_generated = 0
+      ORDER BY published_at DESC
+      LIMIT ?
+    `).all(limit);
+  }
+
+  /**
+   * Get articles needing manifest upload to Arweave
+   */
+  getArticlesNeedingManifestUpload(limit = 100) {
+    return this.db.prepare(`
+      SELECT *
+      FROM articles
+      WHERE is_latest_version = 1
+        AND manifest_generated = 1
+        AND manifest_uploaded = 0
+      ORDER BY published_at DESC
+      LIMIT ?
+    `).all(limit);
+  }
+
+  /**
    * Upsert article (handles versions)
    */
   upsertArticle(article) {
@@ -181,11 +426,13 @@ export class CrimRXivDatabase {
           title, description, abstract, doi, license,
           created_at, updated_at, published_at,
           content_text, content_json,
+          content_prosemirror, content_markdown, content_text_full, word_count,
           authors_json, author_count,
           collections_json, collection_count,
           keywords_json,
+          attachments_json, attachment_count,
           url, pdf_url
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         versionId,
         article.article_id,
@@ -203,11 +450,17 @@ export class CrimRXivDatabase {
         article.published_at,
         article.content_text,
         article.content_json,
+        article.content_prosemirror || null,
+        article.content_markdown || null,
+        article.content_text_full || null,
+        article.word_count || 0,
         article.authors_json,
         article.author_count,
         article.collections_json,
         article.collection_count,
         article.keywords_json,
+        article.attachments_json,
+        article.attachment_count,
         article.url,
         article.pdf_url
       );
@@ -221,11 +474,13 @@ export class CrimRXivDatabase {
           title, description, abstract, doi, license,
           created_at, updated_at, published_at,
           content_text, content_json,
+          content_prosemirror, content_markdown, content_text_full, word_count,
           authors_json, author_count,
           collections_json, collection_count,
           keywords_json,
+          attachments_json, attachment_count,
           url, pdf_url
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         versionId,
         article.article_id,
@@ -243,18 +498,81 @@ export class CrimRXivDatabase {
         article.published_at,
         article.content_text,
         article.content_json,
+        article.content_prosemirror || null,
+        article.content_markdown || null,
+        article.content_text_full || null,
+        article.word_count || 0,
         article.authors_json,
         article.author_count,
         article.collections_json,
         article.collection_count,
         article.keywords_json,
+        article.attachments_json,
+        article.attachment_count,
         article.url,
         article.pdf_url
       );
 
       return { action: 'inserted', versionNumber: 1 };
     } else {
-      // No changes
+      // No content changes, but update attachments, collections, authors, and/or content if provided
+      const needsUpdate =
+        (article.attachments_json && article.attachments_json !== existing.attachments_json) ||
+        (article.abstract && article.abstract.length > (existing.abstract?.length || 0)) ||
+        (article.content_prosemirror && !existing.content_prosemirror) ||
+        (article.content_text_full && article.content_text_full.length > (existing.content_text_full?.length || 0)) ||
+        (article.collections_json && article.collections_json !== existing.collections_json) ||
+        (article.authors_json && article.authors_json !== existing.authors_json) ||
+        (article.keywords_json && article.keywords_json !== existing.keywords_json);
+
+      if (needsUpdate) {
+        this.db.prepare(`
+          UPDATE articles
+          SET attachments_json = ?,
+              attachment_count = ?,
+              abstract = CASE
+                WHEN LENGTH(?) > LENGTH(COALESCE(abstract, '')) THEN ?
+                ELSE abstract
+              END,
+              content_prosemirror = COALESCE(?, content_prosemirror),
+              content_markdown = COALESCE(?, content_markdown),
+              content_text_full = CASE
+                WHEN LENGTH(?) > LENGTH(COALESCE(content_text_full, '')) THEN ?
+                ELSE content_text_full
+              END,
+              word_count = CASE
+                WHEN ? > word_count THEN ?
+                ELSE word_count
+              END,
+              collections_json = ?,
+              collection_count = ?,
+              authors_json = ?,
+              author_count = ?,
+              keywords_json = ?
+          WHERE id = ?
+        `).run(
+          article.attachments_json,
+          article.attachment_count || 0,
+          article.abstract || '',
+          article.abstract || '',
+          article.content_prosemirror,
+          article.content_markdown,
+          article.content_text_full || '',
+          article.content_text_full || '',
+          article.word_count || 0,
+          article.word_count || 0,
+          article.collections_json || '[]',
+          article.collection_count || 0,
+          article.authors_json || '[]',
+          article.author_count || 0,
+          article.keywords_json || '[]',
+          existing.id
+        );
+
+        return { action: 'attachments_updated', versionNumber: existing.version_number };
+      }
+
+      // Truly no changes
       return { action: 'unchanged', versionNumber: existing.version_number };
     }
   }

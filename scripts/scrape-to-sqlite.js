@@ -1,52 +1,230 @@
 #!/usr/bin/env node
 
 /**
- * CrimRXiv Scraper → SQLite
+ * CrimRXiv Scraper → SQLite (SDK-Based)
  *
- * Architecture (per PATTERN_GUIDE.md):
- * 1. Scrape from PubPub API
- * 2. Store in SQLite (source of truth)
- * 3. Track versions automatically
- * 4. Export to Parquet later (separate step)
+ * Uses PubPub SDK to extract:
+ * - Full abstracts from ProseMirror documents (not truncated 277 chars!)
+ * - PDF attachments from file nodes
+ * - Complete metadata
  *
  * Usage:
- *   node scripts/scrape-to-sqlite.js                    # Full scrape
- *   node scripts/scrape-to-sqlite.js --limit 100        # Test with 100 articles
- *   node scripts/scrape-to-sqlite.js --incremental      # Only new/updated articles since last run
+ *   node scripts/scrape-to-sqlite-sdk.js                 # Full scrape
+ *   node scripts/scrape-to-sqlite-sdk.js --limit 10      # Test with 10 articles
  */
 
 import 'dotenv/config';
 import { PubPub } from '@pubpub/sdk';
 import { CrimRXivDatabase } from '../src/lib/database.js';
+import axios from 'axios';
+import fs from 'fs-extra';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const CONFIG = {
-  BATCH_SIZE: 100,          // Fetch 100 pubs at a time from API
-  RATE_LIMIT_DELAY: 100,    // ms between API calls
-  MAX_RETRIES: 5,           // Maximum retry attempts for network errors
-  INITIAL_BACKOFF: 5000,    // Initial backoff delay (5s)
-  MAX_BACKOFF: 60000,       // Maximum backoff delay (60s)
+  BATCH_SIZE: 100,          // Fetch 100 pubs at a time
+  TEXT_DELAY: 100,          // ms delay between text.get() calls (rate limiting)
+  MAX_RETRIES: 3,
+  INITIAL_BACKOFF: 2000,
+  MAX_BACKOFF: 30000,
+  ATTACHMENTS_DIR: path.join(__dirname, '../data/attachments'),
+  DOWNLOAD_TIMEOUT: 60000   // 60 seconds for PDF downloads
 };
 
 class CrimRXivScraper {
   constructor() {
     this.sdk = null;
     this.db = null;
+    this.collections = new Map(); // collection_id => collection_title
     this.stats = {
       total: 0,
       inserted: 0,
       updated: 0,
+      content_enriched: 0,
       unchanged: 0,
       errors: 0
     };
   }
 
   /**
+   * Extract plain text from ProseMirror document
+   */
+  extractTextFromProseMirror(doc) {
+    let text = '';
+
+    const extractNode = (node) => {
+      if (node.text) {
+        text += node.text + ' ';
+      }
+      if (node.content) {
+        node.content.forEach(extractNode);
+      }
+    };
+
+    if (doc && doc.content) {
+      doc.content.forEach(extractNode);
+    }
+
+    return text.trim();
+  }
+
+  /**
+   * Extract file attachments from ProseMirror document
+   */
+  extractFilesFromProseMirror(doc) {
+    const files = [];
+
+    const findFiles = (node) => {
+      if (node.type === 'file' && node.attrs) {
+        files.push({
+          url: node.attrs.url,
+          filename: node.attrs.fileName,
+          fileSize: node.attrs.fileSize,
+          type: node.attrs.url?.endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream'
+        });
+      }
+      if (node.content) {
+        node.content.forEach(findFiles);
+      }
+    };
+
+    if (doc && doc.content) {
+      doc.content.forEach(findFiles);
+    }
+
+    return files;
+  }
+
+  /**
+   * Calculate word count from text
+   */
+  calculateWordCount(text) {
+    if (!text) return 0;
+    return text.split(/\s+/).filter(word => word.length > 0).length;
+  }
+
+  /**
+   * Download attachment file (PDF) to local storage
+   * Returns localPath for inclusion in attachments_json
+   */
+  async downloadAttachment(url, filename, slug) {
+    try {
+      // Create directory for this article's attachments
+      const articleDir = path.join(CONFIG.ATTACHMENTS_DIR, slug);
+      await fs.ensureDir(articleDir);
+
+      // Build file path
+      const filePath = path.join(articleDir, filename);
+
+      // Check if already downloaded
+      if (await fs.pathExists(filePath)) {
+        const stats = await fs.stat(filePath);
+        if (stats.size > 0) {
+          console.log(`   ✓ Already downloaded: ${filename}`);
+          return `data/attachments/${slug}/${filename}`;
+        }
+      }
+
+      // Download with timeout and retry logic
+      let retries = 0;
+      while (retries < CONFIG.MAX_RETRIES) {
+        try {
+          const response = await axios({
+            method: 'GET',
+            url: url,
+            responseType: 'stream',
+            timeout: CONFIG.DOWNLOAD_TIMEOUT,
+            maxRedirects: 5
+          });
+
+          // Save to file
+          const writer = fs.createWriteStream(filePath);
+          response.data.pipe(writer);
+
+          await new Promise((resolve, reject) => {
+            writer.on('finish', resolve);
+            writer.on('error', reject);
+          });
+
+          console.log(`   ✓ Downloaded: ${filename} (${(await fs.stat(filePath)).size} bytes)`);
+          return `data/attachments/${slug}/${filename}`;
+
+        } catch (downloadError) {
+          retries++;
+          if (retries >= CONFIG.MAX_RETRIES) {
+            console.error(`   ⚠️  Failed to download ${filename} after ${CONFIG.MAX_RETRIES} retries`);
+            return null;
+          }
+
+          const backoff = Math.min(CONFIG.INITIAL_BACKOFF * Math.pow(2, retries - 1), CONFIG.MAX_BACKOFF);
+          console.log(`   ⚠️  Download failed, retrying in ${backoff}ms... (${retries}/${CONFIG.MAX_RETRIES})`);
+          await new Promise(resolve => setTimeout(resolve, backoff));
+        }
+      }
+
+      return null;
+
+    } catch (error) {
+      console.error(`   ⚠️  Error downloading ${filename}: ${error.message}`);
+      return null;
+    }
+  }
+
+  /**
+   * Fetch all collections and build id→title map
+   */
+  async fetchCollections() {
+    try {
+      console.log('📚 Fetching collections...');
+
+      let offset = 0;
+      let hasMore = true;
+      const limit = 100;
+
+      while (hasMore) {
+        const response = await this.sdk.collection.getMany({
+          query: {
+            limit,
+            offset
+          }
+        });
+
+        const batch = response.body;
+
+        if (!batch || batch.length === 0) {
+          hasMore = false;
+          break;
+        }
+
+        for (const collection of batch) {
+          this.collections.set(collection.id, collection.title);
+        }
+
+        offset += limit;
+
+        // If we got fewer than limit, we're done
+        if (batch.length < limit) {
+          hasMore = false;
+        }
+      }
+
+      console.log(`✅ Loaded ${this.collections.size} collections\n`);
+    } catch (error) {
+      console.error('⚠️  Failed to fetch collections:', error.message);
+      console.log('   Continuing without collection data...\n');
+    }
+  }
+
+  /**
    * Initialize SDK and database
    */
   async initialize() {
-    console.log('\n' + '='.repeat(60));
-    console.log('CrimRXiv Scraper → SQLite');
-    console.log('='.repeat(60) + '\n');
+    console.log('\n' + '='.repeat(70));
+    console.log('CrimRXiv Scraper → SQLite (SDK-Based)');
+    console.log('='.repeat(70) + '\n');
 
     // Initialize database
     console.log('🗄️  Initializing SQLite database...');
@@ -61,154 +239,136 @@ class CrimRXivScraper {
       password: process.env.PUBPUB_PASSWORD
     });
 
+    // Fetch collections for mapping
+    await this.fetchCollections();
+
     console.log('✅ Connections established\n');
   }
 
   /**
-   * Fetch and process publications incrementally
+   * Fetch publications and process them
    */
-  async fetchAndProcess(limit = null, incremental = false) {
-    let lastScrapeDate = null;
-
-    if (incremental) {
-      lastScrapeDate = this.db.getLastScrapeDate();
-      if (lastScrapeDate) {
-        console.log(`📅 Incremental mode: fetching articles updated since ${lastScrapeDate}\n`);
-      } else {
-        console.log('⚠️  No previous scrape found, performing full scrape\n');
-        incremental = false;
-      }
-    } else {
-      console.log('📖 Full scrape: fetching all publications from PubPub API...\n');
-    }
+  async fetchAndProcess(limit = null) {
+    console.log('📖 Fetching publications from PubPub API...\n');
 
     let offset = 0;
     let totalFetched = 0;
-    let consecutiveEmpty = 0;
-    const MAX_CONSECUTIVE_EMPTY = 3; // Stop after 3 empty batches in a row
+    let hasMore = true;
 
-    while (true) {
-      let retryCount = 0;
-      let success = false;
-      let batch = null;
-
-      // Retry loop with exponential backoff
-      while (!success && retryCount <= CONFIG.MAX_RETRIES) {
-        try {
-          const queryParams = {
-            limit: CONFIG.BATCH_SIZE,
-            offset,
-            sortBy: 'updatedAt',
-            orderBy: 'DESC'
-          };
-
-          // In incremental mode, filter by updatedAt
-          if (incremental && lastScrapeDate) {
-            queryParams.updatedAtSince = lastScrapeDate;
-          }
-
-          const response = await this.sdk.pub.getMany({ query: queryParams });
-          batch = response.body;
-          success = true;
-
-          // Debug: Log first batch details
-          if (offset === 0 && batch && batch.length > 0) {
-            console.log(`\n🔍 First batch sample (${batch.length} pubs):`);
-            for (let i = 0; i < Math.min(3, batch.length); i++) {
-              console.log(`   ${i+1}. ${batch[i].slug} (ID: ${batch[i].id}, Updated: ${batch[i].updatedAt})`);
-            }
-            console.log('');
-          }
-
-        } catch (error) {
-          retryCount++;
-
-          // Check if error is retryable (network errors)
-          const isRetryable = error.code === 'ECONNRESET' ||
-                             error.code === 'ETIMEDOUT' ||
-                             error.code === 'ENOTFOUND' ||
-                             error.message.includes('fetch failed') ||
-                             error.message.includes('network');
-
-          if (!isRetryable || retryCount > CONFIG.MAX_RETRIES) {
-            console.error(`\n❌ Non-retryable error or max retries exceeded at offset ${offset}: ${error.message}`);
-            console.log(`✅ Saved ${totalFetched} publications before error\n`);
-            return totalFetched; // Exit gracefully
-          }
-
-          // Calculate backoff delay with exponential increase
-          const backoffDelay = Math.min(
-            CONFIG.INITIAL_BACKOFF * Math.pow(2, retryCount - 1),
-            CONFIG.MAX_BACKOFF
-          );
-
-          console.log(`\n⚠️  Network error at offset ${offset} (attempt ${retryCount}/${CONFIG.MAX_RETRIES}): ${error.message}`);
-          console.log(`   ⏳ Retrying in ${(backoffDelay / 1000).toFixed(1)}s...`);
-
-          await this.sleep(backoffDelay);
+    while (hasMore) {
+      // Fetch batch of pubs
+      const response = await this.sdk.pub.getMany({
+        query: {
+          limit: CONFIG.BATCH_SIZE,
+          offset,
+          sortBy: 'updatedAt',
+          orderBy: 'DESC',
+          include: ['collectionPubs', 'attributions', 'community', 'draft']
         }
-      }
+      });
 
-      // If we exhausted retries without success, exit
-      if (!success) {
-        console.log(`\n❌ Failed to fetch batch after ${CONFIG.MAX_RETRIES} retries. Stopping.`);
-        break;
-      }
+      const batch = response.body;
 
       if (!batch || batch.length === 0) {
-        consecutiveEmpty++;
-        if (consecutiveEmpty >= MAX_CONSECUTIVE_EMPTY) {
-          console.log(`\n✅ Reached end of publications (${consecutiveEmpty} consecutive empty batches)\n`);
-          break;
-        }
-        // Wait a bit and try again
-        await this.sleep(CONFIG.RATE_LIMIT_DELAY * 2);
-        offset += CONFIG.BATCH_SIZE;
-        continue;
-      }
-
-      // Reset consecutive empty counter if we got results
-      consecutiveEmpty = 0;
-
-      // Process this batch immediately
-      for (const pub of batch) {
-        this.processArticle(pub);
-      }
-
-      totalFetched += batch.length;
-      offset += batch.length;
-
-      process.stdout.write(`\r   📊 Fetched and saved ${totalFetched} publications...`);
-
-      if (limit && totalFetched >= limit) {
+        hasMore = false;
         break;
       }
 
-      // Rate limiting
-      await this.sleep(CONFIG.RATE_LIMIT_DELAY);
+      // Log progress
+      if (offset === 0) {
+        console.log(`📋 First batch sample (${batch.length} pubs):`);
+        for (let i = 0; i < Math.min(3, batch.length); i++) {
+          console.log(`   ${i+1}. ${batch[i].slug} (Updated: ${batch[i].updatedAt})`);
+        }
+        console.log('');
+      }
+
+      // Process each pub in batch
+      for (const pub of batch) {
+        await this.processArticle(pub);
+        totalFetched++;
+
+        // Check limit
+        if (limit && totalFetched >= limit) {
+          hasMore = false;
+          break;
+        }
+
+        // Rate limiting delay
+        await new Promise(resolve => setTimeout(resolve, CONFIG.TEXT_DELAY));
+      }
+
+      // Progress update every 100
+      if (totalFetched % 100 === 0) {
+        console.log(`   📊 Processed ${totalFetched} publications...`);
+      }
+
+      offset += CONFIG.BATCH_SIZE;
     }
 
-    console.log(`\n✅ Completed: ${totalFetched} publications fetched and saved\n`);
     this.stats.total = totalFetched;
     return totalFetched;
   }
 
   /**
-   * Process and store article in database
+   * Process a single article
    */
-  processArticle(pub) {
+  async processArticle(pub) {
     try {
-      // Skip publications without an ID
       if (!pub.id || !pub.slug) {
         this.stats.errors++;
-        if (this.stats.errors <= 5) {
-          console.error(`\n   ⚠️  Skipping publication without ID/slug - id: ${pub.id}, slug: ${pub.slug}`);
-        }
         return null;
+      }
+
+      // Fetch full ProseMirror content
+      let prosemirrorDoc = null;
+      let fullText = '';
+      let files = [];
+      let wordCount = 0;
+
+      try {
+        const textResponse = await this.sdk.pub.text.get({
+          params: { pubId: pub.id }
+        });
+        prosemirrorDoc = textResponse.body;
+
+        // Extract data from ProseMirror
+        fullText = this.extractTextFromProseMirror(prosemirrorDoc);
+        files = this.extractFilesFromProseMirror(prosemirrorDoc);
+        wordCount = this.calculateWordCount(fullText);
+
+        // Download PDF attachments
+        if (files.length > 0) {
+          console.log(`   📎 Found ${files.length} attachment(s) for ${pub.slug}`);
+          for (const file of files) {
+            if (file.url && file.filename) {
+              const localPath = await this.downloadAttachment(file.url, file.filename, pub.slug);
+              if (localPath) {
+                file.localPath = localPath;
+              }
+            }
+          }
+        }
+
+      } catch (error) {
+        // Some pubs might not have text.get() access
+        // Continue with truncated description
+        console.error(`   ⚠️  Could not fetch full content for ${pub.slug}: ${error.message.substring(0, 50)}`);
       }
 
       // Extract attributions
       const attributions = pub.attributions || [];
+
+      // Extract collections using the collections map
+      const collections = [];
+      if (pub.collectionPubs && Array.isArray(pub.collectionPubs)) {
+        for (const collectionPub of pub.collectionPubs) {
+          const collectionTitle = this.collections.get(collectionPub.collectionId);
+          if (collectionTitle) {
+            collections.push(collectionTitle);
+          }
+        }
+      }
 
       // Build article object
       const article = {
@@ -216,34 +376,38 @@ class CrimRXivScraper {
         slug: pub.slug,
         title: pub.title || 'Untitled',
         description: pub.description || '',
-        abstract: pub.description || '',
+        abstract: fullText || pub.description || '',
         doi: pub.doi || null,
         license: pub.licenseSlug || null,
         created_at: pub.createdAt || new Date().toISOString(),
         updated_at: pub.updatedAt || new Date().toISOString(),
         published_at: pub.customPublishedAt || pub.createdAt || null,
-        content_text: pub.description || '',  // Batch API doesn't include full content
-        content_json: '{}',                    // Batch API doesn't include full content
+        content_text: pub.description || '',
+        content_json: JSON.stringify(pub),
+        content_prosemirror: prosemirrorDoc ? JSON.stringify(prosemirrorDoc) : null,
+        content_markdown: null,  // Could convert later if needed
+        content_text_full: fullText || null,
+        word_count: wordCount,
         authors_json: JSON.stringify(
-          attributions.map((attr, idx) => ({
-            index: idx,
-            name: attr.name || attr.user?.fullName || 'Unknown',
-            orcid: attr.orcid || attr.user?.orcid || null,
-            affiliation: attr.affiliation || null,
-            roles: attr.roles || [],
-            user_id: attr.userId || null,
+          attributions.map(attr => ({
+            name: attr.name || 'Unknown',
+            affiliation: attr.affiliation,
+            orcid: attr.orcid,
+            is_author: attr.isAuthor,
             is_corresponding: attr.isCorresponding || false
           }))
         ),
         author_count: attributions.length,
-        collections_json: JSON.stringify([]),  // Batch API doesn't include collections
-        collection_count: 0,
+        collections_json: JSON.stringify(collections),
+        collection_count: collections.length,
         keywords_json: JSON.stringify(pub.labels || []),
+        attachments_json: JSON.stringify(files),
+        attachment_count: files.length,
         url: `https://www.crimrxiv.com/pub/${pub.slug}`,
-        pdf_url: pub.downloads?.[0]?.url || null
+        pdf_url: files[0]?.url || null
       };
 
-      // Upsert into database (handles versioning)
+      // Upsert into database
       const result = this.db.upsertArticle(article);
 
       // Update stats
@@ -251,46 +415,47 @@ class CrimRXivScraper {
         this.stats.inserted++;
       } else if (result.action === 'updated') {
         this.stats.updated++;
+      } else if (result.action === 'attachments_updated') {
+        this.stats.content_enriched++;
       } else {
         this.stats.unchanged++;
       }
 
       return result;
+
     } catch (error) {
       this.stats.errors++;
-      console.error(`\n   ❌ Error processing ${pub.slug}: ${error.message}`);
+      console.error(`   ❌ Error processing ${pub.slug}: ${error.message}`);
       return null;
     }
   }
 
   /**
-   * Main scraping workflow
+   * Main scrape method
    */
-  async scrape(options = {}) {
+  async scrape(limit = null) {
     const startTime = Date.now();
 
-    // Fetch and process publications incrementally
-    await this.fetchAndProcess(options.limit, options.incremental);
+    // Fetch and process
+    await this.fetchAndProcess(limit);
 
-    // Print statistics
-    const durationMinutes = ((Date.now() - startTime) / 1000 / 60).toFixed(2);
-    const durationSeconds = ((Date.now() - startTime) / 1000).toFixed(2);
+    // Calculate duration
+    const endTime = Date.now();
+    const durationSeconds = ((endTime - startTime) / 1000).toFixed(2);
+    const durationMinutes = ((endTime - startTime) / 1000 / 60).toFixed(2);
+
+    // Get database stats
     const dbStats = this.db.getStats();
 
-    // Record scrape run
-    this.db.recordScrapeRun({
-      total: this.stats.total,
-      inserted: this.stats.inserted,
-      updated: this.stats.updated,
-      duration: parseFloat(durationSeconds)
-    });
-
-    console.log('='.repeat(60));
+    // Print summary
+    console.log('✅ Completed: ' + this.stats.total + ' publications processed\n');
+    console.log('='.repeat(70));
     console.log('✅ SCRAPING COMPLETE!');
-    console.log('='.repeat(60));
-    console.log(`Total Fetched: ${this.stats.total}`);
+    console.log('='.repeat(70));
+    console.log(`Total Processed: ${this.stats.total}`);
     console.log(`New Articles: ${this.stats.inserted}`);
     console.log(`Updated (New Versions): ${this.stats.updated}`);
+    console.log(`Content Enriched: ${this.stats.content_enriched}`);
     console.log(`Unchanged: ${this.stats.unchanged}`);
     console.log(`Errors: ${this.stats.errors}`);
     console.log(`Duration: ${durationMinutes} minutes`);
@@ -300,9 +465,8 @@ class CrimRXivScraper {
     console.log(`  Latest Versions: ${dbStats.latest_articles}`);
     console.log(`  Unique Articles: ${dbStats.unique_articles}`);
     console.log(`  Unexported: ${dbStats.unexported_articles}`);
-    console.log('='.repeat(60) + '\n');
-
-    console.log('💡 Next steps:');
+    console.log('='.repeat(70));
+    console.log('\n💡 Next steps:');
     console.log('  1. Export to Parquet: npm run export');
     console.log('  2. Deploy to Arweave: npm run deploy\n');
   }
@@ -318,52 +482,29 @@ class CrimRXivScraper {
       this.db.close();
     }
   }
-
-  /**
-   * Sleep utility
-   */
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 }
 
-/**
- * Main execution
- */
+// Main execution
 async function main() {
   const args = process.argv.slice(2);
-  const options = {
-    limit: args.includes('--limit') ? parseInt(args[args.indexOf('--limit') + 1]) : null,
-    incremental: args.includes('--incremental')
-  };
+  const limitArg = args.find(arg => arg.startsWith('--limit'));
+  const limit = limitArg ? parseInt(limitArg.split('=')[1]) : null;
 
-  if (options.limit) {
-    console.log(`\n⚠️  TEST MODE: Limiting to ${options.limit} publications\n`);
-  }
-
-  if (options.incremental) {
-    console.log(`\n🔄 INCREMENTAL MODE: Only fetching new/updated articles\n`);
+  if (limit) {
+    console.log(`\n⚠️  TEST MODE: Limiting to ${limit} publications\n`);
   }
 
   const scraper = new CrimRXivScraper();
 
   try {
     await scraper.initialize();
-    await scraper.scrape(options);
-    await scraper.cleanup();
-    process.exit(0);
+    await scraper.scrape(limit);
   } catch (error) {
     console.error('\n❌ Fatal error:', error);
-    console.error(error.stack);
-    await scraper.cleanup();
     process.exit(1);
+  } finally {
+    await scraper.cleanup();
   }
 }
 
-// Run if executed directly
-const isRunningDirectly = process.argv[1] && process.argv[1].endsWith('scrape-to-sqlite.js');
-if (isRunningDirectly) {
-  main();
-}
-
-export default CrimRXivScraper;
+main();

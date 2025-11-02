@@ -39,13 +39,16 @@ class CrimRXivScraper {
     this.sdk = null;
     this.db = null;
     this.collections = new Map(); // collection_id => collection_title
+    this.failedDownloads = []; // Track failed PDF downloads
     this.stats = {
       total: 0,
       inserted: 0,
       updated: 0,
       content_enriched: 0,
       unchanged: 0,
-      errors: 0
+      errors: 0,
+      pdfs_downloaded: 0,
+      pdfs_failed: 0
     };
   }
 
@@ -345,6 +348,14 @@ class CrimRXivScraper {
               const localPath = await this.downloadAttachment(file.url, file.filename, pub.slug);
               if (localPath) {
                 file.localPath = localPath;
+                this.stats.pdfs_downloaded++;
+              } else {
+                this.stats.pdfs_failed++;
+                this.failedDownloads.push({
+                  slug: pub.slug,
+                  filename: file.filename,
+                  url: file.url
+                });
               }
             }
           }
@@ -460,12 +471,33 @@ class CrimRXivScraper {
     console.log(`Errors: ${this.stats.errors}`);
     console.log(`Duration: ${durationMinutes} minutes`);
     console.log('');
+    console.log('PDF Download Statistics:');
+    console.log(`  Successfully Downloaded: ${this.stats.pdfs_downloaded}`);
+    console.log(`  Failed Downloads: ${this.stats.pdfs_failed}`);
+    console.log('');
     console.log('Database Statistics:');
     console.log(`  Total Articles (all versions): ${dbStats.total_articles}`);
     console.log(`  Latest Versions: ${dbStats.latest_articles}`);
     console.log(`  Unique Articles: ${dbStats.unique_articles}`);
     console.log(`  Unexported: ${dbStats.unexported_articles}`);
     console.log('='.repeat(70));
+
+    // Log failed PDF downloads
+    if (this.failedDownloads.length > 0) {
+      console.log('\n' + '='.repeat(70));
+      console.log('⚠️  FAILED PDF DOWNLOADS (' + this.failedDownloads.length + ' files)');
+      console.log('='.repeat(70));
+      this.failedDownloads.forEach((item, index) => {
+        console.log(`${index + 1}. Article: ${item.slug}`);
+        console.log(`   File: ${item.filename}`);
+        console.log(`   URL: ${item.url}`);
+        console.log('');
+      });
+      console.log('💡 To retry failed downloads, re-run: npm run import');
+      console.log('   (Existing articles will be skipped, only PDFs will be re-attempted)');
+      console.log('='.repeat(70));
+    }
+
     console.log('\n💡 Next steps:');
     console.log('  1. Export to Parquet: npm run export');
     console.log('  2. Deploy to Arweave: npm run deploy\n');

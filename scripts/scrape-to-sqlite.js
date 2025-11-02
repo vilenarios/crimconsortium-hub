@@ -131,44 +131,32 @@ class CrimRXivScraper {
         }
       }
 
-      // Download with timeout and retry logic
-      let retries = 0;
-      while (retries < CONFIG.MAX_RETRIES) {
-        try {
-          const response = await axios({
-            method: 'GET',
-            url: url,
-            responseType: 'stream',
-            timeout: CONFIG.DOWNLOAD_TIMEOUT,
-            maxRedirects: 5
-          });
+      // Download (single attempt, no retries)
+      try {
+        const response = await axios({
+          method: 'GET',
+          url: url,
+          responseType: 'stream',
+          timeout: CONFIG.DOWNLOAD_TIMEOUT,
+          maxRedirects: 5
+        });
 
-          // Save to file
-          const writer = fs.createWriteStream(filePath);
-          response.data.pipe(writer);
+        // Save to file
+        const writer = fs.createWriteStream(filePath);
+        response.data.pipe(writer);
 
-          await new Promise((resolve, reject) => {
-            writer.on('finish', resolve);
-            writer.on('error', reject);
-          });
+        await new Promise((resolve, reject) => {
+          writer.on('finish', resolve);
+          writer.on('error', reject);
+        });
 
-          console.log(`   ✓ Downloaded: ${filename} (${(await fs.stat(filePath)).size} bytes)`);
-          return `data/attachments/${slug}/${filename}`;
+        console.log(`   ✓ Downloaded: ${filename} (${(await fs.stat(filePath)).size} bytes)`);
+        return `data/attachments/${slug}/${filename}`;
 
-        } catch (downloadError) {
-          retries++;
-          if (retries >= CONFIG.MAX_RETRIES) {
-            console.error(`   ⚠️  Failed to download ${filename} after ${CONFIG.MAX_RETRIES} retries`);
-            return null;
-          }
-
-          const backoff = Math.min(CONFIG.INITIAL_BACKOFF * Math.pow(2, retries - 1), CONFIG.MAX_BACKOFF);
-          console.log(`   ⚠️  Download failed, retrying in ${backoff}ms... (${retries}/${CONFIG.MAX_RETRIES})`);
-          await new Promise(resolve => setTimeout(resolve, backoff));
-        }
+      } catch (downloadError) {
+        console.error(`   ⚠️  Failed: ${filename}`);
+        return null;
       }
-
-      return null;
 
     } catch (error) {
       console.error(`   ⚠️  Error downloading ${filename}: ${error.message}`);
@@ -494,7 +482,7 @@ class CrimRXivScraper {
         console.log('');
       });
       console.log('💡 To retry failed downloads, re-run: npm run import');
-      console.log('   (Existing articles will be skipped, only PDFs will be re-attempted)');
+      console.log('   (Existing articles will be skipped, only missing PDFs will be attempted)');
       console.log('='.repeat(70));
     }
 

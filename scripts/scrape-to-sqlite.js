@@ -132,6 +132,9 @@ class CrimRXivScraper {
       }
 
       // Download (single attempt, no retries)
+      console.log(`   📥 Downloading: ${filename}`);
+      console.log(`      URL: ${url}`);
+
       try {
         const response = await axios({
           method: 'GET',
@@ -150,11 +153,14 @@ class CrimRXivScraper {
           writer.on('error', reject);
         });
 
-        console.log(`   ✓ Downloaded: ${filename} (${(await fs.stat(filePath)).size} bytes)`);
+        const fileSize = (await fs.stat(filePath)).size;
+        console.log(`   ✓ Downloaded: ${filename} (${fileSize} bytes)`);
         return `data/attachments/${slug}/${filename}`;
 
       } catch (downloadError) {
         console.error(`   ⚠️  Failed: ${filename}`);
+        console.error(`      URL: ${url}`);
+        console.error(`      Error: ${downloadError.message}`);
         return null;
       }
 

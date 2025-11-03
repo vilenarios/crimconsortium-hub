@@ -18,7 +18,22 @@
       "Bash(npm install:*)",
       "Bash(findstr:*)",
       "Bash(sqlite3:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(tree:*)",
+      "Bash(if [ -d \"data/attachments\" ])",
+      "Bash(then du -sh data/attachments)",
+      "Bash(else echo \"No attachments directory\")",
+      "Bash(fi)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(tasklist:*)",
+      "Bash(dir:*)",
+      "Bash(nul)",
+      "Bash(del /q datacrimrxiv.db 2)",
+      "Bash(del /q datasqlite*.db 2)",
+      "Bash(del /q publicdata*.parquet 2)",
+      "Bash(echo:*)",
+      "Bash(npm run preview:*)"
     ],
     "deny": [],
     "ask": []

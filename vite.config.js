@@ -1,41 +1,45 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  // Base path for deployment (can be overridden for Arweave)
+  // Base path for deployment
   base: './',
 
   build: {
     outDir: 'dist',
     emptyOutDir: true,
 
-    // Inline small assets as base64 for Arweave compatibility
+    // Don't inline large assets
     assetsInlineLimit: 4096,
 
-    // Generate source maps for debugging
+    // No source maps for production
     sourcemap: false,
 
     rollupOptions: {
       output: {
-        // Use manual chunks to optimize loading
+        // Simple chunking - no DuckDB bundling needed
         manualChunks: {
-          'duckdb': ['@duckdb/duckdb-wasm'],
+          'vendor': ['prosemirror-view', 'prosemirror-state', 'prosemirror-model']
         },
       },
     },
   },
 
   server: {
-    port: 3005, // Use 3005 to avoid conflicts with other apps on 3000
-    strictPort: false, // Auto-increment if 3005 is taken too
-    open: false, // Don't auto-open browser (avoid conflicts with other apps)
-    host: 'localhost', // Bind to localhost specifically
+    port: 3005,
+    strictPort: false,
+    open: false,
+    host: 'localhost',
   },
 
-  // Optimize dependencies
+  preview: {
+    port: 4174,
+  },
+
+  // Optimize dependencies - exclude DuckDB from bundling
   optimizeDeps: {
-    include: ['@duckdb/duckdb-wasm'],
+    exclude: ['@duckdb/duckdb-wasm'],
   },
 
-  // Handle .wasm files
-  assetsInclude: ['**/*.wasm'],
+  // Only include parquet for local dev
+  assetsInclude: ['**/*.parquet'],
 });

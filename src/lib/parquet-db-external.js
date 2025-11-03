@@ -1,76 +1,55 @@
 /**
- * ParquetDB - DuckDB-WASM Wrapper for Parquet Queries
+ * ParquetDB (External Resources) - DuckDB-WASM Wrapper for Parquet Queries
+ *
+ * New architecture: Loads resources from external URLs
+ * - Development: localhost URLs
+ * - Production: ArNS subdomains and Arweave TX IDs
  *
  * Handles loading and querying Parquet files using DuckDB-WASM.
  * Implements lazy loading of article batches.
  */
 
 import * as duckdb from '@duckdb/duckdb-wasm';
-import { getDataParquetUrl, getUndernameUrl, getAppInfo } from './gateway.js';
+import { ARWEAVE_CONFIG, isDevelopment } from '../config/arweave.js';
 
 export class ParquetDB {
   constructor() {
     this.db = null;
     this.conn = null;
-    this.loadedBatches = new Set();
     this.metadataLoaded = false;
 
-    // Determine parquet URLs based on gateway
-    this.urls = this.getParquetUrls();
-
     console.log('📊 ParquetDB configured:', {
-      metadata: this.urls.metadata,
-      gateway: getAppInfo()
+      environment: isDevelopment() ? 'development' : 'production',
+      parquet: ARWEAVE_CONFIG.parquet,
+      wasm: ARWEAVE_CONFIG.wasm
     });
   }
 
   /**
-   * Get parquet URLs based on current gateway
-   * - Localhost: Use full localhost URL (DuckDB-WASM needs absolute URLs)
-   * - Production: Use ArNS undername (data_gateway/path)
-   */
-  getParquetUrls() {
-    const appInfo = getAppInfo();
-
-    // For localhost development, use full URL
-    // DuckDB-WASM requires absolute URLs for fetching
-    if (appInfo.isLocalhost) {
-      const baseUrl = `${appInfo.protocol}://${appInfo.hostname}:${window.location.port || '3005'}`;
-      return {
-        metadata: `${baseUrl}/data/metadata.parquet`,
-        batchBase: `${baseUrl}/data/articles/`
-      };
-    }
-
-    // For production on Arweave, use relative paths (parquet in bundle)
-    // This includes the parquet file in the same bundle as the app
-    return {
-      metadata: './data/metadata.parquet',
-      batchBase: './data/articles/'
-    };
-  }
-
-  /**
-   * Initialize DuckDB-WASM
+   * Initialize DuckDB-WASM from external resources
    */
   async initialize() {
     try {
-      console.log('📦 Loading DuckDB-WASM...');
+      console.log('📦 Loading DuckDB-WASM from external resources...');
 
-      // Create manual bundle configuration for local files
+      // Create manual bundle configuration using external URLs
       const MANUAL_BUNDLES = {
         mvp: {
-          mainModule: './duckdb/duckdb-mvp.wasm',
-          mainWorker: './duckdb/duckdb-browser-mvp.worker.js',
+          mainModule: ARWEAVE_CONFIG.wasm.mvpModule,
+          mainWorker: ARWEAVE_CONFIG.wasm.mvpWorker,
         },
         eh: {
-          mainModule: './duckdb/duckdb-eh.wasm',
-          mainWorker: './duckdb/duckdb-browser-eh.worker.js',
+          mainModule: ARWEAVE_CONFIG.wasm.ehModule,
+          mainWorker: ARWEAVE_CONFIG.wasm.ehWorker,
         },
       };
 
+      console.log('📦 WASM bundles:', MANUAL_BUNDLES);
+
       // Select bundle (try MVP first, it's the most compatible)
       const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
+
+      console.log('📦 Selected bundle:', bundle);
 
       // Create logger
       const logger = new duckdb.ConsoleLogger();
@@ -87,7 +66,7 @@ export class ParquetDB {
 
       console.log('✅ DuckDB-WASM initialized');
 
-      // Load metadata
+      // Load metadata from external parquet
       await this.loadMetadata();
 
       return true;
@@ -98,21 +77,23 @@ export class ParquetDB {
   }
 
   /**
-   * Load metadata.parquet (all articles, lightweight)
+   * Load metadata.parquet from external URL
+   * - Development: http://localhost:4174/data/metadata.parquet
+   * - Production: https://data_crimrxiv.arweave.net/metadata.parquet
    */
   async loadMetadata() {
     if (this.metadataLoaded) return;
 
     try {
-      console.log('📋 Loading metadata.parquet...');
+      console.log('📋 Loading metadata from external URL:', ARWEAVE_CONFIG.parquet);
 
       await this.conn.query(`
         CREATE VIEW IF NOT EXISTS metadata AS
-        SELECT * FROM parquet_scan('${this.urls.metadata}')
+        SELECT * FROM parquet_scan('${ARWEAVE_CONFIG.parquet}')
       `);
 
       this.metadataLoaded = true;
-      console.log('✅ Metadata loaded');
+      console.log('✅ Metadata loaded from external URL');
     } catch (error) {
       console.error('❌ Failed to load metadata:', error);
       throw error;
@@ -135,7 +116,6 @@ export class ParquetDB {
           published_at,
           doi,
           author_count,
-          arweave_tx_id,
           manifest_tx_id,
           word_count,
           attachment_count,
@@ -179,7 +159,6 @@ export class ParquetDB {
           doi,
           author_count,
           collection_count,
-          arweave_tx_id,
           manifest_tx_id,
           word_count,
           attachment_count,
@@ -224,7 +203,6 @@ export class ParquetDB {
           published_at,
           doi,
           author_count,
-          arweave_tx_id,
           manifest_tx_id,
           word_count,
           attachment_count,
@@ -281,7 +259,6 @@ export class ParquetDB {
           published_at,
           doi,
           author_count,
-          arweave_tx_id,
           manifest_tx_id,
           word_count,
           attachment_count,
@@ -334,7 +311,7 @@ export class ParquetDB {
   }
 
   /**
-   * Get full article (returns metadata only - manifests fetched from Arweave)
+   * Get full article (returns metadata only - manifests fetched separately)
    */
   async getArticleFull(slug) {
     try {

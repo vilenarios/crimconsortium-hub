@@ -2,6 +2,27 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚡ Quick Reference
+
+**Most Common Operations:**
+```bash
+npm run dev              # Start dev server (http://localhost:3005)
+npm run import           # Scrape CrimRXiv to SQLite (30-45 min, needs .env)
+npm run export           # SQLite → Parquet export (~30 sec)
+npm run build            # Build SPA for production
+```
+
+**IMPORTANT Migration Note:**
+- ✅ **Current implementation:** SPA with DuckDB-WASM (as described in this document)
+- ⚠️ **README.md is outdated:** Still describes old SSG architecture (being updated)
+- 📖 **Source of truth:** This CLAUDE.md file reflects the actual codebase
+
+**Prerequisites:**
+- `.env` file required for `npm run import` (see Security Considerations section)
+- `data/sqlite/crimrxiv.db` must exist before running `npm run export`
+- Node.js 18+ required for build-time scripts
+- Modern browser with WebAssembly support for runtime
+
 ## Commands
 
 **Core Development:**
@@ -42,6 +63,11 @@ node scripts/scraping-status.js    # Check import progress
 **Single Page Application (SPA) with Client-Side Database Queries**
 
 This is a browser-based archive viewer that queries data directly in the browser using DuckDB-WASM. No backend required.
+
+**Execution Contexts (Important!):**
+- **Build-time (Node.js):** `scripts/*.js`, `src/lib/database.js` (SQLite operations)
+- **Runtime (Browser):** `src/app.js`, `src/components/*.js`, `src/lib/parquet-db.js` (DuckDB-WASM)
+- **Never mix:** SQLite is server-side only, DuckDB-WASM is browser-side only
 
 ### Tech Stack
 - **Frontend**: Vite + Vanilla JavaScript (ES6 modules)

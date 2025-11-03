@@ -15,12 +15,13 @@
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { schema } from 'prosemirror-schema-basic';
-import { getManifestUrl } from '../lib/gateway.js';
+import { getManifestUrl, getAttachmentUrl } from '../config/arweave.js';
 
 export class ArticleDetail {
-  constructor(db, router) {
+  constructor(db, router, manifestLoader) {
     this.db = db;
     this.router = router;
+    this.manifestLoader = manifestLoader;
   }
 
   /**
@@ -62,32 +63,21 @@ export class ArticleDetail {
         return this.renderNotFound(slug);
       }
 
-      // If article has Arweave manifest, fetch and render ProseMirror content
+      // If article has Arweave manifest, fetch content using manifestLoader
       if (metadata.manifest_tx_id) {
-        console.log(`📦 Fetching Arweave manifest: ${metadata.manifest_tx_id}`);
+        console.log(`📦 Loading article from manifest: ${metadata.manifest_tx_id}`);
 
-        // Fetch metadata and content separately
-        const [manifestMetadata, manifestContent] = await Promise.all([
-          this.fetchManifestMetadata(metadata.manifest_tx_id),
-          this.fetchManifestContent(metadata.manifest_tx_id)
-        ]);
-
-        if (manifestMetadata) {
-          return this.renderManifestContent(metadata, manifestMetadata, manifestContent);
+        try {
+          // Use manifestLoader to get full article (markdown + attachments)
+          const fullArticle = await this.manifestLoader.getFullArticle(metadata);
+          return this.renderManifestArticle(fullArticle);
+        } catch (error) {
+          console.error(`⚠️ Failed to load manifest content:`, error);
+          // Fall through to metadata-only rendering
         }
       }
 
-      // Legacy fallback: If article has individual Arweave TX ID (old markdown format)
-      if (metadata.arweave_tx_id) {
-        console.log(`📡 Fetching legacy article from Arweave: ${metadata.arweave_tx_id}`);
-        const markdownContent = await this.fetchFromArweave(metadata.arweave_tx_id);
-
-        if (markdownContent) {
-          return this.renderArweaveContent(metadata, markdownContent);
-        }
-      }
-
-      // Fallback: use metadata only
+      // Fallback: use metadata only (no manifest available)
       const article = await this.db.getArticleFull(slug);
 
       // Debug logging
@@ -707,6 +697,173 @@ export class ArticleDetail {
             return div.innerHTML;
           }
         </script>
+      </div>
+    `;
+  }
+
+  /**
+   * Render article loaded from manifest (new external architecture)
+   * @param {object} article - Full article with metadata, content_markdown, and attachments from manifestLoader
+   */
+  renderManifestArticle(article) {
+    // Get first author's affiliation if available
+    const firstAuthorAffiliation = article.authors && article.authors.length > 0 && article.authors[0].affiliation
+      ? article.authors[0].affiliation
+      : null;
+
+    return `
+      <div class="article-detail manifest-article">
+        ${this.renderHeader()}
+        ${this.renderNavigation()}
+
+        <!-- Article Content Container -->
+        <div class="article-container">
+          <div class="container">
+
+            <!-- Institutional Badge -->
+            ${firstAuthorAffiliation ? `
+              <div class="institutional-badge">
+                ${this.escapeHtml(firstAuthorAffiliation)}
+              </div>
+            ` : ''}
+
+            <!-- Publication Type & Date -->
+            <div class="publication-meta">
+              <span class="publication-type">Postprints + Versions of Record</span>
+              <span class="publication-date">${this.formatDate(article.published_at)}</span>
+            </div>
+
+            <!-- Article Title -->
+            <h1 class="article-main-title">${this.escapeHtml(article.title)}</h1>
+
+            <!-- Authors -->
+            ${article.authors && article.authors.length > 0 ? `
+              <div class="article-authors-list">
+                ${article.authors.map(author => `
+                  <span class="author-name">${this.escapeHtml(author.name || author)}</span>${author.is_corresponding ? '<sup>✉</sup>' : ''}
+                `).join(', ')}
+              </div>
+            ` : ''}
+
+            <!-- DOI & License -->
+            <div class="article-identifiers">
+              ${article.doi ? `
+                <div class="doi-badge">
+                  <span class="doi-label">DOI:</span>
+                  <a href="https://doi.org/${article.doi}" target="_blank" class="doi-link">
+                    ${article.doi}
+                  </a>
+                </div>
+              ` : ''}
+              ${article.license ? `
+                <div class="license-badge">
+                  ${this.renderLicenseBadge(article.license)}
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section">
+              <h3 class="download-title">Download</h3>
+              <div class="download-buttons">
+                ${article.attachments && article.attachments.find(a => a.type === 'pdf') ? `
+                  <a href="${article.attachments.find(a => a.type === 'pdf').url}" target="_blank" class="download-btn">PDF</a>
+                ` : ''}
+                <a href="${getManifestUrl(article.manifest_tx_id)}" target="_blank" class="download-btn">View Manifest</a>
+              </div>
+              <div class="release-info">
+                <span class="release-text">Archived on Arweave</span>
+                <span class="tx-id-small">TX: ${article.manifest_tx_id.substring(0, 12)}...</span>
+              </div>
+            </div>
+
+            <!-- Abstract -->
+            ${article.abstract || article.abstract_preview ? `
+              <section class="article-abstract">
+                <h2 class="content-section-title">Abstract</h2>
+                <div class="abstract-content">
+                  ${this.escapeHtml(article.abstract || article.abstract_preview)}
+                </div>
+              </section>
+            ` : ''}
+
+            <!-- Article Content (Markdown) -->
+            ${article.content_markdown ? `
+              <section class="article-content-section">
+                <h2 class="content-section-title">Article Content</h2>
+                <div class="markdown-content">
+                  <pre class="markdown-display">${this.escapeHtml(article.content_markdown)}</pre>
+                </div>
+              </section>
+            ` : ''}
+
+            <!-- Author Details (with affiliations) -->
+            ${article.authors && article.authors.length > 0 && article.authors.some(a => a.affiliation) ? `
+              <section class="author-details-section">
+                <h2 class="content-section-title">Author Information</h2>
+                <div class="author-details-list">
+                  ${article.authors.map(author => `
+                    ${author.affiliation ? `
+                      <div class="author-detail-item">
+                        <div class="author-detail-name">${this.escapeHtml(author.name || author)}${author.is_corresponding ? ' <sup>✉</sup>' : ''}</div>
+                        <div class="author-detail-affiliation">${this.escapeHtml(author.affiliation)}</div>
+                        ${author.orcid ? `
+                          <div class="author-detail-orcid">
+                            <a href="https://orcid.org/${author.orcid}" target="_blank" class="orcid-link">ORCID: ${author.orcid}</a>
+                          </div>
+                        ` : ''}
+                      </div>
+                    ` : ''}
+                  `).join('')}
+                </div>
+              </section>
+            ` : ''}
+
+            <!-- Keywords -->
+            ${article.keywords && article.keywords.length > 0 ? `
+              <section class="keywords-section">
+                <h3 class="subsection-title">Keywords</h3>
+                <div class="keyword-tags">
+                  ${article.keywords.map(kw => `
+                    <span class="keyword-badge">${this.escapeHtml(kw)}</span>
+                  `).join(' ')}
+                </div>
+              </section>
+            ` : ''}
+
+            <!-- Collections -->
+            ${article.collections && article.collections.length > 0 ? `
+              <section class="collections-section">
+                <h3 class="subsection-title">Collections</h3>
+                <div class="collection-tags">
+                  ${article.collections.map(col => `
+                    <span class="collection-badge">${this.escapeHtml(col)}</span>
+                  `).join(' ')}
+                </div>
+              </section>
+            ` : ''}
+
+            <!-- Attachments -->
+            ${article.attachments && article.attachments.length > 0 ? `
+              <section class="attachments-section">
+                <h3 class="subsection-title">Attachments</h3>
+                <div class="attachments-list">
+                  ${article.attachments.map(attachment => `
+                    <div class="attachment-item">
+                      <a href="${attachment.url}" target="_blank" class="attachment-link">
+                        ${attachment.type === 'pdf' ? '📄' : '📎'} ${this.escapeHtml(attachment.filename)}
+                      </a>
+                      ${attachment.extension ? `<span class="attachment-type">(${attachment.extension})</span>` : ''}
+                    </div>
+                  `).join('')}
+                </div>
+              </section>
+            ` : ''}
+
+          </div>
+        </div>
+
+        ${this.renderFooter()}
       </div>
     `;
   }

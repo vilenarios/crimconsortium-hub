@@ -420,6 +420,9 @@ export class CrimRXivDatabase {
       `).run(article.article_id);
 
       // Insert new version
+      const hasFullContent = article.content_prosemirror ? 1 : 0;
+      const scrapedAt = hasFullContent ? new Date().toISOString() : null;
+
       this.db.prepare(`
         INSERT INTO articles (
           id, article_id, slug, version_number, version_timestamp, is_latest_version,
@@ -431,8 +434,9 @@ export class CrimRXivDatabase {
           collections_json, collection_count,
           keywords_json,
           attachments_json, attachment_count,
+          full_content_scraped, full_content_scraped_at,
           url, pdf_url
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         versionId,
         article.article_id,
@@ -461,6 +465,8 @@ export class CrimRXivDatabase {
         article.keywords_json,
         article.attachments_json,
         article.attachment_count,
+        hasFullContent,
+        scrapedAt,
         article.url,
         article.pdf_url
       );
@@ -468,6 +474,9 @@ export class CrimRXivDatabase {
       return { action: 'updated', versionNumber: existing.version_number + 1 };
     } else if (!existing) {
       // Insert first version
+      const hasFullContent = article.content_prosemirror ? 1 : 0;
+      const scrapedAt = hasFullContent ? new Date().toISOString() : null;
+
       this.db.prepare(`
         INSERT INTO articles (
           id, article_id, slug, version_number, version_timestamp, is_latest_version,
@@ -479,8 +488,9 @@ export class CrimRXivDatabase {
           collections_json, collection_count,
           keywords_json,
           attachments_json, attachment_count,
+          full_content_scraped, full_content_scraped_at,
           url, pdf_url
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         versionId,
         article.article_id,
@@ -509,6 +519,8 @@ export class CrimRXivDatabase {
         article.keywords_json,
         article.attachments_json,
         article.attachment_count,
+        hasFullContent,
+        scrapedAt,
         article.url,
         article.pdf_url
       );
@@ -526,6 +538,9 @@ export class CrimRXivDatabase {
         (article.keywords_json && article.keywords_json !== existing.keywords_json);
 
       if (needsUpdate) {
+        const hasFullContent = article.content_prosemirror ? 1 : (existing.content_prosemirror ? 1 : 0);
+        const scrapedAt = hasFullContent ? new Date().toISOString() : existing.full_content_scraped_at;
+
         this.db.prepare(`
           UPDATE articles
           SET attachments_json = ?,
@@ -548,7 +563,9 @@ export class CrimRXivDatabase {
               collection_count = ?,
               authors_json = ?,
               author_count = ?,
-              keywords_json = ?
+              keywords_json = ?,
+              full_content_scraped = ?,
+              full_content_scraped_at = ?
           WHERE id = ?
         `).run(
           article.attachments_json,
@@ -566,6 +583,8 @@ export class CrimRXivDatabase {
           article.authors_json || '[]',
           article.author_count || 0,
           article.keywords_json || '[]',
+          hasFullContent,
+          scrapedAt,
           existing.id
         );
 
@@ -705,6 +724,25 @@ export class CrimRXivDatabase {
       stats.updated,
       stats.duration
     );
+  }
+
+  /**
+   * Update manifest_tx_id for an article by slug
+   * Used after uploading article folder to Arweave
+   */
+  updateManifestTxId(slug, manifestTxId) {
+    try {
+      const result = this.db.prepare(`
+        UPDATE articles
+        SET manifest_tx_id = ?
+        WHERE slug = ? AND is_latest_version = 1
+      `).run(manifestTxId, slug);
+
+      return result.changes > 0;
+    } catch (error) {
+      console.error(`Failed to update manifest_tx_id for ${slug}:`, error);
+      return false;
+    }
   }
 
   /**

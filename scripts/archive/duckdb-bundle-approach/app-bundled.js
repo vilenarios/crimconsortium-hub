@@ -4,8 +4,7 @@
  * Main application entry point. Initializes DuckDB-WASM and manages routing.
  */
 
-import { ParquetDB } from './lib/parquet-db-external.js';
-import { manifestLoader } from './lib/manifest-loader.js';
+import { ParquetDB } from './lib/parquet-db.js';
 import { Router } from './lib/router.js';
 import { Homepage } from './components/homepage.js';
 import { ArticleDetail } from './components/article-detail.js';
@@ -17,7 +16,6 @@ import { MemberDetail } from './components/member-detail.js';
 export class CrimRXivApp {
   constructor() {
     this.db = null;
-    this.manifestLoader = manifestLoader; // Singleton manifest loader
     this.router = null;
     this.components = {
       homepage: null,
@@ -57,7 +55,7 @@ export class CrimRXivApp {
 
       // Initialize components (they can now reference this.router via the app)
       this.components.homepage = new Homepage(this.db, this.router);
-      this.components.articleDetail = new ArticleDetail(this.db, this.router, this.manifestLoader);
+      this.components.articleDetail = new ArticleDetail(this.db, this.router);
       this.components.articlesBrowse = new ArticlesBrowse(this.db, this.router);
       this.components.search = new Search(this.db, this.router);
       this.components.consortium = new Consortium(this.db, this.router);

@@ -414,7 +414,12 @@ class FixedARFSSync {
 }
 
 // Run sync if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isRunningDirectly = process.argv[1] && (
+  process.argv[1].endsWith('sync-ardrive-fixed.js') ||
+  process.argv[1].endsWith('sync-ardrive-fixed')
+);
+
+if (isRunningDirectly) {
   const sync = new FixedARFSSync();
   sync.syncWithCorrectArchitecture().catch(error => {
     console.error('Sync failed:', error.message);

@@ -248,7 +248,12 @@ async function main() {
 }
 
 // Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isRunningDirectly = process.argv[1] && (
+  process.argv[1].endsWith('upload-articles.js') ||
+  process.argv[1].endsWith('upload-articles')
+);
+
+if (isRunningDirectly) {
   main();
 }
 

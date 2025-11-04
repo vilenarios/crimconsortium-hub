@@ -10,7 +10,7 @@
  *    - content.json (ProseMirror content)
  *    - article.md (markdown version)
  *    - article.html (HTML version - optional)
- *    - pdfs/{filename}.pdf (attachments)
+ *    - attachments/{filename} (PDFs and other media)
  * 3. Saves metadata to SQLite (for querying + manifest_tx_id storage)
  *
  * Usage:
@@ -25,8 +25,6 @@ import axios from 'axios';
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { MarkdownSerializer } from 'prosemirror-markdown';
-import { schema } from 'prosemirror-schema-basic';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,23 +50,19 @@ class CrimRXivImporter {
       updated: 0,
       unchanged: 0,
       errors: 0,
-      pdfs_downloaded: 0,
-      pdfs_failed: 0,
+      attachments_downloaded: 0,
+      attachments_failed: 0,
       folders_created: 0
     };
   }
 
   /**
-   * Convert ProseMirror to Markdown
+   * Convert ProseMirror to Markdown (simplified)
    */
   prosemirrorToMarkdown(doc) {
-    try {
-      const serializer = MarkdownSerializer.defaultMarkdownSerializer;
-      return serializer.serialize(doc);
-    } catch (error) {
-      console.error('Failed to convert to markdown:', error);
-      return '';
-    }
+    // For now, just extract plain text
+    // Full markdown serialization can be added later if needed
+    return this.extractTextFromProseMirror(doc);
   }
 
   /**
@@ -105,14 +99,14 @@ class CrimRXivImporter {
   }
 
   /**
-   * Download PDF attachment
+   * Download attachment (PDF or other media)
    */
-  async downloadPDF(url, filename, articleDir) {
+  async downloadAttachment(url, filename, articleDir) {
     try {
-      const pdfsDir = path.join(articleDir, 'pdfs');
-      await fs.ensureDir(pdfsDir);
+      const attachmentsDir = path.join(articleDir, 'attachments');
+      await fs.ensureDir(attachmentsDir);
 
-      const filePath = path.join(pdfsDir, filename);
+      const filePath = path.join(attachmentsDir, filename);
 
       // Skip if already exists
       if (await fs.pathExists(filePath)) {
@@ -137,11 +131,68 @@ class CrimRXivImporter {
         writer.on('error', reject);
       });
 
-      this.stats.pdfs_downloaded++;
+      this.stats.attachments_downloaded++;
       return { success: true, path: filePath };
     } catch (error) {
       console.error(`    ❌ Failed to download ${filename}:`, error.message);
-      this.stats.pdfs_failed++;
+      this.stats.attachments_failed++;
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Save a specific version to data/articles/{slug}/{releaseNumber}/
+   */
+  async saveVersionFolder(articleDir, releaseNumber, metadata, prosemirrorContent) {
+    try {
+      const versionDir = path.join(articleDir, String(releaseNumber));
+      await fs.ensureDir(versionDir);
+
+      // 1. Save metadata.json
+      await fs.writeJSON(path.join(versionDir, 'metadata.json'), metadata, { spaces: 2 });
+
+      // 2. Save content.json (ProseMirror)
+      if (prosemirrorContent) {
+        await fs.writeJSON(path.join(versionDir, 'content.json'), prosemirrorContent, { spaces: 2 });
+
+        // 3. Save article.md (Markdown)
+        try {
+          const markdown = this.prosemirrorToMarkdown(prosemirrorContent);
+          if (markdown) {
+            await fs.writeFile(path.join(versionDir, 'article.md'), markdown, 'utf-8');
+          }
+        } catch (error) {
+          console.warn(`    ⚠️  Could not generate markdown for release ${releaseNumber}:`, error.message);
+        }
+      }
+
+      // 4. Download attachments
+      const files = this.extractFilesFromProseMirror(prosemirrorContent);
+      const attachments = [];
+
+      for (const file of files) {
+        if (file.url && file.filename) {
+          const result = await this.downloadAttachment(file.url, file.filename, versionDir);
+          if (result.success) {
+            attachments.push({
+              filename: file.filename,
+              path: `attachments/${file.filename}`,
+              size: file.fileSize,
+              type: file.type,
+              url: file.url
+            });
+          }
+        }
+      }
+
+      // 5. Save attachments manifest
+      if (attachments.length > 0) {
+        await fs.writeJSON(path.join(versionDir, 'attachments.json'), attachments, { spaces: 2 });
+      }
+
+      return { success: true, attachments };
+    } catch (error) {
+      console.error(`    ❌ Failed to save version ${releaseNumber}:`, error);
       return { success: false, error: error.message };
     }
   }
@@ -199,17 +250,17 @@ class CrimRXivImporter {
         }
       }
 
-      // 4. Download PDFs
+      // 4. Download attachments (PDFs and other media)
       const files = this.extractFilesFromProseMirror(prosemirrorContent);
       const attachments = [];
 
       for (const file of files) {
         if (file.url && file.filename) {
-          const result = await this.downloadPDF(file.url, file.filename, articleDir);
+          const result = await this.downloadAttachment(file.url, file.filename, articleDir);
           if (result.success) {
             attachments.push({
               filename: file.filename,
-              path: `pdfs/${file.filename}`,
+              path: `attachments/${file.filename}`,
               size: file.fileSize,
               type: file.type,
               url: file.url
@@ -264,20 +315,77 @@ class CrimRXivImporter {
   }
 
   /**
-   * Process a single publication
+   * Process a single publication (with all releases/versions)
    */
   async processPub(pub) {
     try {
       console.log(`\n📄 Processing: ${pub.title}`);
       console.log(`   Slug: ${pub.slug}`);
 
-      // Get full content
-      const text = await this.sdk.pub(pub.id).text.get();
+      const articleDir = path.join(CONFIG.ARTICLES_DIR, pub.slug);
+      await fs.ensureDir(articleDir);
+
+      // Sort releases by createdAt to get version numbers (1, 2, 3...)
+      const releases = (pub.releases || []).sort((a, b) =>
+        new Date(a.createdAt) - new Date(b.createdAt)
+      );
+
+      console.log(`   Releases: ${releases.length || 0}`);
+
+      // Process all releases
+      const versionManifest = [];
+      for (let i = 0; i < releases.length; i++) {
+        const release = releases[i];
+        const releaseNumber = i + 1; // Release numbers start at 1
+
+        console.log(`   📦 Fetching release ${releaseNumber} (historyKey: ${release.historyKey})...`);
+
+        // Get content for this specific release
+        const textResponse = await this.sdk.pub.text.get({
+          params: { pubId: pub.id },
+          query: { historyKey: release.historyKey }
+        });
+        await new Promise(resolve => setTimeout(resolve, CONFIG.TEXT_DELAY));
+
+        const prosemirrorContent = textResponse?.body || null;
+
+        // Prepare metadata for this version
+        const versionMetadata = {
+          releaseNumber: releaseNumber,
+          historyKey: release.historyKey,
+          createdAt: release.createdAt,
+          noteText: release.noteText,
+          title: pub.title,
+          doi: pub.doi,
+          url: `https://www.crimrxiv.com/pub/${pub.slug}/release/${releaseNumber}`
+        };
+
+        // Save this version to {slug}/{releaseNumber}/
+        const versionResult = await this.saveVersionFolder(
+          articleDir,
+          releaseNumber,
+          versionMetadata,
+          prosemirrorContent
+        );
+
+        if (versionResult.success) {
+          versionManifest.push({
+            number: releaseNumber,
+            historyKey: release.historyKey,
+            createdAt: release.createdAt,
+            noteText: release.noteText,
+            url: `https://www.crimrxiv.com/pub/${pub.slug}/release/${releaseNumber}`
+          });
+        }
+      }
+
+      // Get latest version content (for root level and SQLite)
+      const textResponse = await this.sdk.pub.text.get({
+        params: { pubId: pub.id }
+      });
       await new Promise(resolve => setTimeout(resolve, CONFIG.TEXT_DELAY));
 
-      const prosemirrorContent = text?.doc || null;
-
-      // Extract data
+      const prosemirrorContent = textResponse?.body || null;
       const contentText = this.extractTextFromProseMirror(prosemirrorContent);
       const files = this.extractFilesFromProseMirror(prosemirrorContent);
 
@@ -311,13 +419,22 @@ class CrimRXivImporter {
         pdf_url: files[0]?.url || null
       };
 
-      // Save to data/articles/{slug}/
+      // Save latest version to root level (for backwards compatibility)
       const folderResult = await this.saveArticleFolder(article, prosemirrorContent);
 
       if (!folderResult.success) {
         console.error(`   ❌ Failed to save article folder`);
         this.stats.errors++;
         return;
+      }
+
+      // Save versions manifest
+      if (versionManifest.length > 0) {
+        await fs.writeJSON(path.join(articleDir, 'versions.json'), {
+          total: versionManifest.length,
+          latest: versionManifest[versionManifest.length - 1].number,
+          versions: versionManifest
+        }, { spaces: 2 });
       }
 
       // Update attachments JSON for SQLite
@@ -361,12 +478,19 @@ class CrimRXivImporter {
     let hasMore = true;
 
     while (hasMore) {
-      // Fetch batch
-      const pubs = await this.sdk.community.pubs.getMany({
-        limit: CONFIG.BATCH_SIZE,
-        offset: offset,
-        orderBy: 'publishedAt'
+      // Fetch batch using correct SDK API
+      const response = await this.sdk.pub.getMany({
+        query: {
+          limit: CONFIG.BATCH_SIZE,
+          offset: offset,
+          sortBy: 'updatedAt',
+          orderBy: 'DESC',
+          include: ['collectionPubs', 'attributions', 'community', 'draft', 'releases']
+        }
       });
+
+      // Extract pubs array from response body
+      const pubs = response.body || [];
 
       if (!pubs || pubs.length === 0) {
         hasMore = false;
@@ -408,8 +532,8 @@ class CrimRXivImporter {
     console.log(`Unchanged: ${this.stats.unchanged}`);
     console.log(`Errors: ${this.stats.errors}`);
     console.log(`Folders Created: ${this.stats.folders_created}`);
-    console.log(`PDFs Downloaded: ${this.stats.pdfs_downloaded}`);
-    console.log(`PDFs Failed: ${this.stats.pdfs_failed}`);
+    console.log(`Attachments Downloaded: ${this.stats.attachments_downloaded}`);
+    console.log(`Attachments Failed: ${this.stats.attachments_failed}`);
     console.log(`Duration: ${duration} minutes`);
     console.log('='.repeat(60) + '\n');
 
@@ -450,7 +574,12 @@ async function main() {
 }
 
 // Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isRunningDirectly = process.argv[1] && (
+  process.argv[1].endsWith('import-to-articles.js') ||
+  process.argv[1].endsWith('import-to-articles')
+);
+
+if (isRunningDirectly) {
   main();
 }
 

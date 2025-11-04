@@ -171,7 +171,12 @@ async function uploadWasm() {
 }
 
 // Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isRunningDirectly = process.argv[1] && (
+  process.argv[1].endsWith('upload-wasm.js') ||
+  process.argv[1].endsWith('upload-wasm')
+);
+
+if (isRunningDirectly) {
   uploadWasm();
 }
 

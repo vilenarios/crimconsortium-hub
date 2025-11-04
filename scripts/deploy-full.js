@@ -206,7 +206,12 @@ async function deploy() {
 }
 
 // Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+const isRunningDirectly = process.argv[1] && (
+  process.argv[1].endsWith('deploy-full.js') ||
+  process.argv[1].endsWith('deploy-full')
+);
+
+if (isRunningDirectly) {
   deploy();
 }
 

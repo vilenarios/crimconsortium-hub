@@ -34,10 +34,11 @@ cache/
 *.log
 
 # Data management - Generated files (run `npm run import` then `npm run export`)
-# OLD static site data (no longer used)
-data/final/
+# Ignore entire data/ folder to prevent accidentally committing large datasets
+data/
 
-# NEW SPA data pipeline
+# Specific patterns for clarity (redundant but explicit)
+data/final/
 data/temp/
 data/state/
 data/manifests/

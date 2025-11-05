@@ -9,7 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev              # Start dev server (http://localhost:3005)
 npm run import           # Scrape CrimRXiv to SQLite (30-45 min, needs .env)
 npm run export           # SQLite → Parquet export (~30 sec)
-npm run build            # Build SPA for production
+npm run build            # Build SPA for local preview (includes all resources)
+npm run build:prod       # Build SPA for Arweave (excludes external resources)
 ```
 
 **IMPORTANT Migration Note:**
@@ -27,16 +28,21 @@ npm run build            # Build SPA for production
 
 **Core Development:**
 ```bash
-npm run dev       # Vite dev server at http://localhost:3005
-npm run build     # Build SPA to dist/
-npm run preview   # Preview production build
+npm run dev           # Vite dev server at http://localhost:3005
+npm run build         # Build SPA to dist/ (includes all resources for local testing)
+npm run build:prod    # Build for Arweave deployment (excludes external resources)
+npm run preview       # Preview production build (custom server)
+npm run preview:vite  # Preview using Vite preview server
 ```
 
 **Data Pipeline:**
 ```bash
-npm run import          # Scrape CrimRXiv → SQLite (30-45 min, uses PubPub SDK)
-npm run import:pdfs     # Download PDF attachments
-npm run export          # SQLite → Parquet for browser queries (~30 sec)
+npm run import              # Scrape CrimRXiv → SQLite (30-45 min, uses PubPub SDK)
+npm run import:pdfs         # Download PDF attachments
+npm run export              # SQLite → Parquet for browser queries (~30 sec)
+npm run upload:parquet      # Upload Parquet file to Arweave
+npm run upload:wasm         # Upload DuckDB WASM files to Arweave
+npm run upload:articles     # Upload article markdown to Arweave
 ```
 
 **Important:** Before running `npm run import`, ensure `.env` file exists with:
@@ -277,9 +283,11 @@ npm run dev  # Opens at http://localhost:3005
 
 **Testing Locally:**
 - Dev server: `npm run dev` (with hot reload)
-- Production build: `npm run build && npm run preview`
+- Local production test: `npm run build && npm run preview` (includes bundled resources)
+- Arweave deployment test: `npm run build:prod` (excludes external resources, requires ArNS setup)
 - Check console for DuckDB-WASM initialization logs
 - Test all routes work (homepage, article, search, consortium)
+- Verify external resource loading in production builds
 
 ## Key Architecture Patterns
 
@@ -308,14 +316,21 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 **Critical for Permaweb deployment**:
 - All CSS must be inline (Vite handles this)
 - Use relative paths or hash routing (no absolute server paths)
-- No external dependencies (no CDNs, external fonts)
+- External resources (DuckDB WASM, Parquet data) loaded via ArNS undernames
 - Self-contained HTML that works without server
 - Handle gateway URLs correctly (see `src/lib/gateway.js`)
 
+**External Resource Architecture**:
+- **Production builds** (`npm run build:prod`): Excludes DuckDB WASM and data files (loaded from ArNS)
+- **Development builds** (`npm run build`): Includes all resources for local testing
+- **EXCLUDE_EXTERNAL=true**: Environment variable triggers external resource exclusion
+- **ArNS Undernames**: Data loaded from `data_{rootName}.arweave.net`, WASM from `duck-db-wasm_{rootName}.arweave.net`
+
 **Gateway Detection** (`src/lib/gateway.js`):
 - Localhost: Use full URLs (`http://localhost:3005/data/...`)
-- Arweave: Use gateway-relative paths (`./data/...` or ArNS undernames)
+- Arweave: Use ArNS undername URLs for external resources
 - DuckDB-WASM requires absolute URLs for HTTP range requests
+- Parquet files loaded from external ArNS gateway (parquet-db.js:32-54)
 
 ### Incremental Data Sync
 
@@ -406,13 +421,16 @@ console.table(result.toArray());
 
 **Deployment Process**:
 ```bash
-# 1. Build SPA
-npm run build  # Creates dist/ folder
+# 1. Upload external resources (one-time or when updated)
+npm run upload:parquet      # Upload metadata.parquet to Arweave
+npm run upload:wasm         # Upload DuckDB WASM bundles to Arweave
+# Note ArNS undername for each upload (e.g., data_crimrxiv-demo, duck-db-wasm_crimrxiv-demo)
 
-# 2. Optional: Generate manifests for individual articles
+# 2. Build SPA (excludes external resources)
+npm run build:prod          # Creates dist/ folder without bundled WASM/data
+
+# 3. Optional: Generate and upload article manifests
 npm run generate:manifests
-
-# 3. Optional: Upload manifests
 npm run upload:manifests
 
 # 4. Sync dist/ with ArDrive
@@ -420,13 +438,17 @@ npm run sync
 ```
 
 **Deployment Checklist**:
-- [ ] `npm run build` succeeds without errors
+- [ ] External resources uploaded to Arweave (parquet, WASM bundles)
+- [ ] ArNS undernames configured for external resources
+- [ ] `npm run build:prod` succeeds without errors
 - [ ] `dist/index.html` exists and has inline CSS
-- [ ] `dist/data/metadata.parquet` exists (~5MB)
-- [ ] Test `npm run preview` - all pages load correctly
+- [ ] `dist/duckdb/` and `dist/data/` should NOT exist (external resources excluded)
+- [ ] Test `npm run build && npm run preview` locally first (with bundled resources)
+- [ ] Update gateway detection logic if ArNS names changed
 - [ ] Check browser console - no errors
 - [ ] Test search functionality
 - [ ] Test article page with content rendering
+- [ ] Verify external resources load correctly from ArNS undernames
 
 **ArNS (Arweave Name System)**:
 - Provides human-readable URLs (e.g., `https://crimrxiv.ar-io.dev`)

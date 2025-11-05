@@ -11,6 +11,7 @@
     "upload:wasm": "node scripts/upload-wasm.js",
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "node scripts/build-prod.js",
     "preview": "node scripts/preview-server.js",
     "preview:vite": "vite preview",
     "deploy": "node scripts/deploy-full.js",

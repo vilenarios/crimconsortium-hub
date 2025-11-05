@@ -74,8 +74,10 @@ export class ParquetDB {
     }
 
     // For production, use external ArNS-hosted DuckDB-WASM
-    // Uses duck-db-wasm.ar.io (public ArNS name)
-    const wasmBase = 'https://duck-db-wasm.ar.io';
+    // Relative to current gateway (e.g., crimrxiv-demo.arweave.net → duck-db-wasm.arweave.net)
+    const gateway = appInfo.gateway; // e.g., crimrxiv-demo.arweave.net
+    const gatewayDomain = gateway.split('.').slice(1).join('.'); // arweave.net, ar.io, etc.
+    const wasmBase = `${appInfo.protocol}://duck-db-wasm.${gatewayDomain}`;
 
     return {
       mvp: {
@@ -107,11 +109,17 @@ export class ParquetDB {
       // Select bundle (try MVP first, it's the most compatible)
       const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
 
+      console.log('📦 Selected bundle:', bundle.mainModule);
+
       // Create logger
       const logger = new duckdb.ConsoleLogger();
 
-      // Create worker from selected bundle
-      const worker = new Worker(bundle.mainWorker);
+      // Create worker using Blob URL workaround for cross-origin loading
+      // This allows loading Workers from external ArNS sources
+      const workerUrl = URL.createObjectURL(
+        new Blob([`importScripts("${bundle.mainWorker}");`], { type: 'text/javascript' })
+      );
+      const worker = new Worker(workerUrl);
 
       // Initialize database
       this.db = new duckdb.AsyncDuckDB(logger, worker);

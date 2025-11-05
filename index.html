@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="CrimRXiv Archive - Browse and search 3,721+ criminology research publications">
   <title>CrimRXiv Archive</title>
-  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <link rel="icon" type="image/png" href="./favicon.png">
 
   <!-- Critical CSS: Inline styles for immediate render (prevents FOUC) -->
   <style>
@@ -48,7 +48,7 @@
     /* Header */
     .header {
       background: var(--primary-white);
-      border-bottom: 2px solid var(--primary-black);
+      border-bottom: 1px solid var(--border-gray);
       padding: 0.75rem 0;
     }
 
@@ -77,9 +77,16 @@
 
     /* Navigation */
     .nav-bar {
-      background: var(--light-gray);
-      border-bottom: 1px solid var(--border-gray);
-      padding: 0.5rem 0;
+      background: var(--primary-black);
+      padding: 1rem 0;
+      position: relative;
+    }
+
+    /* Mobile navigation - taller bar */
+    @media (max-width: 767px) {
+      .nav-bar {
+        padding: 1.25rem 0;
+      }
     }
 
     .nav-list {
@@ -90,9 +97,16 @@
     }
 
     .nav-item a {
-      color: var(--primary-black);
+      color: var(--primary-white);
       text-decoration: none;
       font-weight: 500;
+      padding: 0.5rem 1rem;
+      display: block;
+      transition: background 0.2s;
+    }
+
+    .nav-item a:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
 
     /* Search in Nav */
@@ -125,26 +139,261 @@
       font-weight: 500;
       cursor: pointer;
       font-size: 0.9rem;
+      pointer-events: auto;
+      user-select: none;
     }
 
     .nav-search-button:hover {
       background: #333;
     }
 
-    @media (max-width: 768px) {
+    .nav-search-button:active {
+      background: #555;
+    }
+
+    /* Mobile navigation styles - matching main.css */
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--primary-white);
+      font-size: 1.5rem;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .mobile-nav-toggle:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    .mobile-nav-toggle:active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 479px) {
+      /* Header - Extra small screens */
+      .header {
+        padding: 0.5rem 0;
+      }
+
+      .site-brand {
+        gap: 0.75rem;
+      }
+
+      .site-logo {
+        height: 30px;
+      }
+
+      .site-title {
+        font-size: 1.25rem;
+      }
+
+      .tagline {
+        font-size: 0.75rem;
+        line-height: 1.2;
+      }
+
+      /* Navigation */
+      .mobile-nav-toggle {
+        display: block;
+      }
+
       .nav-list {
-        flex-wrap: wrap;
+        display: none;
+        flex-direction: column;
+        gap: 0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary-white);
+        border: 1px solid var(--border-gray);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        z-index: 999;
+      }
+
+      .nav-list.active {
+        display: flex;
+      }
+
+      .nav-item {
+        width: 100%;
+        border-bottom: 1px solid var(--border-gray);
+      }
+
+      .nav-item:last-of-type {
+        border-bottom: none;
+      }
+
+      .nav-item a {
+        padding: 1rem 1.5rem;
+        width: 100%;
+        font-size: 1rem;
+        color: var(--primary-black);
+      }
+
+      .nav-item a:hover {
+        background: var(--light-gray);
       }
 
       .nav-search {
-        margin-left: 0;
         width: 100%;
-        margin-top: 0.5rem;
+        padding: 1rem 1.5rem;
+        border-top: 2px solid var(--border-gray);
+        margin-left: 0;
+        margin-top: 0;
+        background: var(--light-gray);
+        flex-direction: column;
+        gap: 0.75rem;
       }
 
       .nav-search-input {
-        flex: 1;
+        width: 100%;
         min-width: 0;
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+      }
+
+      .nav-search-button {
+        width: 100%;
+        margin-top: 0;
+        padding: 0.75rem 1rem;
+        min-height: 44px;
+      }
+
+      /* Footer */
+      footer {
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+      }
+
+      .footer-section h3 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .footer-section p {
+        font-size: 0.875rem;
+      }
+
+      .footer-bottom {
+        padding-top: 1rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (min-width: 480px) and (max-width: 767px) {
+      /* Header - Medium phones */
+      .header {
+        padding: 0.6rem 0;
+      }
+
+      .site-logo {
+        height: 32px;
+      }
+
+      .site-title {
+        font-size: 1.35rem;
+      }
+
+      .tagline {
+        font-size: 0.8rem;
+      }
+
+      /* Navigation - Still uses hamburger */
+      .mobile-nav-toggle {
+        display: block;
+      }
+
+      .nav-list {
+        display: none;
+        flex-direction: column;
+        gap: 0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary-white);
+        border: 1px solid var(--border-gray);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+        z-index: 999;
+      }
+
+      .nav-list.active {
+        display: flex;
+      }
+
+      .nav-item {
+        width: 100%;
+        border-bottom: 1px solid var(--border-gray);
+      }
+
+      .nav-item:last-of-type {
+        border-bottom: none;
+      }
+
+      .nav-item a {
+        padding: 1rem 1.5rem;
+        width: 100%;
+        color: var(--primary-black);
+      }
+
+      .nav-item a:hover {
+        background: var(--light-gray);
+      }
+
+      .nav-search {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        border-top: 2px solid var(--border-gray);
+        margin-left: 0;
+        margin-top: 0;
+        background: var(--light-gray);
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .nav-search-input {
+        width: 100%;
+        min-width: 0;
+        padding: 0.75rem 1rem;
+      }
+
+      .nav-search-button {
+        width: 100%;
+        margin-top: 0;
+        padding: 0.75rem 1rem;
+        min-height: 44px;
+      }
+
+      /* Footer */
+      footer {
+        padding: 1.75rem 0;
+        margin-top: 3rem;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      /* Header - Tablets */
+      .site-title {
+        font-size: 1.4rem;
+      }
+
+      .tagline {
+        font-size: 0.85rem;
       }
     }
 
@@ -179,6 +428,28 @@
     .footer-links a {
       color: var(--primary-white);
       text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-orange);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      gap: 3rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section {
+      flex: 1;
+    }
+
+    .footer-section p {
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
     }
 
     .footer-bottom {
@@ -186,6 +457,7 @@
       padding-top: 2rem;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
     }
 
     /* Loading spinner */
@@ -238,13 +510,9 @@
   <header class="header" id="site-header">
     <div class="container">
       <div class="site-brand">
-        <a href="https://www.crimrxiv.com" style="display: flex; align-items: center;">
+        <a href="#/" style="display: flex; align-items: center; gap: 1rem;">
           <img src="./crimxriv-logo.png" alt="CrimRXiv" class="site-logo" onerror="this.style.display='none'">
         </a>
-        <div>
-          <a href="#/" class="site-title">CrimRXiv Archive</a>
-          <p class="tagline">Permanent, decentralized criminology research archive</p>
-        </div>
       </div>
     </div>
   </header>
@@ -252,7 +520,12 @@
   <!-- Navigation (Always Visible) -->
   <nav class="nav-bar" id="site-nav">
     <div class="container">
-      <ul class="nav-list">
+      <!-- Mobile Menu Toggle Button -->
+      <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span id="menu-icon">☰</span>
+      </button>
+
+      <ul class="nav-list" id="nav-list">
         <li class="nav-item"><a href="#/">Home</a></li>
         <li class="nav-item"><a href="#/articles/all">Articles</a></li>
         <li class="nav-item"><a href="#/consortium">Consortium</a></li>
@@ -268,7 +541,7 @@
             placeholder="Search articles..."
             autocomplete="off"
           />
-          <button id="nav-search-button" class="nav-search-button">Search</button>
+          <button type="button" id="nav-search-button" class="nav-search-button">Search</button>
         </li>
       </ul>
     </div>
@@ -292,7 +565,7 @@
       <div class="footer-content">
         <div class="footer-section">
           <h3>About CrimRXiv</h3>
-          <p>A permanent, decentralized archive for criminology research from leading academic institutions worldwide.</p>
+          <p>A permanent archive for criminology research from leading academic institutions worldwide.</p>
         </div>
         <div class="footer-section">
           <h3>Links</h3>
@@ -309,6 +582,11 @@
     </div>
   </footer>
 
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+    ↑
+  </button>
+
   <!-- Noscript Fallback -->
   <noscript>
     <div class="error-screen">
@@ -320,6 +598,59 @@
   <!-- Set footer year dynamically -->
   <script>
     document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Mobile navigation toggle
+    const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+    const navList = document.getElementById('nav-list');
+    const menuIcon = document.getElementById('menu-icon');
+
+    if (mobileNavToggle && navList) {
+      mobileNavToggle.addEventListener('click', () => {
+        const isExpanded = navList.classList.toggle('active');
+        mobileNavToggle.setAttribute('aria-expanded', isExpanded);
+        menuIcon.textContent = isExpanded ? '✕' : '☰';
+      });
+
+      // Close mobile menu when clicking a nav link
+      navList.querySelectorAll('.nav-item a').forEach(link => {
+        link.addEventListener('click', () => {
+          navList.classList.remove('active');
+          mobileNavToggle.setAttribute('aria-expanded', 'false');
+          menuIcon.textContent = '☰';
+        });
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!navList.contains(e.target) && !mobileNavToggle.contains(e.target)) {
+          navList.classList.remove('active');
+          mobileNavToggle.setAttribute('aria-expanded', 'false');
+          menuIcon.textContent = '☰';
+        }
+      });
+    }
+
+    // Back to top button functionality
+    const backToTopButton = document.getElementById('back-to-top');
+
+    if (backToTopButton) {
+      // Show/hide button based on scroll position
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 400) {
+          backToTopButton.classList.add('visible');
+        } else {
+          backToTopButton.classList.remove('visible');
+        }
+      });
+
+      // Scroll to top when clicked
+      backToTopButton.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
   </script>
 
   <!-- Vite Entry Point -->

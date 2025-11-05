@@ -37,9 +37,9 @@ npm run preview:vite  # Preview using Vite preview server
 
 **Data Pipeline:**
 ```bash
-npm run import              # Scrape CrimRXiv → SQLite (30-45 min, uses PubPub SDK)
+npm run import              # Import from CrimRXiv → SQLite + Arweave (via import-to-articles.js)
 npm run import:pdfs         # Download PDF attachments
-npm run export              # SQLite → Parquet for browser queries (~30 sec)
+npm run export              # SQLite → Parquet for browser queries (via export-to-parquet-external.js)
 npm run upload:parquet      # Upload Parquet file to Arweave
 npm run upload:wasm         # Upload DuckDB WASM files to Arweave
 npm run upload:articles     # Upload article markdown to Arweave
@@ -61,7 +61,9 @@ npm run upload:manifests      # Upload manifests to Arweave
 
 **Development Utilities:**
 ```bash
-node scripts/scraping-status.js    # Check import progress
+node scripts/scraping-status.js          # Check import progress
+node scripts/test-consortium-members.js  # Test consortium member detection
+node scripts/search-zero-members.js      # Debug affiliation matching
 ```
 
 ## Architecture Overview
@@ -106,9 +108,9 @@ Stage 3: Parquet Export (browser-optimized)
 
 ### Stage 1: Data Import (PubPub SDK)
 
-**Script**: `scripts/scrape-to-sqlite.js`
+**Script**: `scripts/import-to-articles.js` (called via `npm run import`)
 **Source**: CrimRXiv.com (PubPub community)
-**Output**: `data/sqlite/crimrxiv.db`
+**Output**: `data/sqlite/crimrxiv.db` + Arweave article manifests
 **Time**: 30-45 minutes for full import
 
 Uses `@pubpub/sdk` to fetch:
@@ -144,7 +146,7 @@ Uses `@pubpub/sdk` to fetch:
 
 ### Stage 3: Parquet Export
 
-**Script**: `scripts/export-to-parquet.js`
+**Script**: `scripts/export-to-parquet-external.js` (called via `npm run export`)
 **Input**: `data/sqlite/crimrxiv.db`
 **Output**: `public/data/metadata.parquet` (5MB, committed to repo)
 **Time**: ~30 seconds
@@ -168,14 +170,15 @@ Generates a **single Parquet file** with all article metadata optimized for brow
 - `src/main.js` - Vite entry point, creates and initializes CrimRXivApp
 - `src/app.js` - Main application orchestrator
 
-**Initialization Sequence** (app.js:34-78):
+**Initialization Sequence** (app.js:36-76):
 1. Get `#app` container element
 2. Initialize ParquetDB (loads DuckDB-WASM + metadata.parquet)
 3. Initialize Router (sets up hash change listeners)
 4. Initialize all Components (passing db and router references)
-5. Expose `window.router` globally for onclick handlers
-6. Initialize navigation search bar
-7. Trigger initial route handling
+5. Initialize manifestLoader (singleton for fetching article content from Arweave)
+6. Expose `window.router` globally for onclick handlers
+7. Initialize navigation search bar
+8. Trigger initial route handling
 
 **Critical**: Router must be initialized before components, as components need router reference for navigation.
 
@@ -187,6 +190,7 @@ Generates a **single Parquet file** with all article metadata optimized for brow
 **Routes**:
 - `#/` or empty → Homepage
 - `#/article/{slug}` → Article detail
+- `#/articles/{filterType}` → Articles browse (all, preprints, postprints)
 - `#/search?q={query}` → Search results
 - `#/consortium` → Consortium members
 - `#/member/{slug}` → Member publications
@@ -195,18 +199,23 @@ Generates a **single Parquet file** with all article metadata optimized for brow
 
 ### Database Layer (Browser)
 
-**File**: `src/lib/parquet-db.js`
+**File**: `src/lib/parquet-db-external.js`
 **Type**: DuckDB-WASM wrapper
 
-**Initialization** (parquet-db.js:56-98):
+**Initialization**:
 1. Configure manual bundles (WASM files must be in `/public/duckdb/`)
 2. Select bundle (MVP or EH) based on browser support
 3. Create worker and initialize AsyncDuckDB
 4. Connect and load metadata.parquet
 
-**Critical**: DuckDB-WASM requires absolute URLs for HTTP range requests. The `getParquetUrls()` method (parquet-db.js:32-51) handles URL resolution:
+**Critical**: DuckDB-WASM requires absolute URLs for HTTP range requests. The `getParquetUrls()` method handles URL resolution:
 - Localhost: `http://localhost:3005/data/metadata.parquet`
 - Arweave: ArNS undername URLs via `gateway.js`
+
+**Manifest Loader** (`src/lib/manifest-loader.js`):
+- Singleton service for loading article content from Arweave
+- Caches fetched content for performance
+- Used by ArticleDetail component to fetch full article markdown
 
 **Key Methods**:
 - `initialize()` - Load DuckDB-WASM and Parquet file
@@ -233,9 +242,14 @@ Generates a **single Parquet file** with all article metadata optimized for brow
 
 **Article Detail** (`article-detail.js`):
 - Full metadata display
-- ProseMirror content rendering
+- ProseMirror content rendering from Arweave manifests
 - PDF attachments
 - Author affiliations
+- Uses manifestLoader to fetch full article content
+
+**Articles Browse** (`articles-browse.js`):
+- Filtered article lists (all, preprints, postprints)
+- Accessed via `#/articles/{filterType}` routes
 
 **Search** (`search.js`):
 - Full-text search across title, abstract, authors, keywords
@@ -334,17 +348,20 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 
 ### Incremental Data Sync
 
-**Script**: `scripts/scrape-to-sqlite.js`
-**Progress Tracking**: Uses PubPub SDK's pagination
+**Script**: `scripts/import-to-articles.js`
+**Progress Tracking**: Uses PubPub SDK's pagination + Arweave uploads
 
 **How it works**:
 1. Fetch all pubs from CrimRXiv community (batch of 100)
 2. For each pub, check if already in database
 3. If exists and unchanged, skip
-4. If new or updated, fetch full content and upsert
-5. Save progress after each batch
+4. If new or updated, fetch full content and upsert to SQLite
+5. Upload article markdown to Arweave and store manifest TX ID
+6. Save progress after each batch
 
 **Resume capability**: Can stop/restart without losing progress (state tracked in SQLite)
+
+**Important**: This script handles both SQLite storage AND Arweave uploads in one pass
 
 ## File Organization
 
@@ -355,7 +372,8 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 - `public/duckdb/*.worker.js` - DuckDB-WASM workers (required for runtime)
 - `src/app.js` - Main application orchestrator
 - `src/lib/router.js` - Client-side routing
-- `src/lib/parquet-db.js` - DuckDB-WASM wrapper
+- `src/lib/parquet-db-external.js` - DuckDB-WASM wrapper
+- `src/lib/manifest-loader.js` - Arweave manifest loader (fetches article content)
 - `src/lib/gateway.js` - URL resolution for localhost vs Arweave
 - `src/lib/database.js` - SQLite schema and operations (build-time only)
 - `vite.config.js` - Build configuration
@@ -370,9 +388,34 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 - `src/components/` - UI components (each exports a class with `render()`)
 - `src/lib/` - Core libraries (router, database, utilities)
 - `src/styles/` - CSS (inlined during build)
-- `scripts/` - Build-time data pipeline scripts
+- `scripts/` - Build-time data pipeline scripts (see Scripts section below)
 - `public/` - Static assets served by Vite (Parquet files, images)
 - `docs/` - Architecture documentation
+
+## Scripts Overview
+
+**Data Import & Export:**
+- `import-to-articles.js` - Main import script (PubPub → SQLite + Arweave)
+- `export-to-parquet-external.js` - SQLite → Parquet export for browser
+- `download-pdfs-only.js` - Download PDF attachments separately
+
+**Arweave Deployment:**
+- `upload-articles.js` - Upload article markdown to Arweave
+- `upload-parquet.js` - Upload Parquet file to Arweave
+- `upload-wasm.js` - Upload DuckDB WASM bundles to Arweave
+- `generate-manifests.js` - Generate Arweave manifest files
+- `upload-manifests.js` - Upload manifests to Arweave
+- `sync-ardrive-fixed.js` - Sync with ArDrive
+- `deploy-full.js` - Full deployment orchestration
+
+**Build & Preview:**
+- `build-prod.js` - Production build (sets EXCLUDE_EXTERNAL=true)
+- `preview-server.js` - Custom preview server
+
+**Development Utilities:**
+- `scraping-status.js` - Check import progress
+- `test-consortium-members.js` - Test consortium member detection
+- `search-zero-members.js` - Debug affiliation matching issues
 
 ## Common Tasks
 
@@ -395,7 +438,7 @@ npm run dev          # Test changes locally
 2. Add migration in `migrate()` method (use `ALTER TABLE`)
 3. Update `upsertArticle()` to handle new fields
 4. Re-run `npm run import` to populate data
-5. Update Parquet export in `scripts/export-to-parquet.js`
+5. Update Parquet export in `scripts/export-to-parquet-external.js`
 6. Run `npm run export` to regenerate Parquet
 
 **Modifying UI Components**:
@@ -498,11 +541,12 @@ npm run sync
 
 **DuckDB-WASM fails to load**:
 - Check browser supports WebAssembly (all modern browsers do)
-- Ensure WASM files exist in `public/duckdb/` directory:
+- Ensure WASM files exist in `public/duckdb/` directory (for localhost):
   - `duckdb-mvp.wasm`, `duckdb-eh.wasm`
   - `duckdb-browser-mvp.worker.js`, `duckdb-browser-eh.worker.js`
 - Check browser console for specific error messages
-- Verify manual bundle configuration in parquet-db.js:61-70
+- Verify bundle configuration in parquet-db-external.js (getDuckDBBundles method)
+- Production: WASM loaded from external ArNS gateway (duck-db-wasm.arweave.net)
 - Common issue: WASM files not copied during build (check vite.config.js)
 
 **Parquet file not found**:
@@ -520,18 +564,19 @@ npm run sync
 
 **Import script fails**:
 - Verify `.env` file exists with `PUBPUB_EMAIL` and `PUBPUB_PASSWORD`
-- Check PubPub community URL is correct (must include `www.` - see scripts/scrape-to-sqlite.js)
+- Check PubPub community URL is correct (must include `www.` - see scripts/import-to-articles.js)
 - Verify SQLite database directory exists: `data/sqlite/`
 - Check network connection to www.crimrxiv.com
 - Review error logs for specific API failures (PubPub SDK errors)
 - Common issue: Invalid credentials or rate limiting
 
 **Component not rendering**:
-- Check initialization order in app.js:34-78 (Router before Components)
-- Verify `window.router` is exposed globally (app.js:65)
+- Check initialization order in app.js:36-76 (Router before Components)
+- Verify `window.router` is exposed globally (app.js:67)
 - Check component has `render()` method that returns HTML string
-- Verify component is registered in app.components (app.js:20-27)
+- Verify component is registered in app.components (app.js:22-29)
 - Check route pattern in router.js:16-23 matches hash format
+- ArticleDetail requires manifestLoader passed to constructor (app.js:60)
 
 ## Documentation
 

@@ -105,8 +105,7 @@ export class MemberDetail {
         month: 'long',
         day: 'numeric'
       }) : 'Date unknown';
-    const abstract = article.abstract || article.description || '';
-    const abstractPreview = abstract.length > 300 ? abstract.substring(0, 300) + '...' : abstract;
+    const abstractPreview = article.abstract_preview || '';
 
     return `
       <article class="article-card">

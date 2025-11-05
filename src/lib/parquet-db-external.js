@@ -17,6 +17,7 @@ export class ParquetDB {
     this.db = null;
     this.conn = null;
     this.metadataLoaded = false;
+    this.workerUrl = null; // Store worker URL for cleanup
 
     console.log('📊 ParquetDB configured:', {
       environment: isDevelopment() ? 'development' : 'production',
@@ -54,8 +55,16 @@ export class ParquetDB {
       // Create logger
       const logger = new duckdb.ConsoleLogger();
 
-      // Create worker from selected bundle
-      const worker = new Worker(bundle.mainWorker);
+      // Create worker using Blob to avoid CORS issues with external URLs
+      // This is required when loading from Arweave - see public/duckdb/HOW-TO.md
+      this.workerUrl = URL.createObjectURL(
+        new Blob([`importScripts("${bundle.mainWorker}");`],
+        { type: 'text/javascript' })
+      );
+      const worker = new Worker(this.workerUrl);
+
+      console.log('📦 Worker created from:', bundle.mainWorker);
+      console.log('📦 Worker blob URL:', this.workerUrl);
 
       // Initialize database
       this.db = new duckdb.AsyncDuckDB(logger, worker);
@@ -77,9 +86,14 @@ export class ParquetDB {
   }
 
   /**
-   * Load metadata.parquet from external URL
-   * - Development: http://localhost:4174/data/metadata.parquet
-   * - Production: https://data_crimrxiv.arweave.net/metadata.parquet
+   * Load metadata.parquet from external URL (via ArNS undername)
+   * ArNS undername points directly to the parquet file (no path needed)
+   * - Development: http://localhost:{port}/data/metadata.parquet
+   * - Production: https://data_crimrxiv-demo.{gateway}
+   *   Examples:
+   *     - https://data_crimrxiv-demo.ar.io
+   *     - https://data_crimrxiv-demo.arweave.net
+   *     - https://data_crimrxiv-demo.permagate.io
    */
   async loadMetadata() {
     if (this.metadataLoaded) return;
@@ -365,6 +379,11 @@ export class ParquetDB {
     }
     if (this.db) {
       await this.db.terminate();
+    }
+    // Clean up blob URL to prevent memory leaks
+    if (this.workerUrl) {
+      URL.revokeObjectURL(this.workerUrl);
+      this.workerUrl = null;
     }
   }
 }

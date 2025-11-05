@@ -63,6 +63,10 @@ export class ArticleDetail {
         return this.renderNotFound(slug);
       }
 
+      // Track if we failed to load the manifest
+      let manifestLoadFailed = false;
+      let manifestError = null;
+
       // If article has Arweave manifest, fetch content using manifestLoader
       if (metadata.manifest_tx_id) {
         console.log(`📦 Loading article from manifest: ${metadata.manifest_tx_id}`);
@@ -73,12 +77,21 @@ export class ArticleDetail {
           return this.renderManifestArticle(fullArticle);
         } catch (error) {
           console.error(`⚠️ Failed to load manifest content:`, error);
-          // Fall through to metadata-only rendering
+          manifestLoadFailed = true;
+          manifestError = error;
+          // Fall through to metadata-only rendering with warning
         }
       }
 
-      // Fallback: use metadata only (no manifest available)
+      // Fallback: use metadata only (from parquet file)
       const article = await this.db.getArticleFull(slug);
+
+      // Add warning flag if manifest loading failed
+      if (manifestLoadFailed) {
+        article._manifestLoadFailed = true;
+        article._manifestError = manifestError;
+        article.manifest_tx_id = metadata.manifest_tx_id;
+      }
 
       // Debug logging
       console.log('📊 Article data received:', {
@@ -169,6 +182,28 @@ export class ArticleDetail {
         <!-- Article Header -->
         <header class="article-header-section">
           <div class="container">
+            ${metadata._manifestLoadFailed ? `
+              <div class="warning-banner" style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                <div style="display: flex; align-items: start; gap: 12px;">
+                  <span style="font-size: 24px;">⚠️</span>
+                  <div>
+                    <strong style="color: #856404; font-size: 16px;">Unable to Load Full Article Content</strong>
+                    <p style="color: #856404; margin: 8px 0 0 0; line-height: 1.5;">
+                      The full article content could not be loaded from Arweave. This may be due to network issues or the content is still propagating across the network.
+                      Displaying available metadata only.
+                    </p>
+                    ${metadata.manifest_tx_id ? `
+                      <p style="margin: 8px 0 0 0;">
+                        <a href="https://viewblock.io/arweave/tx/${metadata.manifest_tx_id}" target="_blank" style="color: #0066cc; text-decoration: underline;">
+                          View transaction on Arweave blockchain
+                        </a>
+                      </p>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+
             <h1 class="article-title">${this.escapeHtml(metadata.title)}</h1>
 
             <!-- Metadata Bar -->
@@ -182,6 +217,14 @@ export class ArticleDetail {
                   <span class="meta-label">DOI:</span>
                   <a href="https://doi.org/${metadata.doi}" target="_blank" class="meta-value meta-link">
                     ${metadata.doi}
+                  </a>
+                </div>
+              ` : ''}
+              ${metadata.manifest_tx_id ? `
+                <div class="meta-item">
+                  <span class="meta-label">Arweave TX:</span>
+                  <a href="https://viewblock.io/arweave/tx/${metadata.manifest_tx_id}" target="_blank" class="meta-value meta-link" title="View on Arweave blockchain">
+                    ${metadata.manifest_tx_id.substring(0, 8)}...${metadata.manifest_tx_id.substring(metadata.manifest_tx_id.length - 4)}
                   </a>
                 </div>
               ` : ''}
@@ -739,8 +782,8 @@ export class ArticleDetail {
             <!-- Authors -->
             ${article.authors && article.authors.length > 0 ? `
               <div class="article-authors-list">
-                ${article.authors.map(author => `
-                  <span class="author-name">${this.escapeHtml(author.name || author)}</span>${author.is_corresponding ? '<sup>✉</sup>' : ''}
+                ${article.authors.filter(author => author.name).map(author => `
+                  <span class="author-name">${this.escapeHtml(author.name)}</span>${author.is_corresponding ? '<sup>✉</sup>' : ''}
                 `).join(', ')}
               </div>
             ` : ''}
@@ -755,6 +798,14 @@ export class ArticleDetail {
                   </a>
                 </div>
               ` : ''}
+              ${article.manifest_tx_id ? `
+                <div class="doi-badge">
+                  <span class="doi-label">Arweave TX:</span>
+                  <a href="https://viewblock.io/arweave/tx/${article.manifest_tx_id}" target="_blank" class="doi-link" title="View on Arweave blockchain">
+                    ${article.manifest_tx_id.substring(0, 8)}...${article.manifest_tx_id.substring(article.manifest_tx_id.length - 4)}
+                  </a>
+                </div>
+              ` : ''}
               ${article.license ? `
                 <div class="license-badge">
                   ${this.renderLicenseBadge(article.license)}
@@ -763,19 +814,14 @@ export class ArticleDetail {
             </div>
 
             <!-- Download Section -->
-            <div class="download-section">
-              <h3 class="download-title">Download</h3>
-              <div class="download-buttons">
-                ${article.attachments && article.attachments.find(a => a.type === 'pdf') ? `
+            ${article.attachments && article.attachments.find(a => a.type === 'pdf') ? `
+              <div class="download-section">
+                <h3 class="download-title">Download</h3>
+                <div class="download-buttons">
                   <a href="${article.attachments.find(a => a.type === 'pdf').url}" target="_blank" class="download-btn">PDF</a>
-                ` : ''}
-                <a href="${getManifestUrl(article.manifest_tx_id)}" target="_blank" class="download-btn">View Manifest</a>
+                </div>
               </div>
-              <div class="release-info">
-                <span class="release-text">Archived on Arweave</span>
-                <span class="tx-id-small">TX: ${article.manifest_tx_id.substring(0, 12)}...</span>
-              </div>
-            </div>
+            ` : ''}
 
             <!-- Abstract -->
             ${article.abstract || article.abstract_preview ? `
@@ -791,8 +837,8 @@ export class ArticleDetail {
             ${article.content_markdown ? `
               <section class="article-content-section">
                 <h2 class="content-section-title">Article Content</h2>
-                <div class="markdown-content">
-                  <pre class="markdown-display">${this.escapeHtml(article.content_markdown)}</pre>
+                <div class="markdown-content" style="white-space: pre-wrap; line-height: 1.8; font-size: 16px; max-width: 800px;">
+                  ${this.escapeHtml(article.content_markdown)}
                 </div>
               </section>
             ` : ''}
@@ -802,10 +848,10 @@ export class ArticleDetail {
               <section class="author-details-section">
                 <h2 class="content-section-title">Author Information</h2>
                 <div class="author-details-list">
-                  ${article.authors.map(author => `
+                  ${article.authors.filter(author => author.name).map(author => `
                     ${author.affiliation ? `
                       <div class="author-detail-item">
-                        <div class="author-detail-name">${this.escapeHtml(author.name || author)}${author.is_corresponding ? ' <sup>✉</sup>' : ''}</div>
+                        <div class="author-detail-name">${this.escapeHtml(author.name)}${author.is_corresponding ? ' <sup>✉</sup>' : ''}</div>
                         <div class="author-detail-affiliation">${this.escapeHtml(author.affiliation)}</div>
                         ${author.orcid ? `
                           <div class="author-detail-orcid">
@@ -926,8 +972,8 @@ export class ArticleDetail {
             <!-- Authors -->
             ${article.authors && article.authors.length > 0 ? `
               <div class="article-authors-list">
-                ${article.authors.map(author => `
-                  <span class="author-name">${this.escapeHtml(author.name || author)}</span>${author.is_corresponding ? '<sup>✉</sup>' : ''}
+                ${article.authors.filter(author => author.name).map(author => `
+                  <span class="author-name">${this.escapeHtml(author.name)}</span>${author.is_corresponding ? '<sup>✉</sup>' : ''}
                 `).join(', ')}
               </div>
             ` : ''}
@@ -988,10 +1034,10 @@ export class ArticleDetail {
               <section class="author-details-section">
                 <h2 class="content-section-title">Author Information</h2>
                 <div class="author-details-list">
-                  ${article.authors.map(author => `
+                  ${article.authors.filter(author => author.name).map(author => `
                     ${author.affiliation ? `
                       <div class="author-detail-item">
-                        <div class="author-detail-name">${this.escapeHtml(author.name || author)}${author.is_corresponding ? ' <sup>✉</sup>' : ''}</div>
+                        <div class="author-detail-name">${this.escapeHtml(author.name)}${author.is_corresponding ? ' <sup>✉</sup>' : ''}</div>
                         <div class="author-detail-affiliation">${this.escapeHtml(author.affiliation)}</div>
                         ${author.orcid ? `
                           <div class="author-detail-orcid">

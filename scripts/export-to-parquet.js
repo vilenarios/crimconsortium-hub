@@ -191,12 +191,41 @@ class ParquetExporter {
       versionCounts[row.article_id] = row.count;
     });
 
-    // Add has_multiple_versions flag and full abstract
+    // Helper function to create clean abstract preview
+    const createAbstractPreview = (abstract) => {
+      if (!abstract) return '';
+
+      // Remove "Abstract:" or "Abstract" prefix (case insensitive)
+      let cleaned = abstract.replace(/^Abstract:?\s*/i, '').trim();
+
+      // Truncate to 500 characters
+      if (cleaned.length > 500) {
+        // Try to break at a sentence or word boundary
+        const truncated = cleaned.substring(0, 500);
+        const lastPeriod = truncated.lastIndexOf('.');
+        const lastSpace = truncated.lastIndexOf(' ');
+
+        if (lastPeriod > 400) {
+          // Break at sentence
+          return truncated.substring(0, lastPeriod + 1);
+        } else if (lastSpace > 400) {
+          // Break at word
+          return truncated.substring(0, lastSpace) + '...';
+        } else {
+          // Hard truncate
+          return truncated + '...';
+        }
+      }
+
+      return cleaned;
+    };
+
+    // Add has_multiple_versions flag and clean abstract preview
     const enrichedArticles = latestArticles.map(article => ({
       ...article,
       has_multiple_versions: (versionCounts[article.article_id] || 1) > 1,
       abstract: article.abstract || '',
-      abstract_preview: article.abstract ? article.abstract.substring(0, 500) : ''
+      abstract_preview: createAbstractPreview(article.abstract)
     }));
 
     return new Promise((resolve, reject) => {

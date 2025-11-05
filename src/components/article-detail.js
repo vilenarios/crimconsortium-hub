@@ -242,6 +242,9 @@ export class ArticleDetail {
               ` : ''}
             </div>
 
+            <!-- External Publications -->
+            ${this.renderExternalPublications(metadata.external_publications_json)}
+
             <!-- Authors -->
             ${metadata.authors && metadata.authors.length > 0 ? `
               <div class="article-authors-section">
@@ -270,6 +273,7 @@ export class ArticleDetail {
           </button>
         </div>
 
+        ${this.renderLicenseSection()}
         ${this.renderFooter()}
       </div>
     `;
@@ -467,6 +471,7 @@ export class ArticleDetail {
           </div>
         </div>
 
+        ${this.renderLicenseSection()}
         ${this.renderFooter()}
 
         <style>
@@ -564,6 +569,85 @@ export class ArticleDetail {
 
           .attachment-link:hover {
             text-decoration: underline;
+          }
+
+          /* License Section */
+          .article-license-section {
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 2rem 0;
+            margin-top: 3rem;
+          }
+
+          .license-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+          }
+
+          .license-icon {
+            width: 88px;
+            height: 31px;
+            flex-shrink: 0;
+            transition: opacity 0.2s;
+          }
+
+          .license-link {
+            display: block;
+            text-decoration: none;
+          }
+
+          .license-link:hover .license-icon {
+            opacity: 0.8;
+          }
+
+          .license-text {
+            flex: 1;
+          }
+
+          .license-description {
+            font-size: 0.95rem;
+            color: #212529;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+          }
+
+          .license-external-link {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+          }
+
+          .license-external-link:hover {
+            text-decoration: underline;
+          }
+
+          .license-summary {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin: 0;
+            line-height: 1.5;
+          }
+
+          /* Mobile responsive */
+          @media (max-width: 767px) {
+            .license-container {
+              flex-direction: column;
+              gap: 1rem;
+            }
+
+            .license-icon {
+              width: 88px;
+              height: 31px;
+            }
+
+            .article-license-section {
+              padding: 1.5rem 0;
+              margin-top: 2rem;
+            }
           }
         </style>
 
@@ -813,6 +897,9 @@ export class ArticleDetail {
               ` : ''}
             </div>
 
+            <!-- External Publications -->
+            ${this.renderExternalPublications(article.external_publications_json)}
+
             <!-- Download Section -->
             ${article.attachments && article.attachments.find(a => a.type === 'pdf') ? `
               <div class="download-section">
@@ -909,6 +996,7 @@ export class ArticleDetail {
           </div>
         </div>
 
+        ${this.renderLicenseSection()}
         ${this.renderFooter()}
       </div>
     `;
@@ -994,6 +1082,9 @@ export class ArticleDetail {
                 </div>
               ` : ''}
             </div>
+
+            <!-- External Publications -->
+            ${this.renderExternalPublications(article.external_publications_json)}
 
             <!-- Download Section -->
             ${article.pdf_url ? `
@@ -1095,6 +1186,7 @@ export class ArticleDetail {
           </div>
         </div>
 
+        ${this.renderLicenseSection()}
         ${this.renderFooter()}
       </div>
     `;
@@ -1140,6 +1232,32 @@ export class ArticleDetail {
     return paragraphs
       .map(para => `<p>${this.escapeHtml(para).replace(/\n/g, '<br>')}</p>`)
       .join('');
+  }
+
+  /**
+   * Render CC BY-NC-ND 4.0 license section
+   */
+  renderLicenseSection() {
+    return `
+      <section class="article-license-section">
+        <div class="license-container">
+          <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer" class="license-link">
+            <img src="/cc-by-nc-nd.svg" alt="CC BY-NC-ND 4.0" class="license-icon" />
+          </a>
+          <div class="license-text">
+            <p class="license-description">
+              This work is licensed under a
+              <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer" class="license-external-link">
+                Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License
+              </a>.
+            </p>
+            <p class="license-summary">
+              You may share this work with proper attribution, but you may not use it for commercial purposes or create derivative works.
+            </p>
+          </div>
+        </div>
+      </section>
+    `;
   }
 
   /**
@@ -1409,6 +1527,150 @@ export class ArticleDetail {
         ${licenseName}
       </a>
     `;
+  }
+
+  /**
+   * Render external publications (version-of relationships)
+   */
+  renderExternalPublications(externalPublicationsJson) {
+    if (!externalPublicationsJson) return '';
+
+    try {
+      const externalPubs = JSON.parse(externalPublicationsJson);
+
+      if (!externalPubs || externalPubs.length === 0) {
+        return '';
+      }
+
+      // Map relation types to friendly labels
+      const relationLabels = {
+        'version': 'Also Available On',
+        'supplement': 'Supplementary Material',
+        'related': 'Related Publication'
+      };
+
+      // Extract platform name from URL if available (future enhancement)
+      const getPlatformName = (url) => {
+        if (!url) return 'External Platform';
+        if (url.includes('researchgate')) return 'ResearchGate';
+        if (url.includes('arxiv')) return 'arXiv';
+        if (url.includes('osf.io')) return 'OSF';
+        if (url.includes('figshare')) return 'Figshare';
+        return 'External Platform';
+      };
+
+      return `
+        <div class="external-publications-section">
+          <h3 class="external-pubs-title">${relationLabels[externalPubs[0].relationType] || 'External Publications'}</h3>
+          <div class="external-pubs-list">
+            ${externalPubs.map(pub => {
+              // For now, we only have edge metadata. When we fetch full details, we'll show title and URL
+              if (pub.url) {
+                // Full details available
+                const platform = getPlatformName(pub.url);
+                return `
+                  <a href="${pub.url}" target="_blank" class="external-pub-badge">
+                    <span class="external-pub-platform">${this.escapeHtml(platform)}</span>
+                    <span class="external-pub-arrow">→</span>
+                  </a>
+                `;
+              } else {
+                // Only edge metadata available (placeholder)
+                return `
+                  <div class="external-pub-badge external-pub-placeholder" title="External publication reference (details pending)">
+                    <span class="external-pub-platform">External Version</span>
+                    <span class="external-pub-info">(ID: ${pub.externalPublicationId?.substring(0, 8)}...)</span>
+                  </div>
+                `;
+              }
+            }).join('')}
+          </div>
+        </div>
+        <style>
+          .external-publications-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+          }
+
+          .external-pubs-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 0.75rem 0;
+            color: #333;
+          }
+
+          .external-pubs-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+          }
+
+          .external-pub-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #1976d2;
+            font-weight: 500;
+            transition: all 0.2s ease;
+          }
+
+          .external-pub-badge:hover {
+            background: #e3f2fd;
+            border-color: #1976d2;
+            transform: translateX(2px);
+          }
+
+          .external-pub-badge.external-pub-placeholder {
+            cursor: default;
+            color: #6c757d;
+            opacity: 0.7;
+          }
+
+          .external-pub-badge.external-pub-placeholder:hover {
+            background: white;
+            border-color: #dee2e6;
+            transform: none;
+          }
+
+          .external-pub-platform {
+            font-size: 0.95rem;
+          }
+
+          .external-pub-info {
+            font-size: 0.85rem;
+            color: #6c757d;
+          }
+
+          .external-pub-arrow {
+            font-size: 1.2rem;
+            font-weight: bold;
+          }
+
+          @media (max-width: 767px) {
+            .external-publications-section {
+              margin: 1rem 0;
+              padding: 0.75rem;
+            }
+
+            .external-pub-badge {
+              padding: 0.4rem 0.75rem;
+              font-size: 0.9rem;
+            }
+          }
+        </style>
+      `;
+    } catch (error) {
+      console.error('Failed to parse external publications:', error);
+      return '';
+    }
   }
 
   /**

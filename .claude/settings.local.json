@@ -33,7 +33,14 @@
       "Bash(del /q datasqlite*.db 2)",
       "Bash(del /q publicdata*.parquet 2)",
       "Bash(echo:*)",
-      "Bash(npm run preview:*)"
+      "Bash(npm run preview:*)",
+      "Bash(if [ -f .env ])",
+      "Bash(then cat .env)",
+      "Bash(else echo \".env file not found\")",
+      "Bash(git rm:*)",
+      "Bash(if [ -f \"data/sqlite/crimrxiv.db\" ])",
+      "Bash(then echo \"Database exists\")",
+      "Bash(else echo \"Database not found\")"
     ],
     "deny": [],
     "ask": []

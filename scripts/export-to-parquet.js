@@ -246,6 +246,7 @@ class ParquetExporter {
             keywords_json VARCHAR,
             collections_json VARCHAR,
             collection_count INTEGER,
+            external_publications_json VARCHAR,
             doi VARCHAR,
             license VARCHAR,
             created_at TIMESTAMP,
@@ -271,7 +272,7 @@ class ParquetExporter {
 
           const stmt = this.duckConn.prepare(`
             INSERT INTO metadata_temp VALUES (
-              ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+              ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
               ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
               ?, ?, ?, ?, ?, ?
             )
@@ -290,6 +291,7 @@ class ParquetExporter {
               article.keywords_json,
               article.collections_json,
               article.collection_count,
+              article.external_publications_json || null,
               article.doi,
               article.license,
               article.created_at,

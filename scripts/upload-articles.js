@@ -114,7 +114,8 @@ class ArticleUploader {
           tags: [
             { name: 'App-Name', value: 'CrimRXiv-Archive' },
             { name: 'App-Version', value: '1.0.0' },
-            { name: 'Article-Slug', value: slug }
+            { name: 'Article-Slug', value: slug },
+            { name: 'License', value: 'OlTlW1xEw75UC0cdmNqvxc3j6iAmFXrS4usWIBfu_3E' }
             // Content-Type auto-detected by SDK for each file type
           ]
         }

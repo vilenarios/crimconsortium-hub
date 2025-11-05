@@ -116,6 +116,9 @@ export class CrimRXivDatabase {
         -- Keywords (JSON array)
         keywords_json TEXT,
 
+        -- External publications (version-of relationships)
+        external_publications_json TEXT,
+
         -- URLs
         url TEXT,
         pdf_url TEXT,
@@ -193,6 +196,7 @@ export class CrimRXivDatabase {
       { name: 'citations_json', type: 'TEXT' },
       { name: 'reference_count', type: 'INTEGER DEFAULT 0' },
       { name: 'citation_count', type: 'INTEGER DEFAULT 0' },
+      { name: 'external_publications_json', type: 'TEXT' },
       { name: 'article_markdown_path', type: 'TEXT' },
       { name: 'article_markdown_size', type: 'INTEGER' },
       { name: 'full_content_scraped', type: 'INTEGER DEFAULT 0' },
@@ -433,10 +437,11 @@ export class CrimRXivDatabase {
           authors_json, author_count,
           collections_json, collection_count,
           keywords_json,
+          external_publications_json,
           attachments_json, attachment_count,
           full_content_scraped, full_content_scraped_at,
           url, pdf_url
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         versionId,
         article.article_id,
@@ -463,6 +468,7 @@ export class CrimRXivDatabase {
         article.collections_json,
         article.collection_count,
         article.keywords_json,
+        article.external_publications_json || null,
         article.attachments_json,
         article.attachment_count,
         hasFullContent,
@@ -487,10 +493,11 @@ export class CrimRXivDatabase {
           authors_json, author_count,
           collections_json, collection_count,
           keywords_json,
+          external_publications_json,
           attachments_json, attachment_count,
           full_content_scraped, full_content_scraped_at,
           url, pdf_url
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         versionId,
         article.article_id,
@@ -517,6 +524,7 @@ export class CrimRXivDatabase {
         article.collections_json,
         article.collection_count,
         article.keywords_json,
+        article.external_publications_json || null,
         article.attachments_json,
         article.attachment_count,
         hasFullContent,
@@ -535,7 +543,8 @@ export class CrimRXivDatabase {
         (article.content_text_full && article.content_text_full.length > (existing.content_text_full?.length || 0)) ||
         (article.collections_json && article.collections_json !== existing.collections_json) ||
         (article.authors_json && article.authors_json !== existing.authors_json) ||
-        (article.keywords_json && article.keywords_json !== existing.keywords_json);
+        (article.keywords_json && article.keywords_json !== existing.keywords_json) ||
+        (article.external_publications_json && article.external_publications_json !== existing.external_publications_json);
 
       if (needsUpdate) {
         const hasFullContent = article.content_prosemirror ? 1 : (existing.content_prosemirror ? 1 : 0);
@@ -564,6 +573,7 @@ export class CrimRXivDatabase {
               authors_json = ?,
               author_count = ?,
               keywords_json = ?,
+              external_publications_json = COALESCE(?, external_publications_json),
               full_content_scraped = ?,
               full_content_scraped_at = ?
           WHERE id = ?
@@ -583,6 +593,7 @@ export class CrimRXivDatabase {
           article.authors_json || '[]',
           article.author_count || 0,
           article.keywords_json || '[]',
+          article.external_publications_json,
           hasFullContent,
           scrapedAt,
           existing.id

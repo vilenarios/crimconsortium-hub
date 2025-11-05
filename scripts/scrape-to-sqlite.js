@@ -102,6 +102,84 @@ class CrimRXivScraper {
   }
 
   /**
+   * Fetch external publication details from PubPub SDK
+   * Note: This may require an API endpoint that we need to discover
+   */
+  async fetchExternalPublication(externalPublicationId) {
+    try {
+      // Try to fetch using SDK (endpoint to be determined)
+      // For now, we'll store the edge info without fetching details
+      // TODO: Determine correct SDK endpoint for external publications
+      return null;
+    } catch (error) {
+      console.error(`   ⚠️  Could not fetch external publication ${externalPublicationId}: ${error.message}`);
+      return null;
+    }
+  }
+
+  /**
+   * Process outbound edges (external publications)
+   */
+  async processExternalPublications(pub) {
+    const externalPubs = [];
+
+    if (!pub.outboundEdges || pub.outboundEdges.length === 0) {
+      return externalPubs;
+    }
+
+    for (const edge of pub.outboundEdges) {
+      if (edge.externalPublicationId) {
+        try {
+          // Fetch full edge details including nested externalPublication
+          const edgeResponse = await this.sdk.pubEdge.get({
+            params: { id: edge.id }
+          });
+
+          if (edgeResponse.status === 200 && edgeResponse.body && edgeResponse.body.externalPublication) {
+            const extPub = edgeResponse.body.externalPublication;
+            externalPubs.push({
+              externalPublicationId: edge.externalPublicationId,
+              relationType: edge.relationType,
+              createdAt: edge.createdAt,
+              title: extPub.title || null,
+              url: extPub.url || null,
+              description: extPub.description || null,
+              doi: extPub.doi || null,
+              publicationDate: extPub.publicationDate || null
+            });
+          } else {
+            // Fallback if edge fetch fails
+            externalPubs.push({
+              externalPublicationId: edge.externalPublicationId,
+              relationType: edge.relationType,
+              createdAt: edge.createdAt,
+              title: null,
+              url: null,
+              description: null
+            });
+          }
+
+          // Small delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          console.error(`   ⚠️  Failed to fetch edge details for ${edge.id}:`, error.message);
+          // Store basic info even if fetch fails
+          externalPubs.push({
+            externalPublicationId: edge.externalPublicationId,
+            relationType: edge.relationType,
+            createdAt: edge.createdAt,
+            title: null,
+            url: null,
+            description: null
+          });
+        }
+      }
+    }
+
+    return externalPubs;
+  }
+
+  /**
    * Calculate word count from text
    */
   calculateWordCount(text) {
@@ -260,7 +338,7 @@ class CrimRXivScraper {
           offset,
           sortBy: 'updatedAt',
           orderBy: 'DESC',
-          include: ['collectionPubs', 'attributions', 'community', 'draft']
+          include: ['collectionPubs', 'attributions', 'community', 'draft', 'outboundEdges', 'inboundEdges']
         }
       });
 
@@ -375,6 +453,9 @@ class CrimRXivScraper {
         }
       }
 
+      // Process external publications (outbound edges)
+      const externalPubs = await this.processExternalPublications(pub);
+
       // Build article object
       const article = {
         article_id: pub.id,
@@ -406,6 +487,7 @@ class CrimRXivScraper {
         collections_json: JSON.stringify(collections),
         collection_count: collections.length,
         keywords_json: JSON.stringify(pub.labels || []),
+        external_publications_json: JSON.stringify(externalPubs),
         attachments_json: JSON.stringify(files),
         attachment_count: files.length,
         url: `https://www.crimrxiv.com/pub/${pub.slug}`,

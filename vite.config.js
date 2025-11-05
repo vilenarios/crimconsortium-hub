@@ -1,4 +1,29 @@
 import { defineConfig } from 'vite';
+import fs from 'fs-extra';
+import path from 'path';
+
+// Plugin to exclude external resources from production build
+// (They're loaded from external ArNS sources)
+const excludeExternalResources = () => ({
+  name: 'exclude-external-resources',
+  closeBundle() {
+    // Remove DuckDB WASM (loaded from duck-db-wasm.ar.io)
+    const duckdbDir = path.resolve('dist/duckdb');
+    if (fs.existsSync(duckdbDir)) {
+      console.log('🗑️  Removing bundled DuckDB WASM files (loaded from duck-db-wasm.ar.io)...');
+      fs.removeSync(duckdbDir);
+      console.log('✅ DuckDB WASM excluded from build');
+    }
+
+    // Remove data folder (parquet loaded from data_crimrxiv-demo.arweave.net)
+    const dataDir = path.resolve('dist/data');
+    if (fs.existsSync(dataDir)) {
+      console.log('🗑️  Removing bundled data folder (loaded from data ArNS)...');
+      fs.removeSync(dataDir);
+      console.log('✅ Data folder excluded from build');
+    }
+  }
+});
 
 export default defineConfig({
   // Base path for deployment
@@ -24,6 +49,10 @@ export default defineConfig({
     },
   },
 
+  plugins: [
+    excludeExternalResources()
+  ],
+
   server: {
     port: 3005,
     strictPort: false,
@@ -39,7 +68,4 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['@duckdb/duckdb-wasm'],
   },
-
-  // Only include parquet for local dev
-  assetsInclude: ['**/*.parquet'],
 });

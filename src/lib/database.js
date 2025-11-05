@@ -620,6 +620,17 @@ export class CrimRXivDatabase {
   }
 
   /**
+   * Get single article by slug (latest version)
+   */
+  getArticleBySlug(slug) {
+    return this.db.prepare(`
+      SELECT * FROM articles
+      WHERE slug = ? AND is_latest_version = 1
+      LIMIT 1
+    `).get(slug);
+  }
+
+  /**
    * Mark articles as exported
    */
   markAsExported(articleIds, batchName) {

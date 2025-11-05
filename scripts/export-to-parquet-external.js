@@ -21,6 +21,9 @@ import duckdb from 'duckdb';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -224,13 +227,29 @@ class ParquetExporter {
     console.log(`  ${CONFIG.OUTPUT_DIR}/metadata.parquet`);
     console.log('='.repeat(60) + '\n');
 
+    const arnsDataUndername = process.env.ARNS_DATA_UNDERNAME || 'data';
+    const arnsRootName = process.env.ARNS_ROOT_NAME || 'crimrxiv-demo';
+    const arnsWasmUndername = process.env.ARNS_WASM_NAME || 'duck-db-wasm';
+
     console.log('💡 Next steps:');
-    console.log('  1. Upload parquet to Arweave:  npm run upload:parquet');
-    console.log('  2. Upload WASM files:          npm run upload:wasm');
-    console.log('  3. Configure ArNS undername:   data_crimrxiv.arweave.net → TX_ID');
-    console.log('  4. Update .env with TX IDs');
-    console.log('  5. Test locally:               npm run preview');
-    console.log('  6. Deploy app to Arweave:      npm run deploy\n');
+    console.log('  1. Upload parquet to Arweave:');
+    console.log('     npm run upload:parquet');
+    console.log('     (Automatically updates ArNS undername)');
+    console.log('');
+    console.log('  2. Wait for confirmation (~2-10 minutes)');
+    console.log('');
+    console.log('  3. Test ArNS URL:');
+    console.log(`     https://${arnsDataUndername}_${arnsRootName}.arweave.net/metadata.parquet`);
+    console.log('');
+    console.log('  4. Optional - Upload WASM files (one-time):');
+    console.log('     npm run upload:wasm');
+    console.log(`     Then manually configure ArNS: ${arnsWasmUndername} → TX_ID`);
+    console.log('');
+    console.log('  5. Test locally:');
+    console.log('     npm run dev');
+    console.log('');
+    console.log('  6. Deploy app to Arweave:');
+    console.log('     npm run build && npm run deploy\n');
   }
 
   /**

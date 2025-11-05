@@ -110,31 +110,58 @@ npm run export
 
 ---
 
-### Step 5: Upload Parquet + Deploy
+### Step 5: Upload Parquet + Update ArNS
 
 ```bash
-# Upload parquet
 npm run upload:parquet
+```
 
+**What it does:**
+- Uploads `metadata.parquet` to Arweave
+- **Automatically updates ArNS undername** to point to new TX ID
+- Makes data available at: `https://data_{name}.arweave.net/metadata.parquet`
+
+**Required .env variables:**
+- `ARNS_ROOT_NAME` - Your ArNS name (e.g., "crimrxiv")
+- `ARNS_DATA_UNDERNAME` - Undername for data (default: "data")
+- `ARNS_PROCESS_ID` - ANT process ID from arns.app
+
+**Output:**
+- Parquet TX ID
+- ArNS record updated automatically ✅
+
+**Time:** ~2 minutes
+**Cost:** ~$0.10 in AR tokens
+
+---
+
+### Step 6: Build & Deploy App
+
+```bash
 # Upload WASM files (first time only)
 npm run upload:wasm
 
 # Build app
 npm run build
 
-# Deploy (configure ArNS, then deploy app)
+# Deploy app to Arweave
 npm run sync
+
+# Manually update root ArNS record @ → app TX ID
+# (via arns.app or AR.IO SDK)
 ```
 
 **What it does:**
-- Uploads parquet to Arweave
-- Gets parquet TX ID
-- Configure ArNS: `data_crimrxiv.arweave.net` → parquet TX ID
-- Deploy app to Arweave
-- Configure ArNS: `crimrxiv.arweave.net` → app TX ID
+- Uploads DuckDB WASM files (first time only)
+- Builds SPA to `dist/` folder
+- Deploys app to Arweave
+- Gets app TX ID
 
 **Output:**
 - Live site on Arweave!
+
+**Time:** ~5 minutes
+**Cost:** ~$0.50 in AR tokens
 
 ---
 

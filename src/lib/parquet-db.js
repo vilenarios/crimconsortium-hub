@@ -27,7 +27,7 @@ export class ParquetDB {
   /**
    * Get parquet URLs based on current gateway
    * - Localhost: Use full localhost URL (DuckDB-WASM needs absolute URLs)
-   * - Production: Use ArNS undername (data_gateway/path)
+   * - Production: Use ArNS undername for external parquet file
    */
   getParquetUrls() {
     const appInfo = getAppInfo();
@@ -42,11 +42,50 @@ export class ParquetDB {
       };
     }
 
-    // For production on Arweave, use relative paths (parquet in bundle)
-    // This includes the parquet file in the same bundle as the app
+    // For production on Arweave, use ArNS undername for external parquet
+    // Extract root name from current gateway (e.g., crimrxiv-demo.arweave.net -> crimrxiv-demo)
+    const rootName = appInfo.gateway.split('.')[0];
+    const dataUndername = `data_${rootName}`;
+
     return {
-      metadata: './data/metadata.parquet',
-      batchBase: './data/articles/'
+      metadata: `${appInfo.protocol}://${dataUndername}.arweave.net`,
+      batchBase: null  // Articles are loaded via manifest TX IDs, not batch files
+    };
+  }
+
+  /**
+   * Get DuckDB-WASM bundle URLs
+   */
+  getDuckDBBundles() {
+    const appInfo = getAppInfo();
+
+    // For localhost, use bundled files
+    if (appInfo.isLocalhost) {
+      return {
+        mvp: {
+          mainModule: './duckdb/duckdb-mvp.wasm',
+          mainWorker: './duckdb/duckdb-browser-mvp.worker.js',
+        },
+        eh: {
+          mainModule: './duckdb/duckdb-eh.wasm',
+          mainWorker: './duckdb/duckdb-browser-eh.worker.js',
+        },
+      };
+    }
+
+    // For production, use external ArNS-hosted DuckDB-WASM
+    // Uses duck-db-wasm.ar.io (public ArNS name)
+    const wasmBase = 'https://duck-db-wasm.ar.io';
+
+    return {
+      mvp: {
+        mainModule: `${wasmBase}/duckdb-mvp.wasm`,
+        mainWorker: `${wasmBase}/duckdb-browser-mvp.worker.js`,
+      },
+      eh: {
+        mainModule: `${wasmBase}/duckdb-eh.wasm`,
+        mainWorker: `${wasmBase}/duckdb-browser-eh.worker.js`,
+      },
     };
   }
 
@@ -57,17 +96,13 @@ export class ParquetDB {
     try {
       console.log('📦 Loading DuckDB-WASM...');
 
-      // Create manual bundle configuration for local files
-      const MANUAL_BUNDLES = {
-        mvp: {
-          mainModule: './duckdb/duckdb-mvp.wasm',
-          mainWorker: './duckdb/duckdb-browser-mvp.worker.js',
-        },
-        eh: {
-          mainModule: './duckdb/duckdb-eh.wasm',
-          mainWorker: './duckdb/duckdb-browser-eh.worker.js',
-        },
-      };
+      // Get bundle configuration based on environment
+      const MANUAL_BUNDLES = this.getDuckDBBundles();
+
+      console.log('📦 DuckDB WASM URLs:', {
+        mvp: MANUAL_BUNDLES.mvp.mainModule,
+        worker: MANUAL_BUNDLES.mvp.mainWorker
+      });
 
       // Select bundle (try MVP first, it's the most compatible)
       const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);

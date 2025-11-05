@@ -1,23 +1,19 @@
 #!/usr/bin/env node
 
 /**
- * Upload WASM Files to Arweave
+ * Upload DuckDB WASM Folder to Arweave
  *
- * Uploads DuckDB-WASM bundles from public/duckdb/ to Arweave
- * using Turbo SDK for fast, reliable uploads.
+ * Uploads the entire public/duckdb/ folder as a manifest.
+ * Returns a single TX ID that can be used for ArNS configuration.
  *
- * Files to upload:
- * - duckdb-mvp.wasm
- * - duckdb-mvp.worker.js
- * - duckdb-eh.wasm
- * - duckdb-eh.worker.js
+ * Files included:
+ * - duckdb-mvp.wasm (~7MB)
+ * - duckdb-browser-mvp.worker.js
+ * - duckdb-eh.wasm (~7MB)
+ * - duckdb-browser-eh.worker.js
+ * - HOW-TO.md (usage guide)
  *
- * After upload:
- * Save transaction IDs to .env:
- * - WASM_MVP_TX_ID
- * - WASM_MVP_WORKER_TX_ID
- * - WASM_EH_TX_ID
- * - WASM_EH_WORKER_TX_ID
+ * Result: 1 manifest TX ID
  *
  * Usage:
  *   npm run upload:wasm
@@ -37,56 +33,14 @@ const __dirname = path.dirname(__filename);
 const CONFIG = {
   WASM_DIR: path.join(__dirname, '../public/duckdb'),
   WALLET_PATH: process.env.ARWEAVE_WALLET_PATH,
-  FILES: [
-    { name: 'duckdb-mvp.wasm', envKey: 'WASM_MVP_TX_ID', contentType: 'application/wasm' },
-    { name: 'duckdb-browser-mvp.worker.js', envKey: 'WASM_MVP_WORKER_TX_ID', contentType: 'application/javascript' },
-    { name: 'duckdb-eh.wasm', envKey: 'WASM_EH_TX_ID', contentType: 'application/wasm' },
-    { name: 'duckdb-browser-eh.worker.js', envKey: 'WASM_EH_WORKER_TX_ID', contentType: 'application/javascript' }
-  ]
 };
 
 /**
- * Upload a single WASM file
- */
-async function uploadFile(turbo, filePath, filename, contentType) {
-  const stats = await fs.stat(filePath);
-  const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
-
-  console.log(`\n📦 Uploading: ${filename}`);
-  console.log(`   Size: ${sizeMB} MB`);
-
-  const fileBuffer = await fs.readFile(filePath);
-
-  const uploadResult = await turbo.uploadFile({
-    fileStreamFactory: () => fileBuffer,
-    fileSizeFactory: () => stats.size,
-    dataItemOpts: {
-      tags: [
-        { name: 'Content-Type', value: contentType },
-        { name: 'App-Name', value: 'CrimRXiv-Archive' },
-        { name: 'App-Version', value: '1.0.0' },
-        { name: 'File-Name', value: filename },
-        { name: 'Description', value: `DuckDB-WASM file for browser-based SQL queries` }
-      ]
-    }
-  });
-
-  console.log(`   ✅ TX ID: ${uploadResult.id}`);
-  console.log(`   URL: https://arweave.net/${uploadResult.id}`);
-
-  return {
-    filename,
-    txId: uploadResult.id,
-    size: sizeMB
-  };
-}
-
-/**
- * Upload all WASM files to Arweave
+ * Upload WASM folder to Arweave
  */
 async function uploadWasm() {
   console.log('\n' + '='.repeat(60));
-  console.log('📤 Upload WASM Files to Arweave');
+  console.log('📤 Upload DuckDB WASM Folder to Arweave');
   console.log('='.repeat(60) + '\n');
 
   // Validate wallet path
@@ -106,6 +60,22 @@ async function uploadWasm() {
   }
 
   try {
+    // Get directory size
+    const files = await fs.readdir(CONFIG.WASM_DIR);
+    let totalSize = 0;
+    for (const file of files) {
+      const stats = await fs.stat(path.join(CONFIG.WASM_DIR, file));
+      totalSize += stats.size;
+    }
+    const sizeMB = (totalSize / 1024 / 1024).toFixed(2);
+
+    console.log(`📦 Folder: public/duckdb/`);
+    console.log(`📁 Files: ${files.length}`);
+    console.log(`💾 Total Size: ${sizeMB} MB\n`);
+
+    files.forEach(file => console.log(`   - ${file}`));
+    console.log('');
+
     // Load wallet
     console.log('🔑 Loading Arweave wallet...');
     const walletJson = JSON.parse(await fs.readFile(CONFIG.WALLET_PATH, 'utf-8'));
@@ -117,52 +87,59 @@ async function uploadWasm() {
 
     // Check balance
     const balance = await turbo.getBalance();
-    console.log(`💰 Balance: ${balance.winc} winc`);
+    console.log(`💰 Balance: ${balance.winc} winc\n`);
 
-    // Upload each file
-    const results = [];
-    for (const file of CONFIG.FILES) {
-      const filePath = path.join(CONFIG.WASM_DIR, file.name);
+    // Upload folder as manifest
+    console.log('📤 Uploading folder to Arweave...');
+    console.log('   This may take a few minutes...\n');
 
-      // Check if file exists
-      try {
-        await fs.access(filePath);
-      } catch (error) {
-        console.error(`\n⚠️  Warning: ${file.name} not found, skipping...`);
-        continue;
+    const uploadResult = await turbo.uploadFolder({
+      folderPath: CONFIG.WASM_DIR,
+      dataItemOpts: {
+        tags: [
+          { name: 'App-Name', value: 'CrimRXiv-Archive' },
+          { name: 'App-Version', value: '1.0.0' },
+          { name: 'Description', value: 'DuckDB-WASM v1.30.0 files for browser-based SQL queries' }
+          // Content-Type auto-detected by SDK for each file type
+        ]
       }
+    });
 
-      const result = await uploadFile(turbo, filePath, file.name, file.contentType);
-      results.push({ ...result, envKey: file.envKey });
+    // Get manifest TX ID from manifestResponse
+    const txId = uploadResult.manifestResponse?.id;
+
+    if (!txId) {
+      console.error('❌ Error: No manifest TX ID returned from upload');
+      console.error('Upload result:', JSON.stringify(uploadResult, null, 2));
+      process.exit(1);
     }
 
-    // Print summary
-    console.log('\n' + '='.repeat(60));
-    console.log('✅ UPLOAD COMPLETE!');
+    console.log('✅ Upload successful!\n');
     console.log('='.repeat(60));
-    console.log(`Files uploaded: ${results.length}`);
-    console.log(`Total size: ${results.reduce((sum, r) => sum + parseFloat(r.size), 0).toFixed(2)} MB`);
+    console.log('📊 UPLOAD RESULT');
+    console.log('='.repeat(60));
+    console.log(`Manifest TX ID: ${txId}`);
+    console.log(`Total Size: ${sizeMB} MB`);
+    console.log(`Files Uploaded: ${files.length}`);
     console.log('='.repeat(60) + '\n');
 
-    console.log('💡 Add these to your .env file:\n');
-    results.forEach(result => {
-      console.log(`${result.envKey}=${result.txId}`);
+    console.log('📋 Access URLs:');
+    console.log(`   Direct: https://arweave.net/${txId}`);
+    files.forEach(file => {
+      console.log(`   - https://arweave.net/${txId}/${file}`);
     });
+    console.log('');
 
-    console.log('\n💡 Update src/config/arweave.js with these URLs:\n');
-    results.forEach(result => {
-      const key = result.filename.replace('duckdb-', '').replace('duckdb-browser-', '').replace('.wasm', 'Module').replace('.worker.js', 'Worker');
-      console.log(`  ${key}: 'https://arweave.net/${result.txId}',`);
-    });
+    console.log('💡 Next steps:');
+    console.log('  1. Wait for confirmation (~2-10 minutes)');
+    console.log(`  2. Test URL: https://arweave.net/${txId}/duckdb-mvp.wasm`);
+    console.log('  3. Configure ArNS undername manually (if needed)');
+    console.log('  4. Update app config with TX ID or ArNS URL\n');
 
-    console.log('\n💡 Next steps:');
-    console.log('  1. Copy TX IDs to .env');
-    console.log('  2. Update src/config/arweave.js production config');
-    console.log('  3. Wait for confirmation (~2-10 minutes)');
-    console.log('  4. Test WASM URLs in browser');
-    console.log('  5. Build and deploy app: npm run build && npm run deploy\n');
+    console.log('📝 Manifest TX ID (save this):');
+    console.log(`   ${txId}\n`);
 
-    return results;
+    return txId;
   } catch (error) {
     console.error('\n❌ Upload failed:', error);
     console.error(error.stack);

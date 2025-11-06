@@ -532,7 +532,7 @@ footer {
   background: var(--primary-black);
   color: var(--primary-white);
   padding: 2rem 0;
-  margin-top: 4rem;
+  margin-top: 0;
 }
 
 .footer-content {
@@ -1002,30 +1002,96 @@ footer {
   text-decoration: underline;
 }
 
+/* License Section - Compact Footer Bar */
+.article-license-section {
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  padding: 1.25rem 0;
+  margin-top: 3rem;
+  margin-bottom: 0;
+}
+
+/* Ensure no gap between license and footer */
+.article-detail {
+  margin-bottom: 0;
+}
+
+/* Add spacing to main content areas that don't have license section */
+.homepage,
+.search-results-page,
+.consortium-page,
+.member-detail-page,
+.articles-browse-page {
+  margin-bottom: 4rem;
+}
+
+.license-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.license-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.license-icon {
+  width: 88px;
+  height: 31px;
+  flex-shrink: 0;
+}
+
 .license-text {
   font-size: 0.9rem;
-  color: var(--text-gray);
-  font-weight: 600;
+  color: #495057;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-.license-link {
-  display: inline-flex;
-  align-items: center;
-  color: var(--text-gray);
+.license-learn-more {
+  color: #1976d2;
   text-decoration: none;
-  font-weight: 600;
   font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  border: 1px solid var(--border-gray);
-  background: var(--light-gray);
-  transition: all 0.2s;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.2s;
+  flex-shrink: 0;
 }
 
-.license-link:hover {
-  background: var(--primary-black);
-  color: var(--primary-white);
-  border-color: var(--primary-black);
+.license-learn-more:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
+/* License Section - Mobile */
+@media (max-width: 767px) {
+  .article-license-section {
+    padding: 1rem 0;
+    margin-top: 2rem;
+  }
+
+  .license-bar {
+    padding: 0 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .license-text {
+    white-space: normal;
+    font-size: 0.85rem;
+  }
+
+  .license-learn-more {
+    font-size: 0.85rem;
+    align-self: flex-end;
+  }
 }
 
 /* Download Section */

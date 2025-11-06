@@ -160,7 +160,7 @@ ArNS (Arweave Name System) provides human-readable URLs for your permanent Arwea
 
 **Example**:
 - Transaction ID: `abc123xyz789...` (ugly)
-- ArNS Name: `crimrxiv.ar-io.dev` (pretty!)
+- ArNS Name: `crimrxiv.ar.io` (pretty!)
 
 ### Manual ArNS Setup (if not automated)
 
@@ -176,16 +176,16 @@ ArNS (Arweave Name System) provides human-readable URLs for your permanent Arwea
 
 3. **Wait for propagation**:
    - Changes propagate to gateways in 5-10 minutes
-   - Test at: `https://your-name.ar-io.dev`
+   - Test at: `https://your-name.ar.io`
 
 ### ArNS Undernames (Optional)
 
 You can create undernames for different resources:
 
 ```
-crimrxiv.ar-io.dev          → Main app
-data_crimrxiv.ar-io.dev     → Parquet data file
-wasm_crimrxiv.ar-io.dev     → DuckDB WASM bundles
+crimrxiv.ar.io          → Main app
+data_crimrxiv.ar.io     → Parquet data file
+wasm_crimrxiv.ar.io     → DuckDB WASM bundles
 ```
 
 **Benefits**:
@@ -249,7 +249,7 @@ npx @ardrive/turbo-cli upload-file public/data/metadata.parquet \
 
 Then configure ArNS undername:
 ```
-data_crimrxiv.ar-io.dev → parquet-tx-id
+data_crimrxiv.ar.io → parquet-tx-id
 ```
 
 ## Full Deployment Checklist

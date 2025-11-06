@@ -30,10 +30,14 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Read version from package.json
+const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8'));
+const APP_VERSION = packageJson.version;
+
 const CONFIG = {
   ARTICLES_DIR: path.join(__dirname, '../data/articles'),
   WALLET_PATH: process.env.ARWEAVE_WALLET_PATH,
-  CONCURRENCY: 5,  // Upload 5 articles in parallel
+  CONCURRENCY: 10,  // Upload 5 articles in parallel
   DELAY_BETWEEN_BATCHES: 1000  // 1 second delay between batches
 };
 
@@ -113,7 +117,7 @@ class ArticleUploader {
         dataItemOpts: {
           tags: [
             { name: 'App-Name', value: 'CrimRXiv-Archive' },
-            { name: 'App-Version', value: '1.0.0' },
+            { name: 'App-Version', value: APP_VERSION },
             { name: 'Article-Slug', value: slug },
             { name: 'License', value: 'OlTlW1xEw75UC0cdmNqvxc3j6iAmFXrS4usWIBfu_3E' }
             // Content-Type auto-detected by SDK for each file type

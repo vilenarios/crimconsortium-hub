@@ -31,7 +31,7 @@ npm run build:prod       # Build SPA for Arweave (excludes external resources)
 npm run dev           # Vite dev server at http://localhost:3005
 npm run build         # Build SPA to dist/ (includes all resources for local testing)
 npm run build:prod    # Build for Arweave deployment (excludes external resources)
-npm run preview       # Preview production build (custom server)
+npm run preview       # Preview production build (custom server on port 4174)
 npm run preview:vite  # Preview using Vite preview server
 ```
 
@@ -54,7 +54,8 @@ See `docs/SECURITY_CHECKLIST.md` for credential management best practices.
 
 **Deployment:**
 ```bash
-npm run sync                  # Sync with ArDrive
+npm run deploy                # Simple one-command deployment (build + upload + ArNS update)
+npm run sync                  # Sync with ArDrive (alternative method)
 npm run generate:manifests    # Generate Arweave manifests
 npm run upload:manifests      # Upload manifests to Arweave
 ```
@@ -225,10 +226,13 @@ Generates a **single Parquet file** with all article metadata optimized for brow
 - `getArticleMetadata(slug)` - Single article lookup
 - `getStats()` - Database statistics (total articles, date range, etc.)
 
-**Gateway Detection**: `src/lib/gateway.js` provides URL helpers for Arweave compatibility:
-- `getAppInfo()` - Detect localhost vs Arweave gateway
-- `getDataParquetUrl(filename)` - Resolve Parquet file URLs
-- `getUndernameUrl(subdomain, path)` - Generate ArNS undername URLs
+**Gateway Detection**: `src/config/arweave.js` provides centralized URL management for Arweave compatibility:
+- Automatic gateway detection (works across 600+ ar.io gateways)
+- `getManifestUrl(manifestTxId)` - Get article manifest URLs
+- `getAttachmentUrl(manifestTxId, path)` - Get attachment URLs
+- `isDevelopment()` - Check if running in dev mode
+- `getEnvironmentInfo()` - Get full environment config for debugging
+- Special handling for ar.io gateway (uses arweave.net for transaction ID resolution)
 
 ### Components
 
@@ -296,12 +300,13 @@ npm run dev  # Opens at http://localhost:3005
 - Add new pages? Update `src/lib/router.js` and create component
 
 **Testing Locally:**
-- Dev server: `npm run dev` (with hot reload)
-- Local production test: `npm run build && npm run preview` (includes bundled resources)
+- Dev server: `npm run dev` (port 3005, with hot reload)
+- Local production test: `npm run build && npm run preview` (port 4174, includes bundled resources)
 - Arweave deployment test: `npm run build:prod` (excludes external resources, requires ArNS setup)
-- Check console for DuckDB-WASM initialization logs
+- Check console for DuckDB-WASM initialization logs and "🌐 Arweave Config Initialized"
 - Test all routes work (homepage, article, search, consortium)
 - Verify external resource loading in production builds
+- Note: arweave.js automatically detects port (3005 or 4174) for localhost URLs
 
 ## Key Architecture Patterns
 
@@ -340,11 +345,16 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 - **EXCLUDE_EXTERNAL=true**: Environment variable triggers external resource exclusion
 - **ArNS Undernames**: Data loaded from `data_{rootName}.arweave.net`, WASM from `duck-db-wasm_{rootName}.arweave.net`
 
-**Gateway Detection** (`src/lib/gateway.js`):
-- Localhost: Use full URLs (`http://localhost:3005/data/...`)
-- Arweave: Use ArNS undername URLs for external resources
+**Gateway Detection** (`src/config/arweave.js`):
+- Centralized configuration for all external resource URLs
+- Automatic detection: localhost (dev) vs production (any gateway)
+- Dynamic gateway resolution from window.location.hostname
+- Works across 600+ ar.io gateways (arweave.net, ar.io, permagate.io, etc.)
 - DuckDB-WASM requires absolute URLs for HTTP range requests
-- Parquet files loaded from external ArNS gateway (parquet-db.js:32-54)
+- Special case: ar.io gateway uses arweave.net for TX ID resolution
+- ArNS configuration: rootName, dataUndername, wasmName
+- Parquet loaded from ArNS undername: `data_crimrxiv-demo.{gateway}`
+- WASM loaded from ArNS name: `duck-db-wasm.{gateway}`
 
 ### Incremental Data Sync
 
@@ -374,7 +384,7 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 - `src/lib/router.js` - Client-side routing
 - `src/lib/parquet-db-external.js` - DuckDB-WASM wrapper
 - `src/lib/manifest-loader.js` - Arweave manifest loader (fetches article content)
-- `src/lib/gateway.js` - URL resolution for localhost vs Arweave
+- `src/config/arweave.js` - Centralized URL resolution (localhost vs Arweave, gateway detection)
 - `src/lib/database.js` - SQLite schema and operations (build-time only)
 - `vite.config.js` - Build configuration
 - `index.html` - HTML shell with nav, footer, loading screen
@@ -387,6 +397,7 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 **Key Directories**:
 - `src/components/` - UI components (each exports a class with `render()`)
 - `src/lib/` - Core libraries (router, database, utilities)
+- `src/config/` - Configuration modules (arweave.js for URL management)
 - `src/styles/` - CSS (inlined during build)
 - `scripts/` - Build-time data pipeline scripts (see Scripts section below)
 - `public/` - Static assets served by Vite (Parquet files, images)
@@ -400,13 +411,14 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 - `download-pdfs-only.js` - Download PDF attachments separately
 
 **Arweave Deployment:**
+- `deploy.js` - Simple one-command deployment (Turbo SDK + ArNS)
 - `upload-articles.js` - Upload article markdown to Arweave
 - `upload-parquet.js` - Upload Parquet file to Arweave
 - `upload-wasm.js` - Upload DuckDB WASM bundles to Arweave
 - `generate-manifests.js` - Generate Arweave manifest files
 - `upload-manifests.js` - Upload manifests to Arweave
-- `sync-ardrive-fixed.js` - Sync with ArDrive
-- `deploy-full.js` - Full deployment orchestration
+- `sync-ardrive-fixed.js` - Sync with ArDrive (alternative deployment)
+- `deploy-full.js` - Full deployment orchestration (legacy)
 
 **Build & Preview:**
 - `build-prod.js` - Production build (sets EXCLUDE_EXTERNAL=true)
@@ -455,14 +467,39 @@ const result = await db.query('SELECT * FROM metadata LIMIT 10');
 console.table(result.toArray());
 ```
 
+**Debugging Arweave Configuration**:
+```javascript
+// In browser console - check environment configuration:
+import { getEnvironmentInfo } from './src/config/arweave.js';
+console.log(getEnvironmentInfo());
+
+// Check if URLs are resolving correctly:
+// Look for "🌐 Arweave Config Initialized" log in console on page load
+```
+
 ## Deployment to Arweave
 
 **Why Arweave?**
 - Permanent storage (pay once, stored forever)
 - Decentralized (censorship-resistant)
-- Cost-effective (~$0.82 for entire site one-time)
+- Cost-effective (~$0.10-1.00 for entire site one-time)
+- Works across 600+ ar.io gateways automatically
 
-**Deployment Process**:
+**Simple Deployment (Recommended)**:
+```bash
+# Prerequisites:
+# - Create .env with ARWEAVE_WALLET_PATH=/path/to/wallet.json
+# - Optional: Add ARNS_PROCESS_ID=your-arns-process-id for automatic ArNS updates
+
+# 1. Prepare data
+npm run import              # Import latest from CrimRXiv
+npm run export              # Export to Parquet
+
+# 2. Deploy in one command
+npm run deploy              # Builds, uploads to Arweave via Turbo SDK, updates ArNS
+```
+
+**Advanced Deployment (Manual Control)**:
 ```bash
 # 1. Upload external resources (one-time or when updated)
 npm run upload:parquet      # Upload metadata.parquet to Arweave
@@ -494,7 +531,7 @@ npm run sync
 - [ ] Verify external resources load correctly from ArNS undernames
 
 **ArNS (Arweave Name System)**:
-- Provides human-readable URLs (e.g., `https://crimrxiv.ar-io.dev`)
+- Provides human-readable URLs (e.g., `https://crimrxiv.ar.io`)
 - Updatable DNS pointing to transaction IDs
 - See `docs/PATTERN_GUIDE.md` Stage 5 for ArNS integration details
 
@@ -552,9 +589,11 @@ npm run sync
 **Parquet file not found**:
 - Run `npm run export` to generate from SQLite
 - Verify file exists: `public/data/metadata.parquet` (~5MB)
-- Check Vite config includes Parquet in `assetsInclude` (vite.config.js:40)
-- Verify URL resolution in parquet-db.js:32-51 works for your environment
-- For Arweave: check gateway detection in gateway.js
+- Check Vite config includes Parquet in `assetsInclude` (vite.config.js)
+- Verify URL resolution in parquet-db-external.js works for your environment
+- For Arweave: check gateway detection in src/config/arweave.js
+- Debug: Check console logs from arweave.js for URL configuration
+- Check ArNS undername is resolving correctly (data_crimrxiv-demo.{gateway})
 
 **Search returns no results**:
 - Check metadata loaded: Open browser console, run `await window.app.db.query('SELECT COUNT(*) FROM metadata')`
@@ -584,6 +623,9 @@ npm run sync
 - **docs/PATTERN_GUIDE.md** - Universal data pipeline pattern (SQLite → Parquet → Arweave)
 - **docs/ARCHITECTURE.md** - Detailed technical architecture
 - **docs/PARQUET_SCHEMA.md** - Parquet file schema details
+- **docs/DEPLOYMENT.md** - Deployment guide with Turbo SDK and ArNS
+- **docs/TESTING_GUIDE.md** - Testing the complete pipeline
+- **docs/SECURITY_CHECKLIST.md** - Security best practices
 - **README.md** - Project overview and quick start
 
 **Migration Notes**:

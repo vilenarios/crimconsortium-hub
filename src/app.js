@@ -103,7 +103,7 @@ export class CrimRXivApp {
 
       const html = await this.components.articleDetail.render(slug);
       this.updateView(html);
-      this.updatePageTitle(`${slug} - CrimRXiv Archive`);
+      // Note: Page title is set by ArticleDetail component with actual article title
     } catch (error) {
       console.error(`❌ Article error for ${slug}:`, error);
       this.showError(error.message);

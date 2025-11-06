@@ -40,7 +40,12 @@
       "Bash(git rm:*)",
       "Bash(if [ -f \"data/sqlite/crimrxiv.db\" ])",
       "Bash(then echo \"Database exists\")",
-      "Bash(else echo \"Database not found\")"
+      "Bash(else echo \"Database not found\")",
+      "Bash(if [ -d \"dist/data\" ])",
+      "Bash(then echo \"data exists in dist\")",
+      "Bash(else echo \"data NOT in dist\")",
+      "WebFetch(domain:arweave.net)",
+      "WebFetch(domain:xjx5jfhiswd5d7bgj7bxqvixueroitncnljb6c4wc6xznfjxusba.arweave.net)"
     ],
     "deny": [],
     "ask": []

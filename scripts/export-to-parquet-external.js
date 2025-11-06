@@ -131,7 +131,8 @@ class ParquetExporter {
             word_count INTEGER,
             attachment_count INTEGER,
             reference_count INTEGER,
-            citation_count INTEGER
+            citation_count INTEGER,
+            external_publications_json VARCHAR
           )
         `, (err) => {
           if (err) return reject(err);
@@ -140,7 +141,7 @@ class ParquetExporter {
             INSERT INTO metadata_temp VALUES (
               ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
               ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-              ?, ?
+              ?, ?, ?
             )
           `);
 
@@ -171,7 +172,8 @@ class ParquetExporter {
               article.word_count || 0,
               article.attachment_count || 0,
               article.reference_count || 0,
-              article.citation_count || 0
+              article.citation_count || 0,
+              article.external_publications_json || null
             );
           }
 

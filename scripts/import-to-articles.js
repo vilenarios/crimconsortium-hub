@@ -79,6 +79,57 @@ class CrimRXivImporter {
   }
 
   /**
+   * Extract abstract from ProseMirror document
+   * Looks for content labeled "Abstract" or extracts first few paragraphs
+   */
+  extractAbstractFromProseMirror(doc) {
+    if (!doc || !doc.content) return '';
+
+    let abstractText = '';
+    let foundAbstractHeading = false;
+    let paragraphsAfterAbstract = 0;
+
+    for (const node of doc.content) {
+      // Check if this is an "Abstract" heading
+      if (node.type === 'heading' && node.content) {
+        const headingText = node.content.map(n => n.text).join('').toLowerCase();
+        if (headingText.includes('abstract')) {
+          foundAbstractHeading = true;
+          continue;
+        } else if (foundAbstractHeading) {
+          // Stop when we hit another heading after abstract
+          break;
+        }
+      }
+
+      // Extract paragraph content
+      if (node.type === 'paragraph' && node.content) {
+        const paragraphText = node.content.map(n => n.text || '').join('').trim();
+
+        if (foundAbstractHeading) {
+          // Collect paragraphs under "Abstract" heading
+          if (paragraphText) {
+            abstractText += paragraphText + '\n\n';
+            paragraphsAfterAbstract++;
+          }
+
+          // Stop after collecting 3-5 paragraphs
+          if (paragraphsAfterAbstract >= 5) break;
+        } else if (abstractText.length < 1500 && paragraphText.length > 50) {
+          // If no "Abstract" heading found, collect first few substantial paragraphs
+          // Skip very short paragraphs (likely not abstract)
+          abstractText += paragraphText + '\n\n';
+        }
+      }
+
+      // Stop if we've collected enough content
+      if (abstractText.length > 2000) break;
+    }
+
+    return abstractText.trim();
+  }
+
+  /**
    * Extract file attachments from ProseMirror
    */
   extractFilesFromProseMirror(doc) {
@@ -96,6 +147,53 @@ class CrimRXivImporter {
     };
     if (doc && doc.content) doc.content.forEach(findFiles);
     return files;
+  }
+
+  /**
+   * Process external publications (version-of relationships)
+   * Fetches full details for each outbound edge using pubEdge.get()
+   */
+  async processExternalPublications(pub) {
+    const externalPubs = [];
+
+    // Check if pub has outbound edges
+    if (!pub.outboundEdges || pub.outboundEdges.length === 0) {
+      return externalPubs;
+    }
+
+    console.log(`   📎 Processing ${pub.outboundEdges.length} outbound edge(s)...`);
+
+    for (const edge of pub.outboundEdges) {
+      if (edge.externalPublicationId) {
+        try {
+          // Fetch full edge details including nested externalPublication
+          const edgeResponse = await this.sdk.pubEdge.get({
+            params: { id: edge.id }
+          });
+
+          // Add delay to respect rate limits
+          await new Promise(resolve => setTimeout(resolve, CONFIG.TEXT_DELAY));
+
+          if (edgeResponse.body && edgeResponse.body.externalPublication) {
+            const extPub = edgeResponse.body.externalPublication;
+            externalPubs.push({
+              externalPublicationId: edge.externalPublicationId,
+              relationType: edge.relationType,
+              title: extPub.title,
+              url: extPub.url,
+              description: extPub.description,
+              doi: extPub.doi,
+              publicationDate: extPub.publicationDate
+            });
+            console.log(`      ✅ External pub: ${extPub.title?.substring(0, 60) || 'Untitled'}...`);
+          }
+        } catch (error) {
+          console.error(`      ❌ Failed to fetch edge ${edge.id}:`, error.message);
+        }
+      }
+    }
+
+    return externalPubs;
   }
 
   /**
@@ -387,7 +485,11 @@ class CrimRXivImporter {
 
       const prosemirrorContent = textResponse?.body || null;
       const contentText = this.extractTextFromProseMirror(prosemirrorContent);
+      const abstractText = this.extractAbstractFromProseMirror(prosemirrorContent);
       const files = this.extractFilesFromProseMirror(prosemirrorContent);
+
+      // Fetch external publications (version-of relationships)
+      const externalPubs = await this.processExternalPublications(pub);
 
       // Prepare article data for SQLite
       const article = {
@@ -395,7 +497,7 @@ class CrimRXivImporter {
         slug: pub.slug,
         title: pub.title,
         description: pub.description || '',
-        abstract: pub.description || '',
+        abstract: abstractText || pub.description || '',
         doi: pub.doi || null,
         license: pub.licenseSlug || null,
         created_at: pub.createdAt,
@@ -416,7 +518,8 @@ class CrimRXivImporter {
         word_count: contentText.split(/\s+/).length,
         attachment_count: files.length,
         url: `https://www.crimrxiv.com/pub/${pub.slug}`,
-        pdf_url: files[0]?.url || null
+        pdf_url: files[0]?.url || null,
+        external_publications_json: externalPubs.length > 0 ? JSON.stringify(externalPubs) : null
       };
 
       // Save latest version to root level (for backwards compatibility)
@@ -485,7 +588,7 @@ class CrimRXivImporter {
           offset: offset,
           sortBy: 'updatedAt',
           orderBy: 'DESC',
-          include: ['collectionPubs', 'attributions', 'community', 'draft', 'releases']
+          include: ['collectionPubs', 'attributions', 'community', 'draft', 'releases', 'outboundEdges']
         }
       });
 
@@ -499,10 +602,16 @@ class CrimRXivImporter {
 
       console.log(`📦 Batch: ${offset + 1} - ${offset + pubs.length} of ???`);
 
-      // Process each pub
-      for (const pub of pubs) {
-        this.stats.total++;
-        await this.processPub(pub);
+      // Process pubs in parallel (3 at a time)
+      const CONCURRENCY = 3;
+      for (let i = 0; i < pubs.length; i += CONCURRENCY) {
+        const chunk = pubs.slice(i, i + CONCURRENCY);
+
+        // Process this chunk in parallel
+        await Promise.all(chunk.map(async (pub) => {
+          this.stats.total++;
+          await this.processPub(pub);
+        }));
 
         // Check limit
         if (limit && this.stats.total >= limit) {

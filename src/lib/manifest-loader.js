@@ -107,6 +107,98 @@ export class ManifestLoader {
   }
 
   /**
+   * Get article ProseMirror content from manifest (content.json)
+   * @param {string} manifestTxId - Transaction ID of the manifest
+   * @returns {Promise<object|null>} ProseMirror JSON document or null if not available
+   */
+  async getArticleProseMirror(manifestTxId) {
+    const cacheKey = `${manifestTxId}:prosemirror`;
+
+    // Check cache
+    if (this.contentCache.has(cacheKey)) {
+      console.log(`📄 Using cached ProseMirror: ${manifestTxId}`);
+      return this.contentCache.get(cacheKey);
+    }
+
+    try {
+      const manifest = await this.loadManifest(manifestTxId);
+
+      // Get content.json path from manifest
+      const contentPath = 'content.json';
+      if (!manifest.paths || !manifest.paths[contentPath]) {
+        console.warn(`content.json not found in manifest: ${manifestTxId}`);
+        return null;
+      }
+
+      // Fetch ProseMirror content
+      const contentUrl = getAttachmentUrl(manifestTxId, contentPath);
+      console.log(`📄 Loading ProseMirror from: ${contentUrl}`);
+
+      const response = await fetch(contentUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch content.json: ${response.status} ${response.statusText}`);
+      }
+
+      const prosemirrorDoc = await response.json();
+
+      // Cache the content
+      this.contentCache.set(cacheKey, prosemirrorDoc);
+
+      console.log(`✅ ProseMirror loaded: ${manifestTxId.substring(0, 8)}...`);
+      return prosemirrorDoc;
+    } catch (error) {
+      console.error(`❌ Failed to load ProseMirror for ${manifestTxId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get article metadata from manifest (metadata.json)
+   * @param {string} manifestTxId - Transaction ID of the manifest
+   * @returns {Promise<object|null>} Metadata object or null if not available
+   */
+  async getArticleMetadata(manifestTxId) {
+    const cacheKey = `${manifestTxId}:metadata`;
+
+    // Check cache
+    if (this.contentCache.has(cacheKey)) {
+      console.log(`📄 Using cached metadata: ${manifestTxId}`);
+      return this.contentCache.get(cacheKey);
+    }
+
+    try {
+      const manifest = await this.loadManifest(manifestTxId);
+
+      // Get metadata.json path from manifest
+      const metadataPath = 'metadata.json';
+      if (!manifest.paths || !manifest.paths[metadataPath]) {
+        console.warn(`metadata.json not found in manifest: ${manifestTxId}`);
+        return null;
+      }
+
+      // Fetch metadata
+      const metadataUrl = getAttachmentUrl(manifestTxId, metadataPath);
+      console.log(`📄 Loading metadata from: ${metadataUrl}`);
+
+      const response = await fetch(metadataUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch metadata.json: ${response.status} ${response.statusText}`);
+      }
+
+      const metadata = await response.json();
+
+      // Cache the content
+      this.contentCache.set(cacheKey, metadata);
+
+      console.log(`✅ Metadata loaded: ${manifestTxId.substring(0, 8)}...`);
+      return metadata;
+    } catch (error) {
+      console.error(`❌ Failed to load metadata for ${manifestTxId}:`, error);
+      return null;
+    }
+  }
+
+  /**
    * Get article HTML content from manifest
    * @param {string} manifestTxId - Transaction ID of the manifest
    * @returns {Promise<string>} HTML content
@@ -214,16 +306,25 @@ export class ManifestLoader {
     }
 
     try {
-      // Load content and attachments in parallel
-      const [markdown, attachments] = await Promise.all([
-        this.getArticleMarkdown(metadata.manifest_tx_id),
+      // Load all content in parallel (ProseMirror, metadata, attachments)
+      const [prosemirrorDoc, manifestMetadata, attachments] = await Promise.all([
+        this.getArticleProseMirror(metadata.manifest_tx_id),
+        this.getArticleMetadata(metadata.manifest_tx_id),
         this.getAttachments(metadata.manifest_tx_id)
       ]);
 
-      return {
+      // Merge parquet metadata with manifest metadata (manifest takes precedence for richer data)
+      const mergedMetadata = {
         ...metadata,
-        content_markdown: markdown,
-        attachments: attachments
+        ...(manifestMetadata || {}),
+      };
+
+      return {
+        ...mergedMetadata,
+        content_prosemirror: prosemirrorDoc,
+        attachments: attachments,
+        // Keep original parquet metadata accessible
+        _parquetMetadata: metadata
       };
     } catch (error) {
       console.error(`❌ Failed to get full article for ${metadata.slug}:`, error);

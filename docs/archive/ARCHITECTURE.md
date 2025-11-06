@@ -232,7 +232,7 @@ npm run sync
 
 ### Arweave URLs
 - **Production**: `https://arweave.net/{TX_ID}`
-- **ArNS**: `https://crimrxiv.ar-io.dev` (human-readable subdomain)
+- **ArNS**: `https://crimrxiv.ar.io` (human-readable subdomain)
 - **Local Dev**: `http://localhost:5173`
 
 ---

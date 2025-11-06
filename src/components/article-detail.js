@@ -60,8 +60,13 @@ export class ArticleDetail {
       const metadata = await this.db.getArticleMetadata(slug);
 
       if (!metadata) {
+        // Set page title for not found
+        document.title = `Article Not Found - CrimRXiv Archive`;
         return this.renderNotFound(slug);
       }
+
+      // Set page title with article title
+      document.title = `${metadata.title} - CrimRXiv Archive`;
 
       // Track if we failed to load the manifest
       let manifestLoadFailed = false;
@@ -72,9 +77,16 @@ export class ArticleDetail {
         console.log(`📦 Loading article from manifest: ${metadata.manifest_tx_id}`);
 
         try {
-          // Use manifestLoader to get full article (markdown + attachments)
+          // Use manifestLoader to get full article (ProseMirror + attachments)
           const fullArticle = await this.manifestLoader.getFullArticle(metadata);
-          return this.renderManifestArticle(fullArticle);
+          const html = this.renderManifestArticle(fullArticle);
+
+          // Render ProseMirror content after DOM is ready (if available)
+          if (fullArticle.content_prosemirror) {
+            setTimeout(() => this.renderProseMirrorContent(fullArticle.slug, fullArticle.content_prosemirror), 0);
+          }
+
+          return html;
         } catch (error) {
           console.error(`⚠️ Failed to load manifest content:`, error);
           manifestLoadFailed = true;
@@ -571,82 +583,80 @@ export class ArticleDetail {
             text-decoration: underline;
           }
 
-          /* License Section */
+          /* License Section - Compact Footer Bar */
           .article-license-section {
             background: #f8f9fa;
             border-top: 1px solid #dee2e6;
-            padding: 2rem 0;
+            padding: 1.25rem 0;
             margin-top: 3rem;
           }
 
-          .license-container {
+          .license-bar {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 1.5rem;
             display: flex;
-            gap: 1.5rem;
-            align-items: flex-start;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+          }
+
+          .license-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
           }
 
           .license-icon {
             width: 88px;
             height: 31px;
             flex-shrink: 0;
-            transition: opacity 0.2s;
-          }
-
-          .license-link {
-            display: block;
-            text-decoration: none;
-          }
-
-          .license-link:hover .license-icon {
-            opacity: 0.8;
           }
 
           .license-text {
-            flex: 1;
+            font-size: 0.9rem;
+            color: #495057;
+            font-weight: 500;
+            white-space: nowrap;
           }
 
-          .license-description {
-            font-size: 0.95rem;
-            color: #212529;
-            margin-bottom: 0.5rem;
-            line-height: 1.6;
-          }
-
-          .license-external-link {
+          .license-learn-more {
             color: #1976d2;
             text-decoration: none;
+            font-size: 0.9rem;
             font-weight: 500;
+            white-space: nowrap;
+            transition: color 0.2s;
+            flex-shrink: 0;
           }
 
-          .license-external-link:hover {
+          .license-learn-more:hover {
+            color: #1565c0;
             text-decoration: underline;
-          }
-
-          .license-summary {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin: 0;
-            line-height: 1.5;
           }
 
           /* Mobile responsive */
           @media (max-width: 767px) {
-            .license-container {
-              flex-direction: column;
-              gap: 1rem;
-            }
-
-            .license-icon {
-              width: 88px;
-              height: 31px;
-            }
-
             .article-license-section {
-              padding: 1.5rem 0;
+              padding: 1rem 0;
               margin-top: 2rem;
+            }
+
+            .license-bar {
+              padding: 0 1rem;
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 0.75rem;
+            }
+
+            .license-text {
+              white-space: normal;
+              font-size: 0.85rem;
+            }
+
+            .license-learn-more {
+              font-size: 0.85rem;
+              align-self: flex-end;
             }
           }
         </style>
@@ -911,23 +921,20 @@ export class ArticleDetail {
             ` : ''}
 
             <!-- Abstract -->
-            ${article.abstract || article.abstract_preview ? `
+            ${article.abstract ? `
               <section class="article-abstract">
                 <h2 class="content-section-title">Abstract</h2>
                 <div class="abstract-content">
-                  ${this.escapeHtml(article.abstract || article.abstract_preview)}
+                  ${this.escapeHtml(article.abstract)}
                 </div>
               </section>
             ` : ''}
 
-            <!-- Article Content (Markdown) -->
-            ${article.content_markdown ? `
-              <section class="article-content-section">
-                <h2 class="content-section-title">Article Content</h2>
-                <div class="markdown-content" style="white-space: pre-wrap; line-height: 1.8; font-size: 16px; max-width: 800px;">
-                  ${this.escapeHtml(article.content_markdown)}
-                </div>
-              </section>
+            <!-- Full Article Content (ProseMirror includes all sections with headings) -->
+            ${article.content_prosemirror ? `
+              <div id="prosemirror-content-${article.slug}" class="prosemirror-rendered">
+                <p class="loading-text">Loading article content...</p>
+              </div>
             ` : ''}
 
             <!-- Author Details (with affiliations) -->
@@ -1097,11 +1104,11 @@ export class ArticleDetail {
             ` : ''}
 
             <!-- Abstract (only if no ProseMirror content, since ProseMirror includes it) -->
-            ${!article.content_prosemirror && (article.abstract || article.abstract_preview || article.description) ? `
+            ${!article.content_prosemirror && article.abstract ? `
               <section class="article-abstract">
                 <h2 class="content-section-title">Abstract</h2>
                 <div class="abstract-content">
-                  ${this.escapeHtml(article.abstract || article.abstract_preview || article.description)}
+                  ${this.escapeHtml(article.abstract)}
                 </div>
               </section>
             ` : ''}
@@ -1240,21 +1247,14 @@ export class ArticleDetail {
   renderLicenseSection() {
     return `
       <section class="article-license-section">
-        <div class="license-container">
-          <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer" class="license-link">
+        <div class="license-bar">
+          <div class="license-left">
             <img src="/cc-by-nc-nd.svg" alt="CC BY-NC-ND 4.0" class="license-icon" />
-          </a>
-          <div class="license-text">
-            <p class="license-description">
-              This work is licensed under a
-              <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer" class="license-external-link">
-                Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License
-              </a>.
-            </p>
-            <p class="license-summary">
-              You may share this work with proper attribution, but you may not use it for commercial purposes or create derivative works.
-            </p>
+            <span class="license-text">Licensed under CC BY-NC-ND 4.0</span>
           </div>
+          <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer" class="license-learn-more">
+            Learn More →
+          </a>
         </div>
       </section>
     `;
@@ -1264,6 +1264,7 @@ export class ArticleDetail {
    * Render not found state
    */
   renderNotFound(slug) {
+    // Note: Page title is already set in render() method before this is called
     return `
       <div class="article-detail">
         ${this.renderHeader()}
@@ -1288,6 +1289,9 @@ export class ArticleDetail {
    * Render error state
    */
   renderError(message, slug) {
+    // Set page title for error state
+    document.title = `Error - CrimRXiv Archive`;
+
     return `
       <div class="article-detail">
         ${this.renderHeader()}

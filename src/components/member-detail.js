@@ -98,7 +98,7 @@ export class MemberDetail {
    */
   renderArticleCard(article) {
     const title = article.title || 'Untitled';
-    const authors = article.authors?.map(a => a.name).join(', ') || 'Unknown Authors';
+    const authors = article.authors?.filter(a => a.name).map(a => a.name).join(', ') || 'Unknown Authors';
     const date = article.published_at ?
       new Date(article.published_at).toLocaleDateString('en-US', {
         year: 'numeric',

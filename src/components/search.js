@@ -150,8 +150,7 @@ export class Search {
    */
   renderArticleCard(article, query) {
     const title = article.title || 'Untitled';
-    const authors = article.authors?.slice(0, 3).map(a => a.name).join(', ') || 'Unknown Authors';
-    const moreAuthors = article.authors?.length > 3 ? ' et al.' : '';
+    const authors = article.authors?.filter(a => a.name).map(a => a.name).join(', ') || 'Unknown Authors';
     const date = article.published_at ?
       new Date(article.published_at).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -177,7 +176,7 @@ export class Search {
           </h3>
 
           <div class="article-meta">
-            <span class="article-authors">${highlightText(authors)}${moreAuthors}</span>
+            <span class="article-authors">${highlightText(authors)}</span>
             <span class="article-date">${date}</span>
           </div>
 

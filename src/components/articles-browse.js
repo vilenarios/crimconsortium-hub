@@ -201,8 +201,9 @@ export class ArticlesBrowse {
       ? new Date(article.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
       : 'Date unknown';
 
-    const authors = article.authors && article.authors.length > 0
-      ? article.authors.slice(0, 3).map(a => a.name || 'Unknown').join(', ') + (article.authors.length > 3 ? ', et al.' : '')
+    const validAuthors = article.authors?.filter(a => a.name) || [];
+    const authors = validAuthors.length > 0
+      ? validAuthors.map(a => a.name).join(', ')
       : 'Unknown authors';
 
     return `

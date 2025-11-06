@@ -299,7 +299,7 @@ After deployment, verify everything works:
 **Solutions:**
 1. Wait longer (propagation can take 10-30 minutes)
 2. Verify ArNS configuration on ar.io dashboard
-3. Try different gateway: `crimrxiv.ar-io.dev`
+3. Try different gateway: `crimrxiv.ar.io`
 4. Check transaction is confirmed on Arweave
 5. Test direct TX ID: `https://arweave.net/APP_TX_ID`
 

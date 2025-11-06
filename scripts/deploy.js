@@ -17,8 +17,8 @@
  */
 
 import 'dotenv/config';
-import { TurboFactory } from '@ardrive/turbo-sdk';
-import { IO } from '@ar.io/sdk';
+import { TurboFactory, ArweaveSigner } from '@ardrive/turbo-sdk/node';
+import { ANT } from '@ar.io/sdk';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -27,11 +27,16 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Read version from package.json
+const packageJson = JSON.parse(readFileSync(path.join(__dirname, '../package.json'), 'utf-8'));
+const APP_VERSION = packageJson.version;
+
 class Deployer {
   constructor() {
     this.distPath = path.join(__dirname, '../dist');
     this.walletPath = process.env.ARWEAVE_WALLET_PATH;
     this.arnsProcessId = process.env.ARNS_PROCESS_ID;
+    this.arnsRootName = process.env.ARNS_ROOT_NAME || 'crimrxiv-demo';
 
     if (!this.walletPath) {
       throw new Error('ARWEAVE_WALLET_PATH not set in .env file');
@@ -51,8 +56,8 @@ class Deployer {
     console.log('='.repeat(70) + '\n');
 
     try {
-      console.log('Running: npm run build\n');
-      execSync('npm run build', {
+      console.log('Running: npm run build:prod (excludes external resources)\n');
+      execSync('npm run build:prod', {
         stdio: 'inherit',
         cwd: path.join(__dirname, '..')
       });
@@ -93,19 +98,28 @@ class Deployer {
         dataItemOpts: {
           tags: [
             { name: 'App-Name', value: 'CrimRXiv-Archive' },
-            { name: 'App-Version', value: '2.0' },
-            { name: 'Content-Type', value: 'application/x.arweave-manifest+json' },
+            { name: 'App-Version', value: APP_VERSION },
             { name: 'Type', value: 'web-app' }
+            // Content-Type auto-detected by SDK for each file type (CSS, JS, HTML, etc.)
           ]
         }
       });
 
+      // Extract manifest ID from manifestResponse
+      const manifestId = uploadResult.manifestResponse?.id;
+
+      if (!manifestId) {
+        console.error('❌ No manifest ID returned');
+        console.error('Upload result:', JSON.stringify(uploadResult, null, 2));
+        throw new Error('No manifest TX ID returned from upload');
+      }
+
       console.log('\n✅ Upload complete!');
-      console.log(`📍 Manifest ID: ${uploadResult.manifestId}`);
-      console.log(`🔗 Gateway URL: https://arweave.net/${uploadResult.manifestId}`);
+      console.log(`📍 Manifest ID: ${manifestId}`);
+      console.log(`🔗 Gateway URL: https://arweave.net/${manifestId}`);
       console.log(`📊 Files uploaded: ${uploadResult.fileResponses?.length || 'N/A'}\n`);
 
-      return uploadResult.manifestId;
+      return manifestId;
 
     } catch (error) {
       console.error('❌ Upload failed:', error.message);
@@ -135,28 +149,34 @@ class Deployer {
       // Load wallet
       const jwk = JSON.parse(readFileSync(this.walletPath, 'utf-8'));
 
-      // Initialize IO client
-      console.log('Initializing AR.IO SDK...');
-      const io = IO.init({
-        signer: jwk
+      // Create ArweaveSigner from JWK
+      console.log('Creating ArweaveSigner...');
+      const signer = new ArweaveSigner(jwk);
+
+      // Initialize ANT with process ID and signer
+      console.log('Initializing ANT...');
+      const ant = ANT.init({
+        processId: this.arnsProcessId,
+        signer: signer
       });
 
+      console.log(`ArNS Name: ${this.arnsRootName}`);
       console.log(`ArNS Process ID: ${this.arnsProcessId}`);
       console.log(`New Target ID: ${manifestId}`);
-      console.log('Updating ArNS record...\n');
+      console.log('Updating ArNS root record (@)...\n');
 
-      // Update the ArNS record to point to new manifest
-      const result = await io.setRecord({
-        processId: this.arnsProcessId,
+      // Update the root ArNS record (undername '@') to point to new manifest
+      const result = await ant.setRecord({
+        undername: '@',           // Root record (no subdomain)
         transactionId: manifestId,
-        ttlSeconds: 3600 // 1 hour TTL
+        ttlSeconds: 3600          // 1 hour TTL
       });
 
       console.log('✅ ArNS update transaction submitted!');
-      console.log(`📍 Update TX: ${result.id}`);
+      console.log(`📍 Result:`, result);
       console.log('⏱️  Changes will propagate within ~5-10 minutes\n');
 
-      return result.id;
+      return result;
 
     } catch (error) {
       console.error('❌ ArNS update failed:', error.message);
@@ -203,21 +223,22 @@ class Deployer {
       console.log(`   ⏱️  Duration: ${duration}s`);
       console.log(`   📍 Manifest ID: ${manifestId}`);
       if (arnsUpdateId) {
-        console.log(`   🔗 ArNS Update TX: ${arnsUpdateId}`);
+        console.log(`   🔗 ArNS Update: Success`);
       }
       console.log('');
 
       console.log('🌐 Access URLs:');
-      console.log(`   Gateway: https://arweave.net/${manifestId}`);
+      console.log(`   Gateway (immediate): https://arweave.net/${manifestId}`);
       if (this.arnsProcessId) {
-        console.log(`   ArNS: (will update within 5-10 minutes)`);
+        console.log(`   ArNS (5-10 min):     https://${this.arnsRootName}.ar.io`);
+        console.log(`                        https://${this.arnsRootName}.arweave.net`);
       }
       console.log('');
 
       console.log('💡 Next Steps:');
-      console.log('   1. Wait 5-10 minutes for ArNS propagation');
-      console.log('   2. Test your site at the gateway URL');
-      console.log('   3. Verify ArNS name points to new deployment');
+      console.log(`   1. Test immediately at: https://arweave.net/${manifestId}`);
+      console.log('   2. Wait 5-10 minutes for ArNS propagation');
+      console.log(`   3. Verify ArNS works: https://${this.arnsRootName}.ar.io`);
       console.log('   4. Check that all resources load correctly');
       console.log('');
 

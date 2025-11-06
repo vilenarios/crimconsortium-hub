@@ -30,6 +30,10 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Read version from package.json
+const packageJson = JSON.parse(await fs.readFile(path.join(__dirname, '../package.json'), 'utf-8'));
+const APP_VERSION = packageJson.version;
+
 const CONFIG = {
   WASM_DIR: path.join(__dirname, '../public/duckdb'),
   WALLET_PATH: process.env.ARWEAVE_WALLET_PATH,
@@ -98,7 +102,7 @@ async function uploadWasm() {
       dataItemOpts: {
         tags: [
           { name: 'App-Name', value: 'CrimRXiv-Archive' },
-          { name: 'App-Version', value: '1.0.0' },
+          { name: 'App-Version', value: APP_VERSION },
           { name: 'Description', value: 'DuckDB-WASM v1.30.0 files for browser-based SQL queries' }
           // Content-Type auto-detected by SDK for each file type
         ]

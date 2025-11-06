@@ -14,7 +14,8 @@
     "build:prod": "node scripts/build-prod.js",
     "preview": "node scripts/preview-server.js",
     "preview:vite": "vite preview",
-    "deploy": "node scripts/deploy-full.js",
+    "deploy": "node scripts/deploy.js",
+    "deploy:full": "node scripts/deploy-full.js",
     "sync": "node scripts/sync-ardrive-fixed.js"
   },
   "dependencies": {

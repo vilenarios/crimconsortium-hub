@@ -22,6 +22,11 @@ export class ArticleDetail {
     this.db = db;
     this.router = router;
     this.manifestLoader = manifestLoader;
+
+    // Version state
+    this.versionsData = null;
+    this.currentVersion = null;
+    this.currentSlug = null;
   }
 
   /**
@@ -68,6 +73,9 @@ export class ArticleDetail {
       // Set page title with article title
       document.title = `${metadata.title} - CrimRXiv Archive`;
 
+      // Store current slug
+      this.currentSlug = slug;
+
       // Track if we failed to load the manifest
       let manifestLoadFailed = false;
       let manifestError = null;
@@ -77,16 +85,66 @@ export class ArticleDetail {
         console.log(`📦 Loading article from manifest: ${metadata.manifest_tx_id}`);
 
         try {
-          // Use manifestLoader to get full article (ProseMirror + attachments)
-          const fullArticle = await this.manifestLoader.getFullArticle(metadata);
-          const html = this.renderManifestArticle(fullArticle);
+          // Load versions manifest
+          this.versionsData = await this.manifestLoader.getVersionsManifest(metadata.manifest_tx_id, slug);
 
-          // Render ProseMirror content after DOM is ready (if available)
-          if (fullArticle.content_prosemirror) {
-            setTimeout(() => this.renderProseMirrorContent(fullArticle.slug, fullArticle.content_prosemirror), 0);
+          // Determine which version to show (from URL or default to latest)
+          const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+          const requestedVersion = urlParams.get('v');
+
+          if (this.versionsData && this.versionsData.versions) {
+            // Article has multiple versions
+            if (requestedVersion) {
+              this.currentVersion = parseInt(requestedVersion);
+            } else {
+              this.currentVersion = this.versionsData.latest || this.versionsData.total;
+            }
+
+            console.log(`📋 Loading version ${this.currentVersion} of ${this.versionsData.total}`);
+
+            // Load version-specific content
+            const [versionProsemirror, versionMetadata, attachments] = await Promise.all([
+              this.manifestLoader.getVersionProseMirror(metadata.manifest_tx_id, this.currentVersion, slug),
+              this.manifestLoader.getVersionMetadata(metadata.manifest_tx_id, this.currentVersion),
+              this.manifestLoader.getAttachments(metadata.manifest_tx_id)
+            ]);
+
+            // Use the current version's creation date for display
+            const currentVersionData = this.versionsData.versions.find(v => v.number === this.currentVersion);
+            const displayDate = currentVersionData?.createdAt || versionMetadata?.published_at || metadata.published_at;
+
+            const fullArticle = {
+              ...metadata,
+              ...(versionMetadata || {}),
+              content_prosemirror: versionProsemirror,
+              attachments: attachments,
+              published_at: displayDate,  // Override with current version's date
+              _parquetMetadata: metadata
+            };
+
+            const html = this.renderManifestArticle(fullArticle);
+
+            // Render ProseMirror content after DOM is ready (if available)
+            if (fullArticle.content_prosemirror) {
+              setTimeout(() => this.renderProseMirrorContent(fullArticle.slug, fullArticle.content_prosemirror), 0);
+            }
+
+            // Attach version selector event listeners
+            setTimeout(() => this.attachVersionListeners(), 0);
+
+            return html;
+          } else {
+            // Single version article - use default loading
+            const fullArticle = await this.manifestLoader.getFullArticle(metadata);
+            const html = this.renderManifestArticle(fullArticle);
+
+            // Render ProseMirror content after DOM is ready (if available)
+            if (fullArticle.content_prosemirror) {
+              setTimeout(() => this.renderProseMirrorContent(fullArticle.slug, fullArticle.content_prosemirror), 0);
+            }
+
+            return html;
           }
-
-          return html;
         } catch (error) {
           console.error(`⚠️ Failed to load manifest content:`, error);
           manifestLoadFailed = true;
@@ -417,8 +475,8 @@ export class ArticleDetail {
               </div>
             </div>
 
-            <!-- Abstract -->
-            ${abstract ? `
+            <!-- Abstract (only shown if no ProseMirror content, as PM content includes abstract) -->
+            ${abstract && !manifestContent ? `
               <section class="article-abstract">
                 <h2 class="content-section-title">Abstract</h2>
                 <div class="abstract-content">
@@ -427,7 +485,7 @@ export class ArticleDetail {
               </section>
             ` : ''}
 
-            <!-- ProseMirror Content -->
+            <!-- ProseMirror Content (includes abstract if available) -->
             ${manifestContent ? `
               <section class="article-content-section">
                 <div id="prosemirror-content-${metadata.slug}" class="prosemirror-rendered"></div>
@@ -843,6 +901,12 @@ export class ArticleDetail {
    * @param {object} article - Full article with metadata, content_markdown, and attachments from manifestLoader
    */
   renderManifestArticle(article) {
+    // Determine publication type based on external publications
+    const hasExternalPubs = article.external_publications_json &&
+                           article.external_publications_json !== 'null' &&
+                           article.external_publications_json.trim() !== '';
+    const publicationType = hasExternalPubs ? 'Postprints + Versions of Record' : 'Preprints + Working Papers';
+
     // Get first author's affiliation if available
     const firstAuthorAffiliation = article.authors && article.authors.length > 0 && article.authors[0].affiliation
       ? article.authors[0].affiliation
@@ -866,7 +930,7 @@ export class ArticleDetail {
 
             <!-- Publication Type & Date -->
             <div class="publication-meta">
-              <span class="publication-type">Postprints + Versions of Record</span>
+              <span class="publication-type">${publicationType}</span>
               <span class="publication-date">${this.formatDate(article.published_at)}</span>
             </div>
 
@@ -882,7 +946,7 @@ export class ArticleDetail {
               </div>
             ` : ''}
 
-            <!-- DOI & License -->
+            <!-- DOI, Arweave TX, & Release Selector -->
             <div class="article-identifiers">
               ${article.doi ? `
                 <div class="doi-badge">
@@ -905,6 +969,7 @@ export class ArticleDetail {
                   ${this.renderLicenseBadge(article.license)}
                 </div>
               ` : ''}
+              ${this.renderVersionSelector()}
             </div>
 
             <!-- External Publications -->
@@ -920,8 +985,8 @@ export class ArticleDetail {
               </div>
             ` : ''}
 
-            <!-- Abstract -->
-            ${article.abstract ? `
+            <!-- Abstract (only shown if no ProseMirror content, as PM content includes abstract) -->
+            ${article.abstract && !article.content_prosemirror ? `
               <section class="article-abstract">
                 <h2 class="content-section-title">Abstract</h2>
                 <div class="abstract-content">
@@ -930,7 +995,7 @@ export class ArticleDetail {
               </section>
             ` : ''}
 
-            <!-- Full Article Content (ProseMirror includes all sections with headings) -->
+            <!-- Full Article Content (ProseMirror includes all sections with headings and abstract) -->
             ${article.content_prosemirror ? `
               <div id="prosemirror-content-${article.slug}" class="prosemirror-rendered">
                 <p class="loading-text">Loading article content...</p>
@@ -1034,6 +1099,12 @@ export class ArticleDetail {
    * Render article content
    */
   renderContent(article) {
+    // Determine publication type based on external publications
+    const hasExternalPubs = article.external_publications_json &&
+                           article.external_publications_json !== 'null' &&
+                           article.external_publications_json.trim() !== '';
+    const publicationType = hasExternalPubs ? 'Postprints + Versions of Record' : 'Preprints + Working Papers';
+
     // Get first author's affiliation if available
     const firstAuthorAffiliation = article.authors && article.authors.length > 0 && article.authors[0].affiliation
       ? article.authors[0].affiliation
@@ -1057,7 +1128,7 @@ export class ArticleDetail {
 
             <!-- Publication Type & Date -->
             <div class="publication-meta">
-              <span class="publication-type">Postprints + Versions of Record</span>
+              <span class="publication-type">${publicationType}</span>
               <span class="publication-date">${this.formatDate(article.published_at)}</span>
             </div>
 
@@ -1073,7 +1144,7 @@ export class ArticleDetail {
               </div>
             ` : ''}
 
-            <!-- DOI & License -->
+            <!-- DOI, License, & Release Selector -->
             <div class="article-identifiers">
               ${article.doi ? `
                 <div class="doi-badge">
@@ -1088,6 +1159,7 @@ export class ArticleDetail {
                   ${this.renderLicenseBadge(article.license)}
                 </div>
               ` : ''}
+              ${this.renderVersionSelector()}
             </div>
 
             <!-- External Publications -->
@@ -1338,8 +1410,10 @@ export class ArticleDetail {
     try {
       console.log(`🔧 Starting ProseMirror rendering for ${slug}`);
 
-      // Parse JSON string from database
-      const contentData = JSON.parse(prosemirrorJson);
+      // Handle both JSON string (from database) and object (from manifest)
+      const contentData = typeof prosemirrorJson === 'string'
+        ? JSON.parse(prosemirrorJson)
+        : prosemirrorJson;
       console.log('📄 Content data loaded:', contentData ? 'SUCCESS' : 'FAILED');
       console.log('📄 Content has', contentData?.content?.length || 0, 'top-level nodes');
 
@@ -1548,19 +1622,20 @@ export class ArticleDetail {
 
       // Map relation types to friendly labels
       const relationLabels = {
-        'version': 'Also Available On',
+        'version': 'This Pub is a Version of',
         'supplement': 'Supplementary Material',
         'related': 'Related Publication'
       };
 
-      // Extract platform name from URL if available (future enhancement)
-      const getPlatformName = (url) => {
-        if (!url) return 'External Platform';
-        if (url.includes('researchgate')) return 'ResearchGate';
-        if (url.includes('arxiv')) return 'arXiv';
-        if (url.includes('osf.io')) return 'OSF';
-        if (url.includes('figshare')) return 'Figshare';
-        return 'External Platform';
+      // Extract domain from URL for display
+      const getDomain = (url) => {
+        if (!url) return null;
+        try {
+          const domain = new URL(url).hostname.replace('www.', '');
+          return domain;
+        } catch {
+          return null;
+        }
       };
 
       return `
@@ -1568,22 +1643,31 @@ export class ArticleDetail {
           <h3 class="external-pubs-title">${relationLabels[externalPubs[0].relationType] || 'External Publications'}</h3>
           <div class="external-pubs-list">
             ${externalPubs.map(pub => {
-              // For now, we only have edge metadata. When we fetch full details, we'll show title and URL
-              if (pub.url) {
-                // Full details available
-                const platform = getPlatformName(pub.url);
+              if (pub.url && pub.title) {
+                // Full publication details available
+                const domain = getDomain(pub.url);
                 return `
-                  <a href="${pub.url}" target="_blank" class="external-pub-badge">
-                    <span class="external-pub-platform">${this.escapeHtml(platform)}</span>
-                    <span class="external-pub-arrow">→</span>
+                  <a href="${pub.url}" target="_blank" class="external-pub-card">
+                    <div class="external-pub-title">${this.escapeHtml(pub.title.trim())}</div>
+                    ${domain ? `<div class="external-pub-domain">${this.escapeHtml(domain)}</div>` : ''}
+                    ${pub.description ? `<div class="external-pub-description">${this.escapeHtml(pub.description)}</div>` : ''}
+                  </a>
+                `;
+              } else if (pub.url) {
+                // URL only
+                const domain = getDomain(pub.url) || 'External Link';
+                return `
+                  <a href="${pub.url}" target="_blank" class="external-pub-card">
+                    <div class="external-pub-title">${this.escapeHtml(domain)}</div>
+                    ${pub.description ? `<div class="external-pub-description">${this.escapeHtml(pub.description)}</div>` : ''}
                   </a>
                 `;
               } else {
                 // Only edge metadata available (placeholder)
                 return `
-                  <div class="external-pub-badge external-pub-placeholder" title="External publication reference (details pending)">
-                    <span class="external-pub-platform">External Version</span>
-                    <span class="external-pub-info">(ID: ${pub.externalPublicationId?.substring(0, 8)}...)</span>
+                  <div class="external-pub-card external-pub-placeholder">
+                    <div class="external-pub-title">External Publication</div>
+                    <div class="external-pub-description">Reference ID: ${pub.externalPublicationId?.substring(0, 12)}...</div>
                   </div>
                 `;
               }
@@ -1593,23 +1677,76 @@ export class ArticleDetail {
         <style>
           .external-publications-section {
             margin: 1.5rem 0;
-            padding: 1rem;
+            padding: 1.25rem;
             background: #f8f9fa;
             border-radius: 8px;
             border-left: 4px solid #1976d2;
           }
 
           .external-pubs-title {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 600;
-            margin: 0 0 0.75rem 0;
+            margin: 0 0 1rem 0;
             color: #333;
           }
 
           .external-pubs-list {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 0.75rem;
+          }
+
+          .external-pub-card {
+            display: block;
+            padding: 1rem;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+          }
+
+          .external-pub-card:hover {
+            border-color: #1976d2;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+            transform: translateY(-1px);
+          }
+
+          .external-pub-card.external-pub-placeholder {
+            opacity: 0.7;
+            cursor: default;
+          }
+
+          .external-pub-card.external-pub-placeholder:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: #dee2e6;
+          }
+
+          .external-pub-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+          }
+
+          .external-pub-domain {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.4rem;
+            font-family: 'Courier New', monospace;
+          }
+
+          .external-pub-description {
+            font-size: 0.9rem;
+            color: #495057;
+            line-height: 1.4;
+          }
+
+          .external-pub-card.external-pub-placeholder .external-pub-title {
+            color: #6c757d;
           }
 
           .external-pub-badge {
@@ -1675,6 +1812,96 @@ export class ArticleDetail {
       console.error('Failed to parse external publications:', error);
       return '';
     }
+  }
+
+  /**
+   * Render release selector UI (compact, expandable)
+   */
+  renderVersionSelector() {
+    if (!this.versionsData || !this.versionsData.versions || this.versionsData.total <= 1) {
+      return '';
+    }
+
+    const versions = this.versionsData.versions;
+    const currentVersionData = versions.find(v => v.number === this.currentVersion);
+    const isLatest = this.currentVersion === this.versionsData.latest;
+
+    return `
+      <div class="release-selector-compact">
+        <button class="release-selector-toggle" id="release-toggle">
+          <span class="release-current">Release ${this.currentVersion} of ${this.versionsData.total}</span>
+          ${isLatest ? '<span class="release-badge-latest">Latest</span>' : ''}
+          <span class="release-toggle-icon">▼</span>
+        </button>
+        <div class="release-dropdown-panel" id="release-panel" style="display: none;">
+          <div class="release-list">
+            ${versions.slice().reverse().map(v => `
+              <button
+                class="release-item ${v.number === this.currentVersion ? 'release-item-active' : ''}"
+                data-version="${v.number}"
+              >
+                <div class="release-item-header">
+                  <span class="release-item-number">Release ${v.number}</span>
+                  ${v.number === this.versionsData.latest ? '<span class="release-badge-latest-small">Latest</span>' : ''}
+                </div>
+                <div class="release-item-date">${this.formatDate(v.createdAt)}</div>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Attach release selector event listeners
+   */
+  attachVersionListeners() {
+    const toggleBtn = document.getElementById('release-toggle');
+    const panel = document.getElementById('release-panel');
+    const releaseItems = document.querySelectorAll('.release-item');
+
+    if (toggleBtn && panel) {
+      // Toggle dropdown on button click
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = panel.style.display === 'block';
+        panel.style.display = isOpen ? 'none' : 'block';
+        toggleBtn.querySelector('.release-toggle-icon').textContent = isOpen ? '▼' : '▲';
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!toggleBtn.contains(e.target) && !panel.contains(e.target)) {
+          panel.style.display = 'none';
+          toggleBtn.querySelector('.release-toggle-icon').textContent = '▼';
+        }
+      });
+    }
+
+    // Attach click handlers to release items
+    releaseItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        const version = parseInt(item.dataset.version);
+        this.switchVersion(version);
+      });
+    });
+  }
+
+  /**
+   * Switch to a different version
+   */
+  switchVersion(version) {
+    if (version < 1 || version > this.versionsData.total) {
+      return;
+    }
+
+    // Update URL with version parameter
+    const newUrl = `#/article/${this.currentSlug}?v=${version}`;
+    window.location.hash = newUrl;
+
+    // Trigger re-render
+    this.router.handleRoute();
   }
 
   /**

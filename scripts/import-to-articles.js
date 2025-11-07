@@ -420,15 +420,44 @@ class CrimRXivImporter {
       console.log(`\n📄 Processing: ${pub.title}`);
       console.log(`   Slug: ${pub.slug}`);
 
-      const articleDir = path.join(CONFIG.ARTICLES_DIR, pub.slug);
-      await fs.ensureDir(articleDir);
-
-      // Sort releases by createdAt to get version numbers (1, 2, 3...)
+      // FILTER: Skip drafts and low-quality articles
+      // Check if article has releases (published versions)
       const releases = (pub.releases || []).sort((a, b) =>
         new Date(a.createdAt) - new Date(b.createdAt)
       );
+      const hasReleases = releases.length > 0;
 
-      console.log(`   Releases: ${releases.length || 0}`);
+      // Check if article has authors with valid names
+      const authors = pub.attributions || [];
+      const validAuthors = authors.filter(a => a.user?.fullName || a.name);
+      const hasAuthors = validAuthors.length > 0;
+
+      // Skip if:
+      // 1. No releases (never published) OR
+      // 2. No valid authors (incomplete/draft) - UNLESS it's a news article
+      //    News articles have attributions.length = 0 OR all attributions have no names
+      const isNewsArticle = pub.title && (
+        pub.title.includes('CrimRxiv') ||
+        pub.title.includes('Consortium') ||
+        pub.title.includes('Crimversations')
+      );
+
+      if (!hasReleases) {
+        console.log(`   ⏭️  SKIPPED: No releases (draft)`);
+        this.stats.unchanged++;
+        return;
+      }
+
+      if (!hasAuthors && !isNewsArticle) {
+        console.log(`   ⏭️  SKIPPED: No authors (incomplete/draft)`);
+        this.stats.unchanged++;
+        return;
+      }
+
+      const articleDir = path.join(CONFIG.ARTICLES_DIR, pub.slug);
+      await fs.ensureDir(articleDir);
+
+      console.log(`   Releases: ${releases.length}`);
 
       // Process all releases
       const versionManifest = [];
@@ -485,6 +514,15 @@ class CrimRXivImporter {
 
       const prosemirrorContent = textResponse?.body || null;
       const contentText = this.extractTextFromProseMirror(prosemirrorContent);
+
+      // Skip if article has minimal content (< 50 words)
+      const wordCount = contentText ? contentText.trim().split(/\s+/).length : 0;
+      if (wordCount < 50) {
+        console.log(`   ⏭️  SKIPPED: Insufficient content (${wordCount} words, need 50+)`);
+        this.stats.unchanged++;
+        return;
+      }
+
       const abstractText = this.extractAbstractFromProseMirror(prosemirrorContent);
       const files = this.extractFilesFromProseMirror(prosemirrorContent);
 
@@ -495,6 +533,7 @@ class CrimRXivImporter {
       const article = {
         article_id: pub.id,
         slug: pub.slug,
+        version_number: releases.length || 1,  // Track latest version number
         title: pub.title,
         description: pub.description || '',
         abstract: abstractText || pub.description || '',
@@ -506,7 +545,7 @@ class CrimRXivImporter {
         content_text: contentText,
         content_prosemirror: prosemirrorContent ? JSON.stringify(prosemirrorContent) : null,
         authors_json: JSON.stringify(pub.attributions?.map(a => ({
-          name: a.name,
+          name: a.user?.fullName || a.name || null,
           affiliation: a.affiliation,
           orcid: a.orcid,
           is_corresponding: a.isCorresponding || false
@@ -593,17 +632,27 @@ class CrimRXivImporter {
       });
 
       // Extract pubs array from response body
+      // Check if response is an error
+      if (response.body && response.body.message) {
+        console.error('\n❌ PubPub API Error:');
+        console.error('Name:', response.body.name);
+        console.error('Message:', response.body.message);
+        console.error('Details:', JSON.stringify(response.body.details, null, 2));
+        throw new Error(`PubPub API Error: ${response.body.message}`);
+      }
+
       const pubs = response.body || [];
 
       if (!pubs || pubs.length === 0) {
+        console.log('⚠️  No more publications to fetch');
         hasMore = false;
         break;
       }
 
-      console.log(`📦 Batch: ${offset + 1} - ${offset + pubs.length} of ???`);
+      console.log(`📦 Batch: ${offset + 1} - ${offset + pubs.length} (${pubs.length} in this batch)`);
 
-      // Process pubs in parallel (3 at a time)
-      const CONCURRENCY = 3;
+      // Process pubs in parallel (5 at a time)
+      const CONCURRENCY = 5;
       for (let i = 0; i < pubs.length; i += CONCURRENCY) {
         const chunk = pubs.slice(i, i + CONCURRENCY);
 

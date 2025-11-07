@@ -10,6 +10,7 @@ import { Router } from './lib/router.js';
 import { Homepage } from './components/homepage.js';
 import { ArticleDetail } from './components/article-detail.js';
 import { ArticlesBrowse } from './components/articles-browse.js';
+import { News } from './components/news.js';
 import { Search } from './components/search.js';
 import { Consortium } from './components/consortium.js';
 import { MemberDetail } from './components/member-detail.js';
@@ -23,6 +24,7 @@ export class CrimRXivApp {
       homepage: null,
       articleDetail: null,
       articlesBrowse: null,
+      news: null,
       search: null,
       consortium: null,
       memberDetail: null
@@ -59,6 +61,7 @@ export class CrimRXivApp {
       this.components.homepage = new Homepage(this.db, this.router);
       this.components.articleDetail = new ArticleDetail(this.db, this.router, this.manifestLoader);
       this.components.articlesBrowse = new ArticlesBrowse(this.db, this.router);
+      this.components.news = new News(this.db, this.router);
       this.components.search = new Search(this.db, this.router);
       this.components.consortium = new Consortium(this.db, this.router);
       this.components.memberDetail = new MemberDetail(this.db, this.router, this.components.consortium);
@@ -129,6 +132,23 @@ export class CrimRXivApp {
       this.updatePageTitle(`${titles[filterType] || 'Articles'} - CrimRXiv Archive`);
     } catch (error) {
       console.error(`❌ Articles browse error for ${filterType}:`, error);
+      this.showError(error.message);
+    }
+  }
+
+  /**
+   * Show news page
+   */
+  async showNews() {
+    try {
+      // Show loading indicator
+      this.showLoadingIndicator();
+
+      const html = await this.components.news.render();
+      this.updateView(html);
+      this.updatePageTitle('News - CrimRXiv Archive');
+    } catch (error) {
+      console.error('❌ News page error:', error);
       this.showError(error.message);
     }
   }

@@ -66,11 +66,18 @@ export default defineConfig({
     strictPort: false,
     open: false,
     host: 'localhost',
+    fs: {
+      // Allow serving files from data directory (for local article testing)
+      allow: ['..']
+    }
   },
 
   preview: {
     port: 4174,
   },
+
+  // Public directory serves static assets
+  publicDir: 'public',
 
   // Optimize dependencies - exclude DuckDB from bundling
   optimizeDeps: {

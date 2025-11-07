@@ -12,8 +12,14 @@
  * - .env with ARWEAVE_WALLET_PATH (JWK wallet file)
  * - .env with ARNS_PROCESS_ID (your ArNS name's process ID)
  *
+ * Optional:
+ * - .env with ARNS_ROOT_NAME (default: 'crimrxiv-demo')
+ * - .env with ARNS_TTL_SECONDS (default: 60 - cache duration in seconds)
+ * - .env with BUNDLE_RESOURCES=true (bundle WASM+data instead of loading externally)
+ *
  * Usage:
- *   npm run deploy
+ *   npm run deploy                    # Load WASM/data from external ArNS
+ *   BUNDLE_RESOURCES=true npm run deploy  # Self-contained (bundle everything)
  */
 
 import 'dotenv/config';
@@ -37,6 +43,7 @@ class Deployer {
     this.walletPath = process.env.ARWEAVE_WALLET_PATH;
     this.arnsProcessId = process.env.ARNS_PROCESS_ID;
     this.arnsRootName = process.env.ARNS_ROOT_NAME || 'crimrxiv-demo';
+    this.arnsTtlSeconds = parseInt(process.env.ARNS_TTL_SECONDS || '60', 10);
 
     if (!this.walletPath) {
       throw new Error('ARWEAVE_WALLET_PATH not set in .env file');
@@ -56,11 +63,22 @@ class Deployer {
     console.log('='.repeat(70) + '\n');
 
     try {
-      console.log('Running: npm run build:prod (excludes external resources)\n');
-      execSync('npm run build:prod', {
-        stdio: 'inherit',
-        cwd: path.join(__dirname, '..')
-      });
+      // Check if we should bundle resources or load externally
+      const bundleResources = process.env.BUNDLE_RESOURCES === 'true';
+
+      if (bundleResources) {
+        console.log('Running: npm run build (includes WASM + data for self-contained deployment)\n');
+        execSync('npm run build', {
+          stdio: 'inherit',
+          cwd: path.join(__dirname, '..')
+        });
+      } else {
+        console.log('Running: npm run build:prod (excludes external resources)\n');
+        execSync('npm run build:prod', {
+          stdio: 'inherit',
+          cwd: path.join(__dirname, '..')
+        });
+      }
       console.log('\n✅ Build complete!\n');
     } catch (error) {
       console.error('❌ Build failed:', error.message);
@@ -105,19 +123,70 @@ class Deployer {
         }
       });
 
+      // Debug: Show upload result structure
+      console.log('\n📋 Debug - Upload Result Keys:', Object.keys(uploadResult));
+      if (uploadResult.manifestResponse) {
+        console.log('📋 Debug - Manifest Response Keys:', Object.keys(uploadResult.manifestResponse));
+        console.log('📋 Debug - Manifest ID:', uploadResult.manifestResponse.id);
+      }
+
       // Extract manifest ID from manifestResponse
       const manifestId = uploadResult.manifestResponse?.id;
 
       if (!manifestId) {
         console.error('❌ No manifest ID returned');
-        console.error('Upload result:', JSON.stringify(uploadResult, null, 2));
+        console.error('Full upload result:', JSON.stringify(uploadResult, null, 2));
         throw new Error('No manifest TX ID returned from upload');
       }
 
       console.log('\n✅ Upload complete!');
       console.log(`📍 Manifest ID: ${manifestId}`);
       console.log(`🔗 Gateway URL: https://arweave.net/${manifestId}`);
-      console.log(`📊 Files uploaded: ${uploadResult.fileResponses?.length || 'N/A'}\n`);
+      console.log(`🔗 Test index: https://arweave.net/${manifestId}/index.html`);
+      console.log(`📊 Files uploaded: ${uploadResult.fileResponses?.length || 'N/A'}`);
+
+      // Wait a moment for Turbo to settle
+      console.log(`\n⏳ Waiting 5 seconds for Turbo upload to settle...`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
+      // Verify manifest structure
+      console.log(`\n🔍 Verifying manifest and files...`);
+      try {
+        const manifestResponse = await fetch(`https://arweave.net/raw/${manifestId}`);
+        const manifestData = await manifestResponse.json();
+
+        console.log('📋 Manifest type:', manifestData.manifest);
+        console.log('📋 Manifest version:', manifestData.version);
+        console.log('📋 Has index:', !!manifestData.index);
+        console.log('📋 Index path:', manifestData.index?.path);
+        console.log('📋 Total paths:', Object.keys(manifestData.paths || {}).length);
+
+        if (!manifestData.index || !manifestData.index.path) {
+          console.warn('⚠️  WARNING: Manifest missing index field! This may cause issues.');
+        }
+
+        // Verify index.html is accessible
+        if (manifestData.index?.path && manifestData.paths[manifestData.index.path]) {
+          const indexTxId = manifestData.paths[manifestData.index.path].id;
+          console.log(`\n🔍 Verifying index.html (${indexTxId})...`);
+
+          const indexResponse = await fetch(`https://arweave.net/${indexTxId}`);
+          const indexContent = await indexResponse.text();
+
+          if (indexContent.includes('<!DOCTYPE html>') && !indexContent.includes('302 Redirect')) {
+            console.log('✅ Index.html is accessible and valid');
+          } else {
+            console.error('❌ Index.html returned unexpected content (might be 302 redirect)');
+            console.error('   This usually means files are not yet available on Arweave');
+            console.error('   Wait a few minutes and check the gateway URL manually');
+          }
+        }
+      } catch (error) {
+        console.warn('⚠️  Could not verify manifest:', error.message);
+        console.warn('   Files might not be available yet. Check manually after a few minutes.');
+      }
+
+      console.log(`\n⚠️  IMPORTANT: Test the gateway URL above before it propagates to ArNS!\n`);
 
       return manifestId;
 
@@ -163,18 +232,19 @@ class Deployer {
       console.log(`ArNS Name: ${this.arnsRootName}`);
       console.log(`ArNS Process ID: ${this.arnsProcessId}`);
       console.log(`New Target ID: ${manifestId}`);
+      console.log(`TTL: ${this.arnsTtlSeconds} seconds (${Math.round(this.arnsTtlSeconds / 60)} minutes)`);
       console.log('Updating ArNS root record (@)...\n');
 
       // Update the root ArNS record (undername '@') to point to new manifest
       const result = await ant.setRecord({
         undername: '@',           // Root record (no subdomain)
         transactionId: manifestId,
-        ttlSeconds: 3600          // 1 hour TTL
+        ttlSeconds: this.arnsTtlSeconds
       });
 
       console.log('✅ ArNS update transaction submitted!');
       console.log(`📍 Result:`, result);
-      console.log('⏱️  Changes will propagate within ~5-10 minutes\n');
+      console.log(`⏱️  Cache TTL: ${this.arnsTtlSeconds}s - Changes propagate in ~5-10 minutes\n`);
 
       return result;
 

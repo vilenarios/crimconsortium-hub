@@ -88,21 +88,8 @@ export class Homepage {
             <div class="hero-content">
               <h1 class="hero-title">CrimRXiv Archive</h1>
               <p class="hero-description">
-                A permanent, decentralized archive for criminology research from leading academic institutions worldwide.
+                A permanent, decentralized archive of criminology research—stored forever on the Arweave blockchain.
               </p>
-
-              <!-- Search Bar -->
-              <div class="search-container">
-                <form class="search-form" onsubmit="event.preventDefault(); window.router.goToSearch(this.querySelector('input').value);">
-                  <input
-                    type="text"
-                    class="search-input"
-                    placeholder="Search publications by title, author, or keyword..."
-                    name="q"
-                  >
-                  <button type="submit" class="search-button">Search</button>
-                </form>
-              </div>
 
               <div class="stats-row">
                 <div class="stat-item">
@@ -118,15 +105,26 @@ export class Homepage {
           </div>
         </section>
 
-        <!-- Consortium Description -->
+        <!-- About This Archive -->
         <section class="consortium-description">
           <div class="container">
             <div class="description-content">
+              <h2 class="about-title">About This Archive</h2>
               <p class="description-text">
-                <strong>CrimRXiv is a permanent open-access archive.</strong> It will always be free for authors and readers.
-                This is a collaborative effort by the criminology research community. Our membership program brings together
-                leading institutions to advance open science and preserve research permanently on the decentralized web.
-                Follow us on <a href="https://linktr.ee/crimconsortium" target="_blank" class="social-link">social media</a>.
+                This archive provides permanent preservation of research from <a href="https://www.crimrxiv.com" target="_blank" class="inline-link">CrimRXiv.com</a>—criminology's
+                global open access hub and repository. A service of <a href="https://www.manchester.ac.uk" target="_blank" class="inline-link">University of Manchester</a> and
+                Knowledge Futures, powered by the <a href="https://www.crimrxiv.com/consortium" target="_blank" class="inline-link">CrimRXiv Consortium</a>.
+              </p>
+              <p class="description-text">
+                All content is stored permanently on Arweave, ensuring research remains accessible forever. Submissions follow
+                CrimRXiv's <a href="https://doi.org/10.21428/cb6ab371.389f4506" target="_blank" class="inline-link">Moderation Policy</a>
+                and support open criminology research worldwide.
+              </p>
+              <p class="description-text">
+                <strong>Get Involved:</strong>
+                <a href="https://www.joinit.org/o/crimrxiv-consortium" target="_blank" class="inline-link">Join the Consortium</a> ·
+                <a href="mailto:crimrxiv@manchester.ac.uk" class="inline-link">Contact Us</a> ·
+                <a href="https://linktr.ee/crimconsortium" target="_blank" class="inline-link">Follow on Social Media</a>
               </p>
             </div>
           </div>

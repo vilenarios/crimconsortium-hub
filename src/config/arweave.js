@@ -2,13 +2,29 @@
  * Arweave Configuration
  * Centralizes all external resource URLs for development and production
  *
- * Development: Uses local files from localhost
- * Production: Dynamically uses current gateway (works across all 600+ ar.io gateways)
+ * Testing Modes (controlled via URL params):
+ * 1. Full Local (default dev):  ?mode=local or npm run dev
+ *    - App, Parquet, Articles all from localhost
+ * 2. Hybrid Testing:  ?mode=hybrid or npm run preview
+ *    - App from localhost, Parquet+Articles from Arweave
+ * 3. Full Production: Deployed on Arweave
+ *    - App, Parquet, Articles all from Arweave
  */
 
 // Detect development vs production environment
 const isDev = window.location.hostname === 'localhost' ||
               window.location.hostname === '127.0.0.1';
+
+// Check if we should use remote data (hybrid mode)
+// Can be forced via URL param: ?mode=hybrid or ?remote=true
+const urlParams = new URLSearchParams(window.location.search);
+const useRemoteData = urlParams.get('mode') === 'hybrid' ||
+                      urlParams.get('remote') === 'true' ||
+                      window.location.port === '4174'; // Preview server defaults to hybrid
+
+// NOTE: WASM files CANNOT be loaded cross-origin in Web Workers due to CORS
+// So even in hybrid mode on localhost, we must use local WASM files
+const useRemoteWasm = !isDev; // Only use remote WASM when actually deployed on Arweave
 
 /**
  * Get the base gateway domain from current hostname
@@ -63,10 +79,12 @@ const ARNS_CONFIG = {
  *   - App on crimrxiv-demo.ar.io → Data from data_crimrxiv-demo.ar.io
  *   - App on crimrxiv-demo.arweave.net → Data from data_crimrxiv-demo.arweave.net
  *   - App on crimrxiv-demo.permagate.io → Data from data_crimrxiv-demo.permagate.io
+ *   - App on localhost (hybrid mode) → Data from data_crimrxiv-demo.arweave.net
  */
 function getParquetDataUrl() {
-  const protocol = getProtocol();
-  const gateway = getGatewayDomain();
+  // On localhost in hybrid mode, use arweave.net gateway
+  const gateway = isDev ? 'arweave.net' : getGatewayDomain();
+  const protocol = isDev ? 'https' : getProtocol();
 
   // ArNS undername points directly to the parquet file
   return `${protocol}://${ARNS_CONFIG.dataUndername}_${ARNS_CONFIG.rootName}.${gateway}`;
@@ -79,6 +97,8 @@ function getParquetDataUrl() {
  *   - App on crimrxiv-demo.ar.io → WASM from duck-db-wasm.ar.io
  *   - App on crimrxiv-demo.arweave.net → WASM from duck-db-wasm.arweave.net
  *   - App on crimrxiv-demo.permagate.io → WASM from duck-db-wasm.permagate.io
+ *
+ * NOTE: In production only! Localhost always uses local WASM (CORS restriction)
  */
 function getDuckDBWasmUrls() {
   const protocol = getProtocol();
@@ -112,6 +132,9 @@ const PRODUCTION_CONFIG = {
 
   // Gateway URL
   gateway: `${getProtocol()}://${getGatewayDomain()}`,
+
+  // Mode flag (always use remote articles in production)
+  useRemoteArticles: true,
 };
 
 /**
@@ -126,12 +149,21 @@ function getLocalPort() {
  * Development Configuration
  * Uses local files served by Vite dev server or custom preview server
  * Dynamically detects the current port (3005 for dev, 4174 for preview)
+ *
+ * Supports two sub-modes:
+ * - Full Local (port 3005): All resources from localhost
+ * - Hybrid (port 4174): Parquet + Articles from Arweave, WASM + App from localhost
+ *
+ * IMPORTANT: WASM files MUST be local on localhost due to CORS restrictions
+ * with Web Workers. Only parquet and articles can be loaded remotely.
  */
 const DEV_CONFIG = {
-  // Parquet metadata file (local)
-  parquet: `http://localhost:${getLocalPort()}/data/metadata.parquet`,
+  // Parquet metadata file (local or remote based on mode)
+  parquet: useRemoteData
+    ? getParquetDataUrl()
+    : `http://localhost:${getLocalPort()}/data/metadata.parquet`,
 
-  // DuckDB-WASM bundles (local)
+  // DuckDB-WASM bundles (ALWAYS local on localhost - CORS requirement)
   wasm: {
     mvpModule: `http://localhost:${getLocalPort()}/duckdb/duckdb-mvp.wasm`,
     mvpWorker: `http://localhost:${getLocalPort()}/duckdb/duckdb-browser-mvp.worker.js`,
@@ -139,11 +171,19 @@ const DEV_CONFIG = {
     ehWorker: `http://localhost:${getLocalPort()}/duckdb/duckdb-browser-eh.worker.js`,
   },
 
-  // Base URL for article manifests (local)
+  // Base URL for article content
+  // In full local mode: /data/articles/{slug}/
+  // In hybrid mode: Arweave manifest URLs
+  articlesBase: `http://localhost:${getLocalPort()}/data/articles`,
+
+  // Base URL for article manifests (not used in full local mode)
   manifestBase: `http://localhost:${getLocalPort()}/manifests`,
 
-  // Local gateway (not used in dev)
+  // Local gateway
   gateway: `http://localhost:${getLocalPort()}`,
+
+  // Mode flag
+  useRemoteArticles: useRemoteData,
 };
 
 /**
@@ -162,12 +202,10 @@ export function getManifestUrl(manifestTxId) {
     throw new Error('Manifest TX ID is required');
   }
 
-  if (isDev) {
-    // In development, manifests are in local /manifests folder
-    return `${ARWEAVE_CONFIG.manifestBase}/${manifestTxId}.json`;
-  } else {
-    const protocol = getProtocol();
-    const gateway = getGatewayDomain();
+  // In hybrid mode or production, load from Arweave
+  if (useRemoteData || !isDev) {
+    const protocol = isDev ? 'https' : getProtocol();
+    const gateway = isDev ? 'arweave.net' : getGatewayDomain();
 
     // SPECIAL CASE: ar.io gateway cannot resolve transaction IDs, only ArNS names
     // Use arweave.net for manifests when viewing from ar.io
@@ -179,6 +217,9 @@ export function getManifestUrl(manifestTxId) {
     // Use /raw/ prefix to get manifest JSON instead of index content
     return `${protocol}://${gateway}/raw/${manifestTxId}`;
   }
+
+  // In full local mode only, use local manifests folder
+  return `${ARWEAVE_CONFIG.manifestBase}/${manifestTxId}.json`;
 }
 
 /**
@@ -192,12 +233,10 @@ export function getAttachmentUrl(manifestTxId, path) {
     throw new Error('Both manifestTxId and path are required');
   }
 
-  if (isDev) {
-    // In development, use local manifest structure
-    return `${ARWEAVE_CONFIG.manifestBase}/${manifestTxId}/${path}`;
-  } else {
-    const protocol = getProtocol();
-    const gateway = getGatewayDomain();
+  // In hybrid mode or production, load from Arweave
+  if (useRemoteData || !isDev) {
+    const protocol = isDev ? 'https' : getProtocol();
+    const gateway = isDev ? 'arweave.net' : getGatewayDomain();
 
     // SPECIAL CASE: ar.io gateway cannot resolve transaction IDs
     // Use arweave.net for attachments when viewing from ar.io
@@ -208,6 +247,9 @@ export function getAttachmentUrl(manifestTxId, path) {
     // For all other gateways, use the current gateway
     return `${protocol}://${gateway}/${manifestTxId}/${path}`;
   }
+
+  // In full local mode only, use local manifest structure
+  return `${ARWEAVE_CONFIG.manifestBase}/${manifestTxId}/${path}`;
 }
 
 /**
@@ -219,13 +261,47 @@ export function isDevelopment() {
 }
 
 /**
+ * Get local article content URL (by slug, for full local testing)
+ * @param {string} slug - Article slug
+ * @param {string} filename - File within article directory (e.g., "content.json", "article.md")
+ * @returns {string} Full URL to local article file
+ */
+export function getLocalArticleUrl(slug, filename) {
+  if (!slug || !filename) {
+    throw new Error('Both slug and filename are required');
+  }
+
+  return `${ARWEAVE_CONFIG.articlesBase}/${slug}/${filename}`;
+}
+
+/**
+ * Check if we're using remote data sources
+ * @returns {boolean}
+ */
+export function isUsingRemoteData() {
+  return !isDev || useRemoteData;
+}
+
+/**
+ * Get current testing mode
+ * @returns {string} 'local' | 'hybrid' | 'production'
+ */
+export function getTestingMode() {
+  if (!isDev) return 'production';
+  return useRemoteData ? 'hybrid' : 'local';
+}
+
+/**
  * Get environment info for debugging
  * @returns {object} Environment configuration details
  */
 export function getEnvironmentInfo() {
   return {
     environment: isDev ? 'development' : 'production',
+    testingMode: getTestingMode(),
+    useRemoteData: isUsingRemoteData(),
     hostname: window.location.hostname,
+    port: window.location.port,
     gateway: isDev ? 'localhost' : getGatewayDomain(),
     protocol: getProtocol(),
     config: ARWEAVE_CONFIG,

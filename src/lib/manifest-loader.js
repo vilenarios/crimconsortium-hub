@@ -19,12 +19,22 @@
  * }
  */
 
-import { getManifestUrl, getAttachmentUrl, isDevelopment } from '../config/arweave.js';
+import {
+  getManifestUrl,
+  getAttachmentUrl,
+  getLocalArticleUrl,
+  isDevelopment,
+  isUsingRemoteData,
+  getTestingMode
+} from '../config/arweave.js';
 
 export class ManifestLoader {
   constructor() {
     this.manifestCache = new Map();
     this.contentCache = new Map();
+
+    // Log testing mode on initialization
+    console.log(`📦 ManifestLoader initialized in ${getTestingMode()} mode`);
   }
 
   /**
@@ -297,12 +307,26 @@ export class ManifestLoader {
   /**
    * Get full article data (metadata + content + attachments)
    * This is a convenience method that combines metadata from parquet with manifest content
+   *
+   * In full local mode: Loads from /data/articles/{slug}/ by slug
+   * In hybrid/production: Loads from Arweave by manifest_tx_id
+   *
    * @param {object} metadata - Article metadata from ParquetDB
    * @returns {Promise<object>} Full article data
    */
   async getFullArticle(metadata) {
-    if (!metadata || !metadata.manifest_tx_id) {
-      throw new Error('Article metadata or manifest_tx_id missing');
+    if (!metadata) {
+      throw new Error('Article metadata missing');
+    }
+
+    // In full local mode, load directly from /data/articles/{slug}/
+    if (isDevelopment() && !isUsingRemoteData()) {
+      return this.getFullArticleLocal(metadata);
+    }
+
+    // In hybrid or production mode, load from Arweave manifests
+    if (!metadata.manifest_tx_id) {
+      throw new Error('Article manifest_tx_id missing (required for remote loading)');
     }
 
     try {
@@ -329,6 +353,195 @@ export class ManifestLoader {
     } catch (error) {
       console.error(`❌ Failed to get full article for ${metadata.slug}:`, error);
       throw error;
+    }
+  }
+
+  /**
+   * Get full article from local files (by slug)
+   * Used in full local testing mode
+   * @param {object} metadata - Article metadata from ParquetDB
+   * @returns {Promise<object>} Full article data
+   */
+  async getFullArticleLocal(metadata) {
+    const slug = metadata.slug;
+    console.log(`📂 Loading article locally: ${slug}`);
+
+    try {
+      // Load content.json (ProseMirror doc)
+      let prosemirrorDoc = null;
+      try {
+        const contentUrl = getLocalArticleUrl(slug, 'content.json');
+        const response = await fetch(contentUrl);
+        if (response.ok) {
+          prosemirrorDoc = await response.json();
+          console.log(`✅ Loaded local content.json for ${slug}`);
+        }
+      } catch (error) {
+        console.warn(`⚠️  No content.json for ${slug}:`, error.message);
+      }
+
+      // Load metadata.json (optional, can enrich parquet data)
+      let localMetadata = null;
+      try {
+        const metadataUrl = getLocalArticleUrl(slug, 'metadata.json');
+        const response = await fetch(metadataUrl);
+        if (response.ok) {
+          localMetadata = await response.json();
+          console.log(`✅ Loaded local metadata.json for ${slug}`);
+        }
+      } catch (error) {
+        console.warn(`⚠️  No metadata.json for ${slug}:`, error.message);
+      }
+
+      // Merge metadata (local file takes precedence)
+      const mergedMetadata = {
+        ...metadata,
+        ...(localMetadata || {}),
+      };
+
+      return {
+        ...mergedMetadata,
+        content_prosemirror: prosemirrorDoc,
+        attachments: [], // Local attachments not supported yet
+        _parquetMetadata: metadata,
+        _loadedFrom: 'local'
+      };
+    } catch (error) {
+      console.error(`❌ Failed to load local article ${slug}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get versions manifest (versions.json)
+   * @param {string} manifestTxId - Transaction ID of the manifest
+   * @param {string} slug - Article slug (needed for local loading)
+   * @returns {Promise<object|null>} Versions manifest or null if not available
+   */
+  async getVersionsManifest(manifestTxId, slug = null) {
+    const cacheKey = `${manifestTxId}:versions`;
+
+    // Check cache
+    if (this.contentCache.has(cacheKey)) {
+      console.log(`📋 Using cached versions manifest: ${manifestTxId}`);
+      return this.contentCache.get(cacheKey);
+    }
+
+    try {
+      let versionsUrl;
+
+      // In full local mode, load from local files
+      if (isDevelopment() && !isUsingRemoteData() && slug) {
+        versionsUrl = getLocalArticleUrl(slug, 'versions.json');
+        console.log(`📋 Loading versions manifest from local: ${versionsUrl}`);
+      } else {
+        versionsUrl = getAttachmentUrl(manifestTxId, 'versions.json');
+        console.log(`📋 Loading versions manifest from: ${versionsUrl}`);
+      }
+
+      const response = await fetch(versionsUrl);
+      if (!response.ok) {
+        console.warn(`versions.json not found for ${manifestTxId}`);
+        return null;
+      }
+
+      const versionsData = await response.json();
+
+      // Cache the versions manifest
+      this.contentCache.set(cacheKey, versionsData);
+
+      console.log(`✅ Versions manifest loaded: ${versionsData.total} version(s)`);
+      return versionsData;
+    } catch (error) {
+      console.warn(`⚠️ No versions manifest for ${manifestTxId}:`, error.message);
+      return null;
+    }
+  }
+
+  /**
+   * Get version-specific ProseMirror content
+   * @param {string} manifestTxId - Transaction ID of the manifest
+   * @param {number} versionNumber - Version number (1, 2, etc.)
+   * @param {string} slug - Article slug (needed for local loading)
+   * @returns {Promise<object|null>} ProseMirror JSON document or null
+   */
+  async getVersionProseMirror(manifestTxId, versionNumber, slug = null) {
+    const cacheKey = `${manifestTxId}:version${versionNumber}:prosemirror`;
+
+    // Check cache
+    if (this.contentCache.has(cacheKey)) {
+      console.log(`📄 Using cached version ${versionNumber} ProseMirror: ${manifestTxId}`);
+      return this.contentCache.get(cacheKey);
+    }
+
+    try {
+      let contentUrl;
+
+      // In full local mode, load from local files
+      if (isDevelopment() && !isUsingRemoteData() && slug) {
+        contentUrl = getLocalArticleUrl(slug, `${versionNumber}/content.json`);
+        console.log(`📄 Loading version ${versionNumber} ProseMirror from local: ${contentUrl}`);
+      } else {
+        const contentPath = `${versionNumber}/content.json`;
+        contentUrl = getAttachmentUrl(manifestTxId, contentPath);
+        console.log(`📄 Loading version ${versionNumber} ProseMirror from: ${contentUrl}`);
+      }
+
+      const response = await fetch(contentUrl);
+      if (!response.ok) {
+        console.warn(`Version ${versionNumber} content.json not found`);
+        return null;
+      }
+
+      const prosemirrorDoc = await response.json();
+
+      // Cache the content
+      this.contentCache.set(cacheKey, prosemirrorDoc);
+
+      console.log(`✅ Version ${versionNumber} ProseMirror loaded`);
+      return prosemirrorDoc;
+    } catch (error) {
+      console.error(`❌ Failed to load version ${versionNumber} ProseMirror:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get version-specific metadata
+   * @param {string} manifestTxId - Transaction ID of the manifest
+   * @param {number} versionNumber - Version number (1, 2, etc.)
+   * @returns {Promise<object|null>} Version metadata or null
+   */
+  async getVersionMetadata(manifestTxId, versionNumber) {
+    const cacheKey = `${manifestTxId}:version${versionNumber}:metadata`;
+
+    // Check cache
+    if (this.contentCache.has(cacheKey)) {
+      console.log(`📄 Using cached version ${versionNumber} metadata: ${manifestTxId}`);
+      return this.contentCache.get(cacheKey);
+    }
+
+    try {
+      const metadataPath = `${versionNumber}/metadata.json`;
+      const metadataUrl = getAttachmentUrl(manifestTxId, metadataPath);
+      console.log(`📄 Loading version ${versionNumber} metadata from: ${metadataUrl}`);
+
+      const response = await fetch(metadataUrl);
+      if (!response.ok) {
+        console.warn(`Version ${versionNumber} metadata.json not found`);
+        return null;
+      }
+
+      const metadata = await response.json();
+
+      // Cache the content
+      this.contentCache.set(cacheKey, metadata);
+
+      console.log(`✅ Version ${versionNumber} metadata loaded`);
+      return metadata;
+    } catch (error) {
+      console.error(`❌ Failed to load version ${versionNumber} metadata:`, error);
+      return null;
     }
   }
 

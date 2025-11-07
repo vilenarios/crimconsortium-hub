@@ -15,11 +15,12 @@ export class Router {
     this.currentRoute = null;
     this.routes = {
       home: /^#?\/?$/,
-      article: /^#?\/article\/([^/]+)\/?$/,
-      articles: /^#?\/articles\/([^/]+)\/?$/,
+      article: /^#?\/article\/([^/?#]+)/,  // Stop at ?, #, or / to exclude query params
+      articles: /^#?\/articles\/([^/?#]+)/,
+      news: /^#?\/news\/?$/,
       search: /^#?\/search(\?.*)?$/,
       consortium: /^#?\/consortium\/?$/,
-      member: /^#?\/member\/([^/]+)\/?$/
+      member: /^#?\/member\/([^/?#]+)/
     };
 
     // Listen for hash changes
@@ -56,6 +57,13 @@ export class Router {
         const filterType = articlesMatch[1]; // 'all', 'preprints', or 'postprints'
         await this.app.showArticlesBrowse(filterType);
         this.currentRoute = 'articles';
+        return;
+      }
+
+      // News
+      if (this.routes.news.test(hash)) {
+        await this.app.showNews();
+        this.currentRoute = 'news';
         return;
       }
 

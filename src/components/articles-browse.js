@@ -45,24 +45,53 @@ export class ArticlesBrowse {
   }
 
   /**
-   * Filter articles by collection type
+   * Filter articles by publication type
+   * Preprints: Articles with no external publications (working papers, unrefereed)
+   * Postprints: Articles with external publications (published versions, versions of record)
    */
   filterArticles(articles, filterType) {
     if (filterType === 'all') return articles;
 
-    return articles.filter(article => {
-      if (!article.collections || article.collections.length === 0) return false;
+    // DEBUG: Check first article's external_publications field
+    if (articles.length > 0) {
+      const first = articles[0];
+      console.log('🔍 DEBUG First article:', {
+        slug: first.slug,
+        external_publications: first.external_publications,
+        external_publications_json: first.external_publications_json,
+        type: typeof first.external_publications,
+        isArray: Array.isArray(first.external_publications)
+      });
+    }
 
-      const collections = article.collections.map(c => c.toLowerCase());
+    const filtered = articles.filter(article => {
+      // external_publications should already be parsed by getAllArticles()
+      const externalPubs = article.external_publications || [];
+      const hasExternalPublications = Array.isArray(externalPubs) && externalPubs.length > 0;
 
       if (filterType === 'preprints') {
-        return collections.some(c => c.includes('preprint') || c.includes('working paper'));
+        // Preprints are articles WITHOUT external publications
+        return !hasExternalPublications;
       } else if (filterType === 'postprints') {
-        return collections.some(c => c.includes('postprint') || c.includes('version of record'));
+        // Postprints are articles WITH external publications
+        return hasExternalPublications;
       }
 
       return false;
     });
+
+    console.log(`📊 Filter results for "${filterType}":`, {
+      total: articles.length,
+      filtered: filtered.length,
+      sample: filtered.slice(0, 3).map(a => ({
+        slug: a.slug,
+        title: a.title.substring(0, 40),
+        has_ext: a.external_publications?.length > 0,
+        ext_pubs: a.external_publications
+      }))
+    });
+
+    return filtered;
   }
 
   /**
@@ -144,8 +173,8 @@ export class ArticlesBrowse {
 
             ${articles.length === 0 ? `
               <div class="no-results">
-                <p>No articles found for this filter.</p>
-                <p class="help-text">Collection data may not be available yet. Try running <code>npm run import</code> to refresh article metadata.</p>
+                <p>No ${filterType === 'preprints' ? 'preprints or working papers' : filterType === 'postprints' ? 'postprints or published versions' : 'articles'} found.</p>
+                <p class="help-text">Try browsing <a href="#/articles/all">all publications</a> or use the search feature.</p>
               </div>
             ` : `
               <div class="articles-list" id="articles-list">

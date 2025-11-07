@@ -12,7 +12,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:prod": "node scripts/build-prod.js",
-    "preview": "node scripts/preview-server.js",
+    "preview": "npm run build && node scripts/preview-server.js",
     "preview:vite": "vite preview",
     "deploy": "node scripts/deploy.js"
   },

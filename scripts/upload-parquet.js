@@ -38,7 +38,7 @@ const packageJson = JSON.parse(await fs.readFile(path.join(__dirname, '../packag
 const APP_VERSION = packageJson.version;
 
 const CONFIG = {
-  PARQUET_PATH: path.join(__dirname, '../data/export/metadata.parquet'),
+  PARQUET_PATH: path.join(__dirname, '../public/data/metadata.parquet'),
   WALLET_PATH: process.env.ARWEAVE_WALLET_PATH,
   ARNS_ROOT_NAME: process.env.ARNS_ROOT_NAME,
   ARNS_DATA_UNDERNAME: process.env.ARNS_DATA_UNDERNAME || 'data',

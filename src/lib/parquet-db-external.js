@@ -169,6 +169,7 @@ export class ParquetDB {
           abstract_preview,
           keywords_json,
           collections_json,
+          external_publications_json,
           published_at,
           doi,
           author_count,
@@ -186,14 +187,73 @@ export class ParquetDB {
       const articles = result.toArray().map(row => row.toJSON());
 
       // Parse JSON fields
-      return articles.map(article => ({
+      const parsed = articles.map(article => ({
         ...article,
         authors: JSON.parse(article.authors_json || '[]'),
         keywords: JSON.parse(article.keywords_json || '[]'),
-        collections: JSON.parse(article.collections_json || '[]')
+        collections: JSON.parse(article.collections_json || '[]'),
+        external_publications: JSON.parse(article.external_publications_json || '[]')
       }));
+
+      // DEBUG: Log statistics
+      const withExtPubs = parsed.filter(a => a.external_publications && a.external_publications.length > 0).length;
+      const withoutExtPubs = parsed.filter(a => !a.external_publications || a.external_publications.length === 0).length;
+      console.log('📊 getAllArticles() stats:', {
+        total: parsed.length,
+        withExternalPubs: withExtPubs,
+        withoutExternalPubs: withoutExtPubs
+      });
+
+      return parsed;
     } catch (error) {
       console.error('❌ Failed to get all articles:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get news articles (CrimRxiv Consortium updates and Crimversations)
+   * News articles have author_count = 0 and specific title patterns
+   */
+  async getNewsArticles(limit = 50) {
+    try {
+      const result = await this.conn.query(`
+        SELECT
+          article_id,
+          slug,
+          title,
+          authors_json,
+          abstract_preview,
+          keywords_json,
+          published_at,
+          doi,
+          author_count,
+          manifest_tx_id,
+          word_count,
+          attachment_count,
+          reference_count,
+          citation_count
+        FROM metadata
+        WHERE
+          author_count = 0
+          AND (
+            title ILIKE '%CrimRxiv%'
+            OR title ILIKE '%Consortium%'
+            OR title ILIKE '%Crimversations%'
+          )
+        ORDER BY published_at DESC
+        LIMIT ${limit}
+      `);
+
+      const articles = result.toArray().map(row => row.toJSON());
+
+      return articles.map(article => ({
+        ...article,
+        authors: JSON.parse(article.authors_json || '[]'),
+        keywords: JSON.parse(article.keywords_json || '[]')
+      }));
+    } catch (error) {
+      console.error('❌ Failed to get news articles:', error);
       throw error;
     }
   }

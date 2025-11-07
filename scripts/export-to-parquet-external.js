@@ -29,7 +29,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const CONFIG = {
-  OUTPUT_DIR: path.join(__dirname, '../data/export'),  // Export to data/export/ for uploading
+  OUTPUT_DIR: path.join(__dirname, '../public/data'),  // Single source: used by dev, build, and upload
   COMPRESSION: 'ZSTD',       // Best for web delivery
   ROW_GROUP_SIZE: 100000     // Optimize for queries
 };
@@ -80,21 +80,10 @@ class ParquetExporter {
 
     const outputPath = path.join(CONFIG.OUTPUT_DIR, 'metadata.parquet');
 
-    // Check for multiple versions
-    const versionCounts = {};
-    this.db.db.prepare(`
-      SELECT article_id, COUNT(*) as count
-      FROM articles
-      GROUP BY article_id
-      HAVING count > 1
-    `).all().forEach(row => {
-      versionCounts[row.article_id] = row.count;
-    });
-
-    // Add has_multiple_versions flag and full abstract
+    // Add has_multiple_versions flag (based on version_number) and full abstract
     const enrichedArticles = latestArticles.map(article => ({
       ...article,
-      has_multiple_versions: (versionCounts[article.article_id] || 1) > 1,
+      has_multiple_versions: article.version_number > 1,  // True if article has been revised
       abstract: article.abstract || '',
       abstract_preview: article.abstract ? article.abstract.substring(0, 500) : ''
     }));
@@ -227,6 +216,7 @@ class ParquetExporter {
     console.log('');
     console.log('Output File:');
     console.log(`  ${CONFIG.OUTPUT_DIR}/metadata.parquet`);
+    console.log(`  (Used by dev, build, and Arweave upload)`);
     console.log('='.repeat(60) + '\n');
 
     const arnsDataUndername = process.env.ARNS_DATA_UNDERNAME || 'data';

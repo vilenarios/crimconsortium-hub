@@ -37,7 +37,7 @@ const APP_VERSION = packageJson.version;
 const CONFIG = {
   ARTICLES_DIR: path.join(__dirname, '../data/articles'),
   WALLET_PATH: process.env.ARWEAVE_WALLET_PATH,
-  CONCURRENCY: 10,  // Upload 5 articles in parallel
+  CONCURRENCY: 20,  // Upload articles in parallel
   DELAY_BETWEEN_BATCHES: 1000  // 1 second delay between batches
 };
 

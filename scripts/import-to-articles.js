@@ -519,6 +519,8 @@ class CrimRXivImporter {
       const wordCount = contentText ? contentText.trim().split(/\s+/).length : 0;
       if (wordCount < 50) {
         console.log(`   ⏭️  SKIPPED: Insufficient content (${wordCount} words, need 50+)`);
+        // Delete the folder we just created since we're skipping this article
+        await fs.remove(articleDir);
         this.stats.unchanged++;
         return;
       }

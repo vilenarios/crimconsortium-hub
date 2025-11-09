@@ -108,6 +108,7 @@ class ParquetExporter {
             collection_count INTEGER,
             doi VARCHAR,
             license VARCHAR,
+            avatar VARCHAR,
             created_at TIMESTAMP,
             updated_at TIMESTAMP,
             published_at TIMESTAMP,
@@ -130,7 +131,7 @@ class ParquetExporter {
             INSERT INTO metadata_temp VALUES (
               ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
               ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-              ?, ?, ?
+              ?, ?, ?, ?
             )
           `);
 
@@ -149,6 +150,7 @@ class ParquetExporter {
               article.collection_count,
               article.doi,
               article.license,
+              article.avatar || null,
               article.created_at,
               article.updated_at,
               article.published_at,
@@ -224,24 +226,14 @@ class ParquetExporter {
     const arnsWasmUndername = process.env.ARNS_WASM_NAME || 'duck-db-wasm';
 
     console.log('💡 Next steps:');
-    console.log('  1. Upload parquet to Arweave:');
-    console.log('     npm run upload:parquet');
-    console.log('     (Automatically updates ArNS undername)');
+    console.log('  1. Deploy to Arweave: npm run deploy');
     console.log('');
-    console.log('  2. Wait for confirmation (~2-10 minutes)');
+    console.log('     Or use advanced workflow:');
+    console.log('     - Upload resources: npm run upload:parquet');
+    console.log('     - Deploy app: npm run deploy');
     console.log('');
-    console.log('  3. Test ArNS URL:');
-    console.log(`     https://${arnsDataUndername}_${arnsRootName}.arweave.net/metadata.parquet`);
+    console.log('  2. Test locally first: npm run dev');
     console.log('');
-    console.log('  4. Optional - Upload WASM files (one-time):');
-    console.log('     npm run upload:wasm');
-    console.log(`     Then manually configure ArNS: ${arnsWasmUndername} → TX_ID`);
-    console.log('');
-    console.log('  5. Test locally:');
-    console.log('     npm run dev');
-    console.log('');
-    console.log('  6. Deploy app to Arweave:');
-    console.log('     npm run build && npm run deploy\n');
   }
 
   /**

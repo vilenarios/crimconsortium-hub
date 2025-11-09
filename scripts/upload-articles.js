@@ -262,11 +262,8 @@ class ArticleUploader {
     console.log('  2. Upload parquet (auto-updates ArNS):');
     console.log('     npm run upload:parquet');
     console.log('');
-    console.log('  3. Optional - Upload WASM files (one-time):');
-    console.log('     npm run upload:wasm');
-    console.log('');
-    console.log('  4. Build and deploy app:');
-    console.log('     npm run build && npm run deploy\n');
+    console.log('  3. Deploy app:');
+    console.log('     npm run deploy\n');
   }
 
   /**

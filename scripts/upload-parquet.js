@@ -236,7 +236,7 @@ async function uploadParquet() {
     console.log('  1. Wait for confirmation (~2-10 minutes)');
     console.log(`  2. Test direct URL: https://arweave.net/${uploadResult.id}`);
     console.log(`  3. Test ArNS URL: https://${CONFIG.ARNS_DATA_UNDERNAME}_${CONFIG.ARNS_ROOT_NAME}.arweave.net`);
-    console.log('  4. Rebuild app if needed: npm run build\n');
+    console.log('  4. Deploy app: npm run deploy\n');
 
     return uploadResult.id;
   } catch (error) {

@@ -62,7 +62,8 @@
       "Bash(mklink /D publicdataarticles ....dataarticles)",
       "Bash(rm:*)",
       "Bash(npx vite:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

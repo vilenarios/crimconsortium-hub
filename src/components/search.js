@@ -176,8 +176,8 @@ export class Search {
           </h3>
 
           <div class="article-meta">
-            <span class="article-authors">${highlightText(authors)}</span>
-            <span class="article-date">${date}</span>
+            <div class="article-authors">${highlightText(authors)}</div>
+            <div class="article-date">Published: ${date}</div>
           </div>
 
           ${abstractPreview ? `

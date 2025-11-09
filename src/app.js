@@ -87,8 +87,10 @@ export class CrimRXivApp {
    */
   async showHomepage() {
     try {
+      // Note: Static content visibility is managed by router
       const html = await this.components.homepage.render();
-      this.updateView(html);
+      // Preserve scroll position for homepage (user might be reading static content)
+      this.updateView(html, { preserveScroll: true });
       this.updatePageTitle('CrimRXiv Archive');
     } catch (error) {
       console.error('❌ Homepage error:', error);
@@ -97,10 +99,31 @@ export class CrimRXivApp {
   }
 
   /**
+   * Show static homepage content (hero and about sections)
+   */
+  showStaticHomepageContent() {
+    const staticContent = document.getElementById('static-homepage-content');
+    if (staticContent) {
+      staticContent.style.display = 'block';
+    }
+  }
+
+  /**
+   * Hide static homepage content (when navigating away from homepage)
+   */
+  hideStaticHomepageContent() {
+    const staticContent = document.getElementById('static-homepage-content');
+    if (staticContent) {
+      staticContent.style.display = 'none';
+    }
+  }
+
+  /**
    * Show article detail
    */
   async showArticle(slug) {
     try {
+      // Note: Static content visibility is managed by router
       // Show loading indicator
       this.showLoadingIndicator();
 
@@ -118,6 +141,7 @@ export class CrimRXivApp {
    */
   async showArticlesBrowse(filterType = 'all') {
     try {
+      // Note: Static content visibility is managed by router
       // Show loading indicator
       this.showLoadingIndicator();
 
@@ -141,6 +165,7 @@ export class CrimRXivApp {
    */
   async showNews() {
     try {
+      // Note: Static content visibility is managed by router
       // Show loading indicator
       this.showLoadingIndicator();
 
@@ -158,6 +183,7 @@ export class CrimRXivApp {
    */
   async showSearch(query) {
     try {
+      // Note: Static content visibility is managed by router
       // Show loading indicator
       this.showLoadingIndicator();
 
@@ -175,6 +201,7 @@ export class CrimRXivApp {
    */
   async showConsortium() {
     try {
+      // Note: Static content visibility is managed by router
       const html = await this.components.consortium.render();
       this.updateView(html);
       this.updatePageTitle('Consortium Members - CrimRXiv Archive');
@@ -189,6 +216,7 @@ export class CrimRXivApp {
    */
   async showMember(memberSlug) {
     try {
+      // Note: Static content visibility is managed by router
       // Show loading indicator
       this.showLoadingIndicator();
 
@@ -204,9 +232,20 @@ export class CrimRXivApp {
   /**
    * Update view with new HTML
    */
-  updateView(html) {
+  updateView(html, options = {}) {
+    const { preserveScroll = false } = options;
+
+    // Save current scroll position if preserving
+    const scrollY = preserveScroll ? window.scrollY : 0;
+
     this.appContainer.innerHTML = html;
-    window.scrollTo(0, 0);
+
+    // Restore scroll position or scroll to top
+    if (preserveScroll) {
+      window.scrollTo(0, scrollY);
+    } else {
+      window.scrollTo(0, 0);
+    }
   }
 
   /**

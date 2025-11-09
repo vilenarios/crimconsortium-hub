@@ -35,8 +35,18 @@ export class Router {
     const hash = window.location.hash || '#/';
 
     try {
+      // Determine if we're on homepage and manage static content visibility
+      const isHomepage = this.routes.home.test(hash);
+
+      // Show/hide static homepage content immediately (before page loads)
+      if (isHomepage) {
+        this.app.showStaticHomepageContent();
+      } else {
+        this.app.hideStaticHomepageContent();
+      }
+
       // Homepage
-      if (this.routes.home.test(hash)) {
+      if (isHomepage) {
         await this.app.showHomepage();
         this.currentRoute = 'home';
         return;

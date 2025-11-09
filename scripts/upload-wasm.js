@@ -138,7 +138,7 @@ async function uploadWasm() {
     console.log('  1. Wait for confirmation (~2-10 minutes)');
     console.log(`  2. Test URL: https://arweave.net/${txId}/duckdb-mvp.wasm`);
     console.log('  3. Configure ArNS undername manually (if needed)');
-    console.log('  4. Update app config with TX ID or ArNS URL\n');
+    console.log('  4. Deploy app: npm run deploy\n');
 
     console.log('📝 Manifest TX ID (save this):');
     console.log(`   ${txId}\n`);

@@ -20,22 +20,50 @@ export class Homepage {
    */
   async render() {
     try {
+      // Return static content immediately, then load data
+      const staticHtml = this.renderStaticContent();
+
+      // Load data asynchronously and update the page
+      this.loadDynamicContent();
+
+      return staticHtml;
+    } catch (error) {
+      console.error('❌ Homepage render error:', error);
+      return this.renderError(error.message);
+    }
+  }
+
+  /**
+   * Load dynamic content (stats and articles) and update the page
+   */
+  async loadDynamicContent() {
+    try {
       // Fetch more articles initially (100) for load more functionality
       const [articles, stats] = await Promise.all([
         this.db.getRecentArticles(100),
         this.db.getStats()
       ]);
 
-      // Render content
-      const html = this.renderContent(articles, stats);
+      // Update stats section
+      const statsContainer = document.getElementById('stats-container');
+      if (statsContainer) {
+        statsContainer.innerHTML = this.renderStats(stats);
+      }
+
+      // Update publications section
+      const publicationsContainer = document.getElementById('publications-container');
+      if (publicationsContainer) {
+        publicationsContainer.innerHTML = this.renderPublications(articles);
+      }
 
       // Attach event listeners after render
       setTimeout(() => this.attachEventListeners(articles.length), 0);
-
-      return html;
     } catch (error) {
-      console.error('❌ Homepage render error:', error);
-      return this.renderError(error.message);
+      console.error('❌ Homepage dynamic content error:', error);
+      const statsContainer = document.getElementById('stats-container');
+      const publicationsContainer = document.getElementById('publications-container');
+      if (statsContainer) statsContainer.innerHTML = '<p>Error loading stats</p>';
+      if (publicationsContainer) publicationsContainer.innerHTML = '<p>Error loading publications</p>';
     }
   }
 
@@ -77,79 +105,75 @@ export class Homepage {
   }
 
   /**
-   * Render homepage content (without header/nav/footer - those are in index.html)
+   * Render dynamic content placeholders (static content is in index.html)
    */
-  renderContent(articles, stats) {
+  renderStaticContent() {
     return `
-      <div class="homepage">
-        <!-- Hero Section -->
-        <section class="hero-section">
+      <!-- Stats Section - Placeholder (loads below) -->
+      <div id="stats-container">
+        <section class="stats-section">
           <div class="container">
-            <div class="hero-content">
-              <h1 class="hero-title">CrimRXiv Archive</h1>
-              <p class="hero-description">
-                A permanent, decentralized archive of criminology research—stored forever on the Arweave blockchain.
-              </p>
-
-              <div class="stats-row">
-                <div class="stat-item">
-                  <div class="stat-number">${stats.total_articles?.toLocaleString() || '0'}</div>
-                  <div class="stat-label">Publications</div>
-                </div>
-                <div class="stat-item">
-                  <div class="stat-number">${new Date().getFullYear() - 2020}</div>
-                  <div class="stat-label">Years Active</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- About This Archive -->
-        <section class="consortium-description">
-          <div class="container">
-            <div class="description-content">
-              <h2 class="about-title">About This Archive</h2>
-              <p class="description-text">
-                This archive provides permanent preservation of research from <a href="https://www.crimrxiv.com" target="_blank" class="inline-link">CrimRXiv.com</a>—criminology's
-                global open access hub and repository. A service of <a href="https://www.manchester.ac.uk" target="_blank" class="inline-link">University of Manchester</a> and
-                Knowledge Futures, powered by the <a href="https://www.crimrxiv.com/consortium" target="_blank" class="inline-link">CrimRXiv Consortium</a>.
-              </p>
-              <p class="description-text">
-                All content is stored permanently on Arweave, ensuring research remains accessible forever. Submissions follow
-                CrimRXiv's <a href="https://doi.org/10.21428/cb6ab371.389f4506" target="_blank" class="inline-link">Moderation Policy</a>
-                and support open criminology research worldwide.
-              </p>
-              <p class="description-text">
-                <strong>Get Involved:</strong>
-                <a href="https://www.joinit.org/o/crimrxiv-consortium" target="_blank" class="inline-link">Join the Consortium</a> ·
-                <a href="mailto:crimrxiv@manchester.ac.uk" class="inline-link">Contact Us</a> ·
-                <a href="https://linktr.ee/crimconsortium" target="_blank" class="inline-link">Follow on Social Media</a>
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Recent Publications -->
-        <section class="publications-section">
-          <div class="container">
-            <div class="section-header">
-              <h2 class="section-title">Recent Publications</h2>
-              <span class="section-count"><span id="visible-count">25</span> of ${articles.length}</span>
-            </div>
-            <div class="articles-list" id="articles-list">
-              ${articles.map((article, index) => this.renderArticleCard(article, index)).join('')}
-            </div>
-            ${articles.length > 25 ? `
-              <div class="load-more-container">
-                <button id="load-more-btn" class="load-more-button">
-                  Load More Publications
-                </button>
-              </div>
-            ` : ''}
+            <div class="loading-message">Loading statistics...</div>
           </div>
         </section>
       </div>
+
+      <!-- Publications Section - Placeholder (loads below) -->
+      <div id="publications-container">
+        <section class="publications-section">
+          <div class="container">
+            <div class="loading-message">Loading recent publications...</div>
+          </div>
+        </section>
+      </div>
+    `;
+  }
+
+  /**
+   * Render stats section
+   */
+  renderStats(stats) {
+    return `
+      <section class="stats-section">
+        <div class="container">
+          <div class="stats-row">
+            <div class="stat-item">
+              <div class="stat-number">${stats.total_articles?.toLocaleString() || '0'}</div>
+              <div class="stat-label">Publications</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">${new Date().getFullYear() - 2020}</div>
+              <div class="stat-label">Years Active</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  /**
+   * Render publications section
+   */
+  renderPublications(articles) {
+    return `
+      <section class="publications-section">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-title">Recent Publications</h2>
+            <span class="section-count"><span id="visible-count">25</span> of ${articles.length}</span>
+          </div>
+          <div class="articles-list" id="articles-list">
+            ${articles.map((article, index) => this.renderArticleCard(article, index)).join('')}
+          </div>
+          ${articles.length > 25 ? `
+            <div class="load-more-container">
+              <button id="load-more-btn" class="load-more-button">
+                Load More Publications
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      </section>
     `;
   }
 
@@ -175,8 +199,8 @@ export class Homepage {
             </a>
           </h3>
           <div class="article-meta">
-            <span class="article-authors">${this.escapeHtml(authors)}</span>
-            <span class="article-date">${publishDate}</span>
+            <div class="article-authors">${this.escapeHtml(authors)}</div>
+            <div class="article-date">Published: ${publishDate}</div>
           </div>
           ${article.abstract_preview ? `
             <p class="article-abstract">${this.escapeHtml(article.abstract_preview)}</p>

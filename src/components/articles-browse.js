@@ -244,8 +244,8 @@ export class ArticlesBrowse {
             </a>
           </h3>
           <div class="article-meta">
-            <span class="article-authors">${this.escapeHtml(authors)}</span>
-            <span class="article-date">${publishDate}</span>
+            <div class="article-authors">${this.escapeHtml(authors)}</div>
+            <div class="article-date">Published: ${publishDate}</div>
           </div>
           ${article.abstract_preview ? `
             <p class="article-abstract">${this.escapeHtml(article.abstract_preview)}</p>

@@ -541,6 +541,7 @@ class CrimRXivImporter {
         abstract: abstractText || pub.description || '',
         doi: pub.doi || null,
         license: pub.licenseSlug || null,
+        avatar: pub.avatar || null,  // Institutional badge/logo URL
         created_at: pub.createdAt,
         updated_at: pub.updatedAt,
         published_at: pub.publishedAt || pub.createdAt,
@@ -607,10 +608,57 @@ class CrimRXivImporter {
   }
 
   /**
+   * Import a single article by slug (for testing)
+   */
+  async importSingleArticle(slug) {
+    console.log(`📚 Fetching single article: ${slug}\n`);
+
+    try {
+      // Fetch single pub by slug
+      const response = await this.sdk.pub.get({
+        params: {
+          slugOrId: slug
+        },
+        query: {
+          include: ['collectionPubs', 'attributions', 'community', 'draft', 'releases', 'outboundEdges']
+        }
+      });
+
+      if (!response.body) {
+        console.error(`❌ Article not found: ${slug}`);
+        return;
+      }
+
+      const pub = response.body;
+      console.log(`\n📄 Processing: ${pub.title || 'Untitled'} (${pub.slug})`);
+
+      await this.processPub(pub);
+
+      console.log('\n✅ Single article import complete!');
+      console.log('Updated:', this.stats.updated);
+      console.log('Inserted:', this.stats.inserted);
+      console.log('Unchanged:', this.stats.unchanged);
+      console.log('Skipped:', this.stats.skipped);
+      console.log('Failed:', this.stats.failed);
+    } catch (error) {
+      console.error(`❌ Failed to import article ${slug}:`, error);
+      throw error;
+    }
+  }
+
+  /**
    * Main import workflow
    */
   async import() {
     const startTime = Date.now();
+
+    // Check for --slug flag (single article import)
+    const slugArg = process.argv.find(arg => arg.startsWith('--slug='));
+    if (slugArg) {
+      const slug = slugArg.split('=')[1];
+      await this.importSingleArticle(slug);
+      return;
+    }
 
     // Check for --limit flag
     const limitArg = process.argv.find(arg => arg.startsWith('--limit='));
@@ -698,10 +746,10 @@ class CrimRXivImporter {
     console.log('='.repeat(60) + '\n');
 
     console.log('💡 Next steps:');
-    console.log('  1. Export metadata: npm run export');
-    console.log('  2. Upload articles: npm run upload:articles');
-    console.log('  3. Re-export with TX IDs: npm run export');
-    console.log('  4. Upload parquet: npm run upload:parquet\n');
+    console.log('  1. Export to Parquet: npm run export');
+    console.log('  2. Deploy to Arweave: npm run deploy');
+    console.log('');
+    console.log('     Or use advanced workflow (see CLAUDE.md)\n');
   }
 
   /**

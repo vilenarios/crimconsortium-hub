@@ -69,6 +69,7 @@ export class CrimRXivDatabase {
         abstract TEXT,
         doi TEXT,
         license TEXT,
+        avatar TEXT,                     -- Institutional badge/logo URL
 
         -- Dates
         created_at TEXT NOT NULL,
@@ -210,6 +211,8 @@ export class CrimRXivDatabase {
       { name: 'manifest_generated_at', type: 'TEXT' },
       { name: 'manifest_uploaded', type: 'INTEGER DEFAULT 0' },
       { name: 'manifest_uploaded_at', type: 'TEXT' },
+      // Institutional badge/logo
+      { name: 'avatar', type: 'TEXT' },
     ];
 
     let migrationCount = 0;
@@ -430,7 +433,7 @@ export class CrimRXivDatabase {
       this.db.prepare(`
         INSERT INTO articles (
           id, article_id, slug, version_number, version_timestamp, is_latest_version,
-          title, description, abstract, doi, license,
+          title, description, abstract, doi, license, avatar,
           created_at, updated_at, published_at,
           content_text, content_json,
           content_prosemirror, content_markdown, content_text_full, word_count,
@@ -441,7 +444,7 @@ export class CrimRXivDatabase {
           attachments_json, attachment_count,
           full_content_scraped, full_content_scraped_at,
           url, pdf_url
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         versionId,
         article.article_id,
@@ -454,6 +457,7 @@ export class CrimRXivDatabase {
         article.abstract,
         article.doi,
         article.license,
+        article.avatar || null,
         article.created_at,
         article.updated_at,
         article.published_at,
@@ -486,7 +490,7 @@ export class CrimRXivDatabase {
       this.db.prepare(`
         INSERT INTO articles (
           id, article_id, slug, version_number, version_timestamp, is_latest_version,
-          title, description, abstract, doi, license,
+          title, description, abstract, doi, license, avatar,
           created_at, updated_at, published_at,
           content_text, content_json,
           content_prosemirror, content_markdown, content_text_full, word_count,
@@ -497,7 +501,7 @@ export class CrimRXivDatabase {
           attachments_json, attachment_count,
           full_content_scraped, full_content_scraped_at,
           url, pdf_url
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         versionId,
         article.article_id,
@@ -510,6 +514,7 @@ export class CrimRXivDatabase {
         article.abstract,
         article.doi,
         article.license,
+        article.avatar || null,
         article.created_at,
         article.updated_at,
         article.published_at,
@@ -535,8 +540,9 @@ export class CrimRXivDatabase {
 
       return { action: 'inserted', versionNumber: 1 };
     } else {
-      // No content changes, but update attachments, collections, authors, and/or content if provided
+      // No content changes, but update attachments, collections, authors, avatar, and/or content if provided
       const needsUpdate =
+        (article.avatar && article.avatar !== existing.avatar) ||
         (article.attachments_json && article.attachments_json !== existing.attachments_json) ||
         (article.abstract && article.abstract.length > (existing.abstract?.length || 0)) ||
         (article.content_prosemirror && !existing.content_prosemirror) ||
@@ -574,6 +580,7 @@ export class CrimRXivDatabase {
               author_count = ?,
               keywords_json = ?,
               external_publications_json = COALESCE(?, external_publications_json),
+              avatar = COALESCE(?, avatar),
               full_content_scraped = ?,
               full_content_scraped_at = ?
           WHERE id = ?
@@ -594,6 +601,7 @@ export class CrimRXivDatabase {
           article.author_count || 0,
           article.keywords_json || '[]',
           article.external_publications_json,
+          article.avatar,
           hasFullContent,
           scrapedAt,
           existing.id

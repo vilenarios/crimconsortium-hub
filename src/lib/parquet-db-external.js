@@ -307,6 +307,7 @@ export class ParquetDB {
 
   /**
    * Search articles by affiliation patterns (for consortium members)
+   * Searches author affiliations AND external publications (for journals)
    */
   async searchByAffiliation(patterns, limit = 500) {
     try {
@@ -315,10 +316,14 @@ export class ParquetDB {
       }
 
       // Build WHERE clause for affiliation matching
-      // We search within both authors_json and collections_json fields
+      // Search in:
+      // 1. authors_json - for university affiliations
+      // 2. external_publications_json - for journal names (e.g., "Criminology: An Interdisciplinary Journal")
+      // 3. collections_json - for collection-based members
+      // 4. avatar - for institutional badge/logo URLs (e.g., "University of Liverpool" in filename)
       const safePatterns = patterns.map(p => p.replace(/'/g, "''"));
       const whereConditions = safePatterns.map(pattern =>
-        `(authors_json ILIKE '%${pattern}%' OR collections_json ILIKE '%${pattern}%')`
+        `(authors_json ILIKE '%${pattern}%' OR external_publications_json ILIKE '%${pattern}%' OR collections_json ILIKE '%${pattern}%' OR avatar ILIKE '%${pattern}%')`
       ).join(' OR ');
 
       const result = await this.conn.query(`
@@ -328,6 +333,7 @@ export class ParquetDB {
           title,
           authors_json,
           collections_json,
+          external_publications_json,
           abstract_preview,
           keywords_json,
           published_at,

@@ -109,16 +109,21 @@ export class ArticleDetail {
               this.manifestLoader.getAttachments(metadata.manifest_tx_id)
             ]);
 
-            // Use the current version's creation date for display
+            // Determine display date based on version being viewed
+            // - If viewing a specific version: use that version's creation date
+            // - If viewing latest: use version_timestamp (latest release date) to match CrimRxiv.com
             const currentVersionData = this.versionsData.versions.find(v => v.number === this.currentVersion);
-            const displayDate = currentVersionData?.createdAt || versionMetadata?.published_at || metadata.published_at;
+            const isLatest = this.currentVersion === this.versionsData.latest;
+            const displayDate = isLatest
+              ? (metadata.version_timestamp || metadata.published_at || currentVersionData?.createdAt)
+              : (currentVersionData?.createdAt || metadata.published_at);
 
             const fullArticle = {
               ...metadata,
               ...(versionMetadata || {}),
               content_prosemirror: versionProsemirror,
               attachments: attachments,
-              published_at: displayDate,  // Override with current version's date
+              published_at: displayDate,
               _parquetMetadata: metadata
             };
 

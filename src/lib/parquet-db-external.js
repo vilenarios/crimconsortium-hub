@@ -128,6 +128,7 @@ export class ParquetDB {
           abstract_preview,
           keywords_json,
           published_at,
+          version_timestamp,
           doi,
           author_count,
           manifest_tx_id,
@@ -137,7 +138,7 @@ export class ParquetDB {
           citation_count
         FROM metadata
         WHERE published_at IS NOT NULL
-        ORDER BY published_at DESC
+        ORDER BY COALESCE(version_timestamp, published_at) DESC
         LIMIT ${limit}
       `);
 
@@ -226,6 +227,7 @@ export class ParquetDB {
           abstract_preview,
           keywords_json,
           published_at,
+          version_timestamp,
           doi,
           author_count,
           manifest_tx_id,
@@ -241,7 +243,7 @@ export class ParquetDB {
             OR title ILIKE '%Consortium%'
             OR title ILIKE '%Crimversations%'
           )
-        ORDER BY published_at DESC
+        ORDER BY COALESCE(version_timestamp, published_at) DESC
         LIMIT ${limit}
       `);
 

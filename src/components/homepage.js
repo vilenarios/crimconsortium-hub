@@ -181,8 +181,10 @@ export class Homepage {
    * Render article card
    */
   renderArticleCard(article, index) {
-    const publishDate = article.published_at
-      ? new Date(article.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    // Use version_timestamp (latest release date) to match CrimRxiv.com behavior
+    const dateToDisplay = article.version_timestamp || article.published_at;
+    const publishDate = dateToDisplay
+      ? new Date(dateToDisplay).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
       : 'Date unknown';
 
     const validAuthors = article.authors?.filter(a => a.name) || [];

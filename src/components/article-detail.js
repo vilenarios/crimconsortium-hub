@@ -902,15 +902,31 @@ export class ArticleDetail {
   }
 
   /**
+   * Determine publication type from collections
+   * @param {object} article - Article with collections array
+   * @returns {string} Publication type for display
+   */
+  getPublicationType(article) {
+    const collections = article.collections || [];
+
+    // Check for specific collection types in priority order
+    if (collections.includes('Code/Software & Datasets')) return 'Code/Software & Datasets';
+    if (collections.includes('Crimversations')) return 'Crimversations';
+    if (collections.includes('News')) return 'News';
+    if (collections.includes('Postprints + Versions of Record')) return 'Postprints + Versions of Record';
+    if (collections.includes('Preprints + Working Papers')) return 'Preprints + Working Papers';
+
+    // Return first collection or default
+    return collections.length > 0 ? collections[0] : 'Publication';
+  }
+
+  /**
    * Render article loaded from manifest (new external architecture)
    * @param {object} article - Full article with metadata, content_markdown, and attachments from manifestLoader
    */
   renderManifestArticle(article) {
-    // Determine publication type based on external publications
-    const hasExternalPubs = article.external_publications_json &&
-                           article.external_publications_json !== 'null' &&
-                           article.external_publications_json.trim() !== '';
-    const publicationType = hasExternalPubs ? 'Postprints + Versions of Record' : 'Preprints + Working Papers';
+    // Determine publication type from actual collection data
+    const publicationType = this.getPublicationType(article);
 
     // Get first author's affiliation if available
     const firstAuthorAffiliation = article.authors && article.authors.length > 0 && article.authors[0].affiliation
@@ -1104,11 +1120,8 @@ export class ArticleDetail {
    * Render article content
    */
   renderContent(article) {
-    // Determine publication type based on external publications
-    const hasExternalPubs = article.external_publications_json &&
-                           article.external_publications_json !== 'null' &&
-                           article.external_publications_json.trim() !== '';
-    const publicationType = hasExternalPubs ? 'Postprints + Versions of Record' : 'Preprints + Working Papers';
+    // Determine publication type from actual collection data
+    const publicationType = this.getPublicationType(article);
 
     // Get first author's affiliation if available
     const firstAuthorAffiliation = article.authors && article.authors.length > 0 && article.authors[0].affiliation

@@ -515,21 +515,30 @@ class CrimRxivImporter {
       const prosemirrorContent = textResponse?.body || null;
       const contentText = this.extractTextFromProseMirror(prosemirrorContent);
 
-      // Skip if article has minimal content (< 50 words)
+      const abstractText = this.extractAbstractFromProseMirror(prosemirrorContent);
+      const files = this.extractFilesFromProseMirror(prosemirrorContent);
+
+      // Fetch external publications (version-of relationships)
+      const externalPubs = await this.processExternalPublications(pub);
+
+      // Improved draft detection: Skip if article has minimal content (< 50 words)
+      // UNLESS it has external publications (version-of) or attachments (PDFs, audio, etc.)
       const wordCount = contentText ? contentText.trim().split(/\s+/).length : 0;
-      if (wordCount < 50) {
-        console.log(`   ⏭️  SKIPPED: Insufficient content (${wordCount} words, need 50+)`);
+      const hasExternalPubs = externalPubs.length > 0;
+      const hasAttachments = files.length > 0;
+
+      if (wordCount < 50 && !hasExternalPubs && !hasAttachments) {
+        console.log(`   ⏭️  SKIPPED: Insufficient content (${wordCount} words, no external pubs, no attachments)`);
         // Delete the folder we just created since we're skipping this article
         await fs.remove(articleDir);
         this.stats.unchanged++;
         return;
       }
 
-      const abstractText = this.extractAbstractFromProseMirror(prosemirrorContent);
-      const files = this.extractFilesFromProseMirror(prosemirrorContent);
-
-      // Fetch external publications (version-of relationships)
-      const externalPubs = await this.processExternalPublications(pub);
+      // Log why we're keeping low-word-count articles
+      if (wordCount < 50 && (hasExternalPubs || hasAttachments)) {
+        console.log(`   ✅ KEEPING: Low word count (${wordCount}) but has ${hasExternalPubs ? 'external pubs' : ''} ${hasExternalPubs && hasAttachments ? 'and' : ''} ${hasAttachments ? `${files.length} attachment(s)` : ''}`);
+      }
 
       // Prepare article data for SQLite
       const article = {

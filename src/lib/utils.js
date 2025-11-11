@@ -1,5 +1,5 @@
 /**
- * Utility functions for CrimRXiv Static Hub
+ * Utility functions for CrimRxiv Static Hub
  * Team-friendly with clear error messages and logging
  */
 

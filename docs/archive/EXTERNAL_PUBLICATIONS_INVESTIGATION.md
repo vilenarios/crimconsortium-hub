@@ -1,7 +1,7 @@
 # External Publications Investigation
 
 ## Problem Statement
-CrimRXiv articles often link to external sources (ResearchGate, ArXiv, etc.) indicating where the article was originally published or is also available. Example from https://www.crimrxiv.com/pub/w6df4ln2/release/1:
+CrimRxiv articles often link to external sources (ResearchGate, ArXiv, etc.) indicating where the article was originally published or is also available. Example from https://www.crimrxiv.com/pub/w6df4ln2/release/1:
 - Shows "Available on ResearchGate" with link to author's ResearchGate profile
 - This metadata is critical for article provenance and cross-referencing
 

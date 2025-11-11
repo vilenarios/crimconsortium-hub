@@ -7,7 +7,7 @@
 ## How It Works
 
 ### 1. Data Source
-Articles on CrimRXiv can link to external versions (e.g., ResearchGate, arXiv) using PubPub's "outbound edges" feature. These relationships indicate:
+Articles on CrimRxiv can link to external versions (e.g., ResearchGate, arXiv) using PubPub's "outbound edges" feature. These relationships indicate:
 - **Relation Type**: "version" (same article published elsewhere)
 - **External Publication Details**: Title, URL, description, DOI, publication date
 

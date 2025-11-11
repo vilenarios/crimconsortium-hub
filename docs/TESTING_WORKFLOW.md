@@ -1,6 +1,6 @@
 # Testing Workflow
 
-This document explains how to test the CrimRXiv Archive in three different modes: **Full Local**, **Hybrid**, and **Full Production**.
+This document explains how to test the CrimRxiv Archive in three different modes: **Full Local**, **Hybrid**, and **Full Production**.
 
 ## Overview
 

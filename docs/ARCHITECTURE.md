@@ -13,7 +13,7 @@ crimconsortium.ar/
 ├── 868 generated HTML pages
 ├── 835 publications from 30 members
 ├── 37 PDF attachments archived locally
-├── Professional academic interface matching CrimRXiv design
+├── Professional academic interface matching CrimRxiv design
 └── Self-contained package ready for Arweave
 ```
 
@@ -91,7 +91,7 @@ function generateImprovedArticlePage(article, member, allMembers) {
         <!-- Inline critical CSS for performance -->
       </head>
       <body>
-        <!-- CrimRXiv-style header -->
+        <!-- CrimRxiv-style header -->
         <!-- Article content with abstract -->
         <!-- PDF download section if available -->
         <!-- References and citations -->
@@ -391,7 +391,7 @@ Search Index Limits:
 
 ## 🎯 **Implementation Benefits**
 
-### **For CrimRXiv Team:**
+### **For CrimRxiv Team:**
 - ✅ **Zero technical setup**: Just install Wander wallet
 - ✅ **Familiar interface**: Web browser operations only
 - ✅ **Mobile friendly**: Can manage from phone/tablet

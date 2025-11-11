@@ -218,7 +218,7 @@ export class ArticlesBrowse {
       case 'postprints':
         return 'Final submitted versions and published open access articles.';
       default:
-        return 'Browse all publications in the CrimRXiv archive.';
+        return 'Browse all publications in the CrimRxiv archive.';
     }
   }
 

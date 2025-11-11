@@ -1,5 +1,5 @@
 /**
- * CrimRXiv Archive App
+ * CrimRxiv Archive App
  *
  * Main application entry point. Initializes DuckDB-WASM and manages routing.
  */
@@ -15,7 +15,7 @@ import { Search } from './components/search.js';
 import { Consortium } from './components/consortium.js';
 import { MemberDetail } from './components/member-detail.js';
 
-export class CrimRXivApp {
+export class CrimRxivApp {
   constructor() {
     this.db = null;
     this.manifestLoader = manifestLoader; // Singleton manifest loader
@@ -37,7 +37,7 @@ export class CrimRXivApp {
    */
   async initialize() {
     try {
-      console.log('🚀 Initializing CrimRXiv Archive...');
+      console.log('🚀 Initializing CrimRxiv Archive...');
 
       // Get app container
       this.appContainer = document.getElementById('app');
@@ -72,7 +72,7 @@ export class CrimRXivApp {
       // Initialize navigation search
       this.initializeNavSearch();
 
-      console.log('✅ CrimRXiv Archive initialized');
+      console.log('✅ CrimRxiv Archive initialized');
 
       // Manually trigger initial route (since 'load' event already fired)
       await this.router.handleRoute();
@@ -91,7 +91,7 @@ export class CrimRXivApp {
       const html = await this.components.homepage.render();
       // Preserve scroll position for homepage (user might be reading static content)
       this.updateView(html, { preserveScroll: true });
-      this.updatePageTitle('CrimRXiv Archive');
+      this.updatePageTitle('CrimRxiv Archive');
     } catch (error) {
       console.error('❌ Homepage error:', error);
       this.showError(error.message);
@@ -153,7 +153,7 @@ export class CrimRXivApp {
         'preprints': 'Preprints + Working Papers',
         'postprints': 'Postprints + Versions of Record'
       };
-      this.updatePageTitle(`${titles[filterType] || 'Articles'} - CrimRXiv Archive`);
+      this.updatePageTitle(`${titles[filterType] || 'Articles'} - CrimRxiv Archive`);
     } catch (error) {
       console.error(`❌ Articles browse error for ${filterType}:`, error);
       this.showError(error.message);
@@ -171,7 +171,7 @@ export class CrimRXivApp {
 
       const html = await this.components.news.render();
       this.updateView(html);
-      this.updatePageTitle('News - CrimRXiv Archive');
+      this.updatePageTitle('News - CrimRxiv Archive');
     } catch (error) {
       console.error('❌ News page error:', error);
       this.showError(error.message);
@@ -189,7 +189,7 @@ export class CrimRXivApp {
 
       const html = await this.components.search.render(query);
       this.updateView(html);
-      this.updatePageTitle(`Search: ${query} - CrimRXiv Archive`);
+      this.updatePageTitle(`Search: ${query} - CrimRxiv Archive`);
     } catch (error) {
       console.error(`❌ Search error for "${query}":`, error);
       this.showError(error.message);
@@ -204,7 +204,7 @@ export class CrimRXivApp {
       // Note: Static content visibility is managed by router
       const html = await this.components.consortium.render();
       this.updateView(html);
-      this.updatePageTitle('Consortium Members - CrimRXiv Archive');
+      this.updatePageTitle('Consortium Members - CrimRxiv Archive');
     } catch (error) {
       console.error('❌ Consortium page error:', error);
       this.showError(error.message);
@@ -222,7 +222,7 @@ export class CrimRXivApp {
 
       const html = await this.components.memberDetail.render(memberSlug);
       this.updateView(html);
-      this.updatePageTitle(`${memberSlug} Publications - CrimRXiv Archive`);
+      this.updatePageTitle(`${memberSlug} Publications - CrimRxiv Archive`);
     } catch (error) {
       console.error(`❌ Member error for ${memberSlug}:`, error);
       this.showError(error.message);

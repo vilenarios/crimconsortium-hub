@@ -1,4 +1,4 @@
-# CrimRXiv Parquet Architecture - Final Design
+# CrimRxiv Parquet Architecture - Final Design
 
 **Date:** 2025-10-26
 **Status:** Approved by DB Architect
@@ -415,7 +415,7 @@ const article = await db.query(`
 ### Phase 1: Scrape to SQLite
 
 ```javascript
-class CrimRXivScraper {
+class CrimRxivScraper {
   async scrapeAll() {
     // 1. Fetch from PubPub API
     const publications = await this.getAllPublications();

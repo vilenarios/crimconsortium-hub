@@ -7,7 +7,7 @@ Get started with the PubPub SDK collector in 15 minutes.
 ## Prerequisites
 
 1. **Node.js 18+** (required by @pubpub/sdk)
-2. **CrimRXiv Account** - Create at https://www.crimrxiv.com if needed
+2. **CrimRxiv Account** - Create at https://www.crimrxiv.com if needed
 3. **Repository Setup** - Clone and install dependencies
 
 ---
@@ -110,7 +110,7 @@ Testing PubPub SDK connection...
 
 ✅ Authentication successful!
 
-📚 Connected to: CrimRXiv
+📚 Connected to: CrimRxiv
    URL: www.crimrxiv.com
 
 📖 Found 5 publications (showing first 5):
@@ -132,7 +132,7 @@ node scripts/pubpub-sdk-collector.js
 ```
 
 **What it does:**
-1. ✅ Authenticates with CrimRXiv
+1. ✅ Authenticates with CrimRxiv
 2. 📂 Fetches all collections (consortium members)
 3. 📖 Batch queries all publications
 4. 📝 Enriches each pub with full metadata
@@ -312,7 +312,7 @@ Now:
 - PubPub SDK Repository: https://github.com/pubpub/sdk
 - PubPub Discussions: https://github.com/pubpub/pubpub/discussions
 
-**CrimRXiv Specific:**
+**CrimRxiv Specific:**
 - Community: https://www.crimrxiv.com
 - Support: Check community pages for contact info
 
@@ -324,7 +324,7 @@ Now:
 
 ## FAQ
 
-**Q: Do I need permission to access CrimRXiv data?**
+**Q: Do I need permission to access CrimRxiv data?**
 A: Public publications are accessible with any account. Private/draft content requires specific permissions.
 
 **Q: Will this work after PubPub Legacy ends (May 2025)?**

@@ -133,7 +133,7 @@ export class ConsortiumScraper {
     const apiEndpoints = [
       '/api/pubs',
       '/api/collections',
-      '/api/communities/cb6ab371-fc70-4ef3-b2e5-d0d0580b4d37/pubs', // CrimRXiv community ID
+      '/api/communities/cb6ab371-fc70-4ef3-b2e5-d0d0580b4d37/pubs', // CrimRxiv community ID
       '/api/search'
     ];
     

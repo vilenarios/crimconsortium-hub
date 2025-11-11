@@ -66,12 +66,12 @@ export class ArticleDetail {
 
       if (!metadata) {
         // Set page title for not found
-        document.title = `Article Not Found - CrimRXiv Archive`;
+        document.title = `Article Not Found - CrimRxiv Archive`;
         return this.renderNotFound(slug);
       }
 
       // Set page title with article title
-      document.title = `${metadata.title} - CrimRXiv Archive`;
+      document.title = `${metadata.title} - CrimRxiv Archive`;
 
       // Store current slug
       this.currentSlug = slug;
@@ -1362,7 +1362,7 @@ export class ArticleDetail {
    */
   renderError(message, slug) {
     // Set page title for error state
-    document.title = `Error - CrimRXiv Archive`;
+    document.title = `Error - CrimRxiv Archive`;
 
     return `
       <div class="article-detail">

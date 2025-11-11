@@ -1,11 +1,11 @@
-# CrimRXiv Archive - Current Status
+# CrimRxiv Archive - Current Status
 
 **Last Updated:** 2025-11-04
 **Status:** ✅ Core workflow is working!
 
 ## What's Working
 
-### ✅ Step 1: Import from CrimRXiv
+### ✅ Step 1: Import from CrimRxiv
 **Script:** `scripts/import-to-articles.js`
 **Command:** `npm run import`
 **Status:** **WORKING** ✅
@@ -126,7 +126,7 @@ Each folder contains:
 
 ### Option 1: Test Full Import (Recommended)
 ```bash
-# Import all articles from CrimRXiv (~3,700 articles)
+# Import all articles from CrimRxiv (~3,700 articles)
 npm run import
 
 # Export to Parquet
@@ -168,7 +168,7 @@ npm run preview
 The simplified workflow is now working:
 
 ```
-1. npm run import     → Scrape CrimRXiv to data/articles/ + SQLite ✅
+1. npm run import     → Scrape CrimRxiv to data/articles/ + SQLite ✅
 2. npm run export     → Export SQLite to Parquet ✅
 3. npm run upload:articles → Upload folders to Arweave (ready) ⏸️
 4. npm run export     → Re-export with TX IDs

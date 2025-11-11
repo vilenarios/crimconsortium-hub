@@ -1,4 +1,4 @@
-# CrimRXiv Archive - Simplified Workflow
+# CrimRxiv Archive - Simplified Workflow
 
 ## Overview
 
@@ -32,13 +32,13 @@ data/
 
 ## The 5-Step Workflow
 
-### Step 1: Import from CrimRXiv
+### Step 1: Import from CrimRxiv
 ```bash
 npm run import
 ```
 
 **What it does:**
-- Scrapes CrimRXiv.com using PubPub SDK
+- Scrapes CrimRxiv.com using PubPub SDK
 - Saves EVERYTHING to `data/articles/{slug}/`:
   - Root level: Latest version (metadata.json, content.json, article.md, attachments/)
   - Version folders: All releases (1/, 2/, 3/... each with full content)
@@ -195,7 +195,7 @@ npm run preview         # Test at http://localhost:4174
 ## Data Flow
 
 ```
-Step 1: CrimRXiv.com
+Step 1: CrimRxiv.com
            ↓ (PubPub SDK)
 Step 2: data/articles/{slug}/
            ├── metadata.json
@@ -233,7 +233,7 @@ Step 6: Configure ArNS
 
 ## Update Workflow
 
-When CrimRXiv publishes new articles:
+When CrimRxiv publishes new articles:
 
 ```bash
 # 1. Re-import (incremental, fast)
@@ -274,7 +274,7 @@ Subsequent data updates: ~$0.50 (parquet only)
 ### Import fails
 - Check `.env` has `PUBPUB_EMAIL` and `PUBPUB_PASSWORD`
 - Verify internet connection
-- Check CrimRXiv.com is accessible
+- Check CrimRxiv.com is accessible
 
 ### Upload fails
 - Check `.env` has `ARWEAVE_WALLET_PATH`

@@ -1,4 +1,4 @@
-# CrimRXiv Archive - Deployment Guide
+# CrimRxiv Archive - Deployment Guide
 
 ## Simple One-Command Deployment
 
@@ -48,7 +48,7 @@ ARNS_PROCESS_ID=your-arns-process-id
 ### 1. Prepare Your Data
 
 ```bash
-# Import latest data from CrimRXiv
+# Import latest data from CrimRxiv
 npm run import
 
 # Export to Parquet for browser queries
@@ -75,7 +75,7 @@ npm run deploy
 **Expected output**:
 ```
 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
-  CrimRXiv Archive - Production Deployment
+  CrimRxiv Archive - Production Deployment
 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 
 ======================================================================
@@ -244,7 +244,7 @@ npm run deploy
 npx @ardrive/turbo-cli upload-file public/data/metadata.parquet \
   --wallet-file ./wallet.json \
   --tags "Content-Type:application/octet-stream" \
-  --tags "App-Name:CrimRXiv-Data"
+  --tags "App-Name:CrimRxiv-Data"
 ```
 
 Then configure ArNS undername:
@@ -254,7 +254,7 @@ data_crimrxiv.ar.io → parquet-tx-id
 
 ## Full Deployment Checklist
 
-- [ ] Data imported from CrimRXiv (`npm run import`)
+- [ ] Data imported from CrimRxiv (`npm run import`)
 - [ ] Parquet exported (`npm run export`)
 - [ ] Tested locally (`npm run dev`)
 - [ ] Built production (`npm run build`)

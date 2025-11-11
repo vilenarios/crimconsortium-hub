@@ -19,7 +19,7 @@
  */
 
 import { TurboFactory, ArweaveSigner } from '@ardrive/turbo-sdk/node';
-import { CrimRXivDatabase } from '../src/lib/database.js';
+import { CrimRxivDatabase } from '../src/lib/database.js';
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -86,7 +86,7 @@ class ArticleUploader {
 
     // Initialize database
     console.log('🗄️  Opening SQLite database...');
-    this.db = new CrimRXivDatabase();
+    this.db = new CrimRxivDatabase();
     this.db.initialize();
     console.log('✅ Database ready\n');
   }
@@ -116,7 +116,7 @@ class ArticleUploader {
         folderPath: articleDir,
         dataItemOpts: {
           tags: [
-            { name: 'App-Name', value: 'CrimRXiv-Archive' },
+            { name: 'App-Name', value: 'CrimRxiv-Archive' },
             { name: 'App-Version', value: APP_VERSION },
             { name: 'Article-Slug', value: slug },
             { name: 'License', value: 'OlTlW1xEw75UC0cdmNqvxc3j6iAmFXrS4usWIBfu_3E' }

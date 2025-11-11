@@ -99,9 +99,9 @@ Then open: **http://localhost:4173**
 ✅ DuckDB-WASM initialized
 📋 Loading metadata.parquet...
 ✅ Metadata loaded
-🚀 Initializing CrimRXiv Archive...
+🚀 Initializing CrimRxiv Archive...
 ✅ Database ready
-✅ CrimRXiv Archive initialized
+✅ CrimRxiv Archive initialized
 ```
 
 **Bad (if you still see errors):**

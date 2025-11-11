@@ -148,7 +148,7 @@ return {
 **Current:**
 ```html
 <link rel="icon" type="image/x-icon" href="/favicon.ico">    <!-- ❌ Absolute -->
-<img src="/crimxriv-logo.png" alt="CrimRXiv" class="site-logo">  <!-- ❌ Absolute -->
+<img src="/crimxriv-logo.png" alt="CrimRxiv" class="site-logo">  <!-- ❌ Absolute -->
 <script type="module" src="/src/main.js"></script>            <!-- Vite handles this ✅ -->
 ```
 
@@ -164,7 +164,7 @@ return {
 **Fix:**
 ```html
 <link rel="icon" type="image/x-icon" href="./favicon.ico">    <!-- ✅ Relative -->
-<img src="./crimxriv-logo.png" alt="CrimRXiv" class="site-logo">  <!-- ✅ Relative -->
+<img src="./crimxriv-logo.png" alt="CrimRxiv" class="site-logo">  <!-- ✅ Relative -->
 ```
 
 **Note:** Vite handles `src="/src/main.js"` correctly due to `base: './'` config.
@@ -186,7 +186,7 @@ base: './',  // ✅ Correct for Arweave
 ```
 
 ### ✅ External Links
-All external links (DOI, ORCID, CrimRXiv.com) correctly point to external sites.
+All external links (DOI, ORCID, CrimRxiv.com) correctly point to external sites.
 
 ### ✅ No External Dependencies
 - No CDN links
@@ -225,7 +225,7 @@ const MANUAL_BUNDLES = {
 <link rel="icon" type="image/x-icon" href="./favicon.ico">
 
 <!-- Line 242 -->
-<img src="./crimxriv-logo.png" alt="CrimRXiv" class="site-logo" onerror="this.style.display='none'">
+<img src="./crimxriv-logo.png" alt="CrimRxiv" class="site-logo" onerror="this.style.display='none'">
 ```
 
 ### Fix #3: Parquet URL Strategy (CHOOSE ONE)

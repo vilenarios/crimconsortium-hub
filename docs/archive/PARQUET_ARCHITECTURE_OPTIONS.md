@@ -1,4 +1,4 @@
-# Parquet Architecture Options for CrimRXiv Static Site
+# Parquet Architecture Options for CrimRxiv Static Site
 
 **Date:** 2025-10-26
 **Status:** Awaiting DB Architect Review

@@ -252,7 +252,7 @@ Also Available On
 
 ### Data Fields Available (But Not Yet Displayed):
 - `description`: Could show on hover tooltip
-- `doi`: External DOI if different from CrimRXiv DOI
+- `doi`: External DOI if different from CrimRxiv DOI
 - `publicationDate`: Could show "Published externally on ..."
 
 ---

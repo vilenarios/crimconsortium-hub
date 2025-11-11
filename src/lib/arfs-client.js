@@ -80,9 +80,9 @@ export class ARFSClient {
     
     try {
       // Create main drive
-      this.logger.info('📁 Creating CrimRXiv Archive drive...');
+      this.logger.info('📁 Creating CrimRxiv Archive drive...');
       const driveResult = await this.arDrive.createPublicDrive({
-        driveName: 'CrimRXiv-Archive'
+        driveName: 'CrimRxiv-Archive'
       });
       
       this.driveId = driveResult.driveId;
@@ -392,7 +392,7 @@ export class ARFSClient {
   prepareArticleMetadata(article) {
     return {
       metaDataJson: {
-        'CrimRXiv-ID': article.id,
+        'CrimRxiv-ID': article.id,
         'DOI': article.doi || '',
         'Title': article.title || '',
         'Publication-Date': article.createdAt || '',
@@ -404,7 +404,7 @@ export class ARFSClient {
         'Archive-Version': '1.0'
       },
       metaDataGqlTags: {
-        'App-Name': ['CrimRXiv-Archive'],
+        'App-Name': ['CrimRxiv-Archive'],
         'App-Version': ['2.0.0'],
         'Content-Type': ['Academic-Paper'],
         'Archive-Date': [new Date().toISOString().split('T')[0]]

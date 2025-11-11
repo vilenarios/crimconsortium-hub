@@ -1,4 +1,4 @@
-# CrimRXiv Archive - Testing Checklist
+# CrimRxiv Archive - Testing Checklist
 
 This document provides comprehensive testing checklists for local development and production deployment.
 
@@ -181,13 +181,13 @@ curl -I https://arweave.net/YOUR_MVP_WORKER_TX_ID
 - [ ] Homepage renders correctly
 - [ ] Console logs show initialization sequence:
   ```
-  🚀 Initializing CrimRXiv Archive...
+  🚀 Initializing CrimRxiv Archive...
   📦 Initializing database...
   📦 Loading DuckDB-WASM from external resources...
   ✅ DuckDB-WASM initialized
   📋 Loading metadata from external URL
   ✅ Metadata loaded from external URL
-  ✅ CrimRXiv Archive initialized
+  ✅ CrimRxiv Archive initialized
   ```
 
 #### Browser Console Checks

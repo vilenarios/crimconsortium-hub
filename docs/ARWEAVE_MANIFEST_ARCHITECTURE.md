@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the simplified archival architecture for CrimRXiv articles using Arweave manifests and native ProseMirror rendering.
+This document describes the simplified archival architecture for CrimRxiv articles using Arweave manifests and native ProseMirror rendering.
 
 ## Architecture Goals
 
@@ -120,7 +120,7 @@ data/manifests/{slug}/
     ]
   },
   "schema_version": "1.0",
-  "created_with": "CrimRXiv Archival Pipeline v1.0"
+  "created_with": "CrimRxiv Archival Pipeline v1.0"
 }
 ```
 

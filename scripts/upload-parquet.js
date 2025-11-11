@@ -199,11 +199,11 @@ async function uploadParquet() {
       dataItemOpts: {
         tags: [
           { name: 'Content-Type', value: 'application/octet-stream' },
-          { name: 'App-Name', value: 'CrimRXiv-Archive' },
+          { name: 'App-Name', value: 'CrimRxiv-Archive' },
           { name: 'App-Version', value: APP_VERSION },
           { name: 'File-Type', value: 'parquet' },
           { name: 'Data-Type', value: 'metadata' },
-          { name: 'Description', value: 'CrimRXiv article metadata in Parquet format' }
+          { name: 'Description', value: 'CrimRxiv article metadata in Parquet format' }
         ]
       }
     });

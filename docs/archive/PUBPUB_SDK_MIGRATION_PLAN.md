@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This document outlines the migration from HTML scraping (using Cheerio + Axios) to the official PubPub SDK for data collection from CrimRXiv. The migration will provide:
+This document outlines the migration from HTML scraping (using Cheerio + Axios) to the official PubPub SDK for data collection from CrimRxiv. The migration will provide:
 
 ✅ **More reliable data access** - No breaking when HTML structure changes
 ✅ **Richer metadata** - Access to structured ProseMirror content format
@@ -716,7 +716,7 @@ class PubPubSDKCollector {
 ## Risks & Mitigation
 
 ### Risk 1: Authentication Requirements
-**Issue:** Need CrimRXiv account credentials
+**Issue:** Need CrimRxiv account credentials
 **Mitigation:**
 - Use dedicated service account
 - Store credentials securely in `.env`
@@ -776,7 +776,7 @@ class PubPubSDKCollector {
 
 ## Questions for Discussion
 
-1. **Authentication:** Do we have/can we create a CrimRXiv service account?
+1. **Authentication:** Do we have/can we create a CrimRxiv service account?
 2. **Permissions:** Can the account access all 30 consortium member collections?
 3. **Timeline:** Is 6-week phased approach acceptable?
 4. **Fallback:** Should we keep HTML scraper as backup?

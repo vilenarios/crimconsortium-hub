@@ -1,7 +1,7 @@
 /**
  * Consortium Component
  *
- * Displays CrimRXiv Consortium members and information
+ * Displays CrimRxiv Consortium members and information
  */
 
 export class Consortium {

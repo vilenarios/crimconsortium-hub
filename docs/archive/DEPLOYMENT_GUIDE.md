@@ -1,6 +1,6 @@
-# CrimRXiv Archive - Deployment Guide
+# CrimRxiv Archive - Deployment Guide
 
-This guide walks you through deploying the CrimRXiv Archive to Arweave using the **external resources architecture**.
+This guide walks you through deploying the CrimRxiv Archive to Arweave using the **external resources architecture**.
 
 ## Architecture Overview
 

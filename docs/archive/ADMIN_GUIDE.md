@@ -8,7 +8,7 @@ This project creates a complete, permanent website that includes:
 - **835 research publications** from criminology consortium members
 - **30 institution profiles** (universities and supporting organizations)
 - **37 PDF attachments** for direct download
-- **Professional design** matching the CrimRXiv academic platform
+- **Professional design** matching the CrimRxiv academic platform
 
 ## 🎯 Two Scenarios
 
@@ -51,9 +51,9 @@ Skip to "Building the Website" if you already have the `data/final/` folder with
    ```
    This downloads necessary tools. Wait for "added X packages" message.
 
-## 📥 Importing Data from CrimRXiv (First Time)
+## 📥 Importing Data from CrimRxiv (First Time)
 
-If you don't have the data yet, you need to import it from CrimRXiv first:
+If you don't have the data yet, you need to import it from CrimRxiv first:
 
 ### Step 1: Import All Publications
 ```
@@ -63,7 +63,7 @@ npm run import
 **⏱️ This will take 30-45 minutes!**
 
 **What happens during import:**
-- Fetches all 30 consortium member pages from CrimRXiv
+- Fetches all 30 consortium member pages from CrimRxiv
 - Downloads ~835 publications with full content
 - Retrieves available PDF attachments
 - Creates a 56MB dataset file
@@ -176,17 +176,17 @@ npm run dev
 
 ## 🔄 Updating Content
 
-### Option 1: Re-import Everything from CrimRXiv
+### Option 1: Re-import Everything from CrimRxiv
 ```
 npm run import
 npm run build
 ```
-This fetches all latest content from CrimRXiv (takes 30-45 minutes)
+This fetches all latest content from CrimRxiv (takes 30-45 minutes)
 
 ### Option 2: Manual Update with Export File
 
 1. **Get New Data Export**
-   - Obtain updated `consortium-dataset.json` from CrimRXiv admin
+   - Obtain updated `consortium-dataset.json` from CrimRxiv admin
    - This file contains all publication information
 
 2. **Replace the Dataset**
@@ -225,7 +225,7 @@ This fetches all latest content from CrimRXiv (takes 30-45 minutes)
 
 **"No data found"**
 - Check internet connection
-- CrimRXiv might be temporarily down
+- CrimRxiv might be temporarily down
 - Try `npm run import-legacy` for alternative scraper
 
 ### Build Problems
@@ -283,7 +283,7 @@ Your Website (dist/main/)
 ### First-Time Setup:
 - [ ] Node.js installed and verified
 - [ ] Project dependencies installed (`npm install`)
-- [ ] Data imported from CrimRXiv (`npm run import`)
+- [ ] Data imported from CrimRxiv (`npm run import`)
 - [ ] Website built successfully (`npm run build`)
 - [ ] Local preview tested (`npm run dev`)
 
@@ -332,7 +332,7 @@ Once deployed to Arweave:
 # 1. First-time setup
 npm install                    # Install tools (one time only)
 
-# 2. Import data from CrimRXiv
+# 2. Import data from CrimRxiv
 npm run import                 # Takes 30-45 minutes
 # OR
 npm run import-legacy          # Alternative, faster scraper

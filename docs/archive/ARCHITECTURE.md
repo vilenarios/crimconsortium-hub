@@ -21,7 +21,7 @@
 ### Data Pipeline
 
 ```
-CrimRXiv.com (PubPub)
+CrimRxiv.com (PubPub)
     ↓
 npm run import (PubPub SDK → SQLite)
     ↓
@@ -70,7 +70,7 @@ crimconsortium-hub/
 │       └── images/        # Logo, favicon
 │
 ├── scripts/               # Build-time data pipeline
-│   ├── scrape-to-sqlite.js     # Import from CrimRXiv (PubPub SDK)
+│   ├── scrape-to-sqlite.js     # Import from CrimRxiv (PubPub SDK)
 │   ├── export-to-parquet.js    # Export to Parquet for SPA
 │   ├── download-pdfs-only.js   # Download PDF attachments
 │   ├── scraping-status.js      # Check import progress
@@ -99,7 +99,7 @@ crimconsortium-hub/
 # 1. Install dependencies
 npm install
 
-# 2. Import data from CrimRXiv (30-45 minutes)
+# 2. Import data from CrimRxiv (30-45 minutes)
 npm run import
 
 # 3. Export to Parquet (required for SPA)
@@ -119,7 +119,7 @@ npm run preview
 
 | Command | Description | Time |
 |---------|-------------|------|
-| `npm run import` | Scrape CrimRXiv → SQLite | 30-45 min |
+| `npm run import` | Scrape CrimRxiv → SQLite | 30-45 min |
 | `npm run import:pdfs` | Download PDF attachments | ~10 min |
 | `npm run export` | SQLite → Parquet | ~30 sec |
 | `npm run dev` | Vite dev server (HMR) | Instant |

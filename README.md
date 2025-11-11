@@ -1,6 +1,6 @@
-# CrimRXiv Archive
+# CrimRxiv Archive
 
-A browser-based archive of 3,700+ CrimRXiv publications. Single Page Application with client-side SQL queries (DuckDB-WASM), deployed on Arweave for permanent preservation.
+A browser-based archive of 3,700+ CrimRxiv publications. Single Page Application with client-side SQL queries (DuckDB-WASM), deployed on Arweave for permanent preservation.
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ ARNS_PROCESS_ID=your-arns-process-id
 ### 3. Import Data
 
 ```bash
-# Import from CrimRXiv (30-45 minutes, one-time)
+# Import from CrimRxiv (30-45 minutes, one-time)
 npm run import
 
 # Export to Parquet for browser queries (~30 seconds)
@@ -60,7 +60,7 @@ npm run preview          # Preview production build (localhost:4174)
 ### Data Pipeline
 
 ```bash
-npm run import           # Import CrimRXiv → SQLite (30-45 min)
+npm run import           # Import CrimRxiv → SQLite (30-45 min)
 npm run export           # Export SQLite → Parquet (~30 sec)
 ```
 
@@ -84,7 +84,7 @@ npm run upload:articles  # Upload article markdown to Arweave
 The project uses a 3-stage pipeline:
 
 ```
-CrimRXiv.com (PubPub API)
+CrimRxiv.com (PubPub API)
     ↓
 SQLite Database (data/sqlite/crimrxiv.db)  ← Source of truth
     ↓
@@ -127,7 +127,7 @@ npm run build:prod
 ## Updating Content
 
 ```bash
-# Fetch latest publications from CrimRXiv
+# Fetch latest publications from CrimRxiv
 npm run import
 
 # Regenerate Parquet file

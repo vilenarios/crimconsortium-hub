@@ -1,8 +1,8 @@
-# CrimRXiv Parquet Schema Design
+# CrimRxiv Parquet Schema Design
 
 ## Overview
 
-This document defines the Parquet schema for storing all CrimRXiv publication data efficiently.
+This document defines the Parquet schema for storing all CrimRxiv publication data efficiently.
 
 ## Why Parquet?
 
@@ -161,7 +161,7 @@ WHERE abstract ILIKE '%criminology%';
 
 ## Performance Expectations
 
-For ~7,000 CrimRXiv publications:
+For ~7,000 CrimRxiv publications:
 
 | Metric | JSON | Parquet | Improvement |
 |--------|------|---------|-------------|

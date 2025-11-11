@@ -96,12 +96,12 @@ getParquetUrls() {
 
 **Line 242 - Find:**
 ```html
-<img src="/crimxriv-logo.png" alt="CrimRXiv" class="site-logo" onerror="this.style.display='none'">
+<img src="/crimxriv-logo.png" alt="CrimRxiv" class="site-logo" onerror="this.style.display='none'">
 ```
 
 **Replace with:**
 ```html
-<img src="./crimxriv-logo.png" alt="CrimRXiv" class="site-logo" onerror="this.style.display='none'">
+<img src="./crimxriv-logo.png" alt="CrimRxiv" class="site-logo" onerror="this.style.display='none'">
 ```
 
 ## Test After Fixes

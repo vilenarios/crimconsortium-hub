@@ -38,7 +38,7 @@ I've completely redesigned the workflow to match your simpler, better approach:
 **Replaces:** `scripts/scrape-to-sqlite.js`
 
 **What it does:**
-- Scrapes CrimRXiv using PubPub SDK
+- Scrapes CrimRxiv using PubPub SDK
 - Saves to `data/articles/{slug}/`:
   - `metadata.json` - Full metadata
   - `content.json` - ProseMirror content
@@ -119,7 +119,7 @@ const result = await turbo.uploadFolder({
   folderPath: 'data/articles/0rwy4lyy/',
   dataItemOpts: {
     tags: [
-      { name: 'App-Name', value: 'CrimRXiv-Archive' },
+      { name: 'App-Name', value: 'CrimRxiv-Archive' },
       { name: 'Article-Slug', value: '0rwy4lyy' }
     ]
   }

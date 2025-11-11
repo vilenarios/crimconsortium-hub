@@ -16,7 +16,7 @@
  *   node scripts/export-to-parquet.js
  */
 
-import { CrimRXivDatabase } from '../src/lib/database.js';
+import { CrimRxivDatabase } from '../src/lib/database.js';
 import duckdb from 'duckdb';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -49,7 +49,7 @@ class ParquetExporter {
 
     // Initialize SQLite
     console.log('🗄️  Opening SQLite database...');
-    this.db = new CrimRXivDatabase();
+    this.db = new CrimRxivDatabase();
     this.db.initialize();
 
     // Initialize DuckDB for Parquet export

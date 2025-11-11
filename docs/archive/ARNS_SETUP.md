@@ -4,7 +4,7 @@
 
 ## Overview
 
-This guide explains how to set up ArNS (Arweave Name System) for the CrimRXiv Archive, enabling human-readable URLs for your data and application.
+This guide explains how to set up ArNS (Arweave Name System) for the CrimRxiv Archive, enabling human-readable URLs for your data and application.
 
 ## Architecture
 
@@ -51,7 +51,7 @@ ARWEAVE_WALLET_PATH=/path/to/wallet.json
 ```bash
 npm run import
 ```
-- Fetches all articles from CrimRXiv
+- Fetches all articles from CrimRxiv
 - Saves to `data/articles/` with all versions
 - Updates SQLite database
 

@@ -1,7 +1,7 @@
 # Full Content Archival Plan: Complete PubPub → Arweave Pipeline
 
 ## 🎯 Goal
-Create a complete, permanent archive of all CrimRXiv articles on Arweave with:
+Create a complete, permanent archive of all CrimRxiv articles on Arweave with:
 - ✅ Full article content (not just abstracts)
 - ✅ All metadata (authors, DOI, collections, keywords)
 - ✅ All attachments/downloads (PDFs, supplementary files)
@@ -376,7 +376,7 @@ class ArweaveUploader {
       dataItemOpts: {
         tags: [
           { name: 'Content-Type', value: 'text/html' },
-          { name: 'App-Name', value: 'CrimRXiv-Archive' },
+          { name: 'App-Name', value: 'CrimRxiv-Archive' },
           { name: 'Title', value: article.title },
           { name: 'DOI', value: article.doi },
           { name: 'Slug', value: article.slug },
@@ -394,7 +394,7 @@ class ArweaveUploader {
         dataItemOpts: {
           tags: [
             { name: 'Content-Type', value: this.getContentType(attachment.filename) },
-            { name: 'App-Name', value: 'CrimRXiv-Archive' },
+            { name: 'App-Name', value: 'CrimRxiv-Archive' },
             { name: 'Article-Slug', value: article.slug },
             { name: 'Type', value: 'attachment' },
             { name: 'Filename', value: attachment.filename },

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * CrimRXiv Import → data/articles/
+ * CrimRxiv Import → data/articles/
  *
  * Simplified workflow:
- * 1. Scrapes CrimRXiv using PubPub SDK
+ * 1. Scrapes CrimRxiv using PubPub SDK
  * 2. Saves ALL content to data/articles/{slug}/
  *    - metadata.json (full article metadata)
  *    - content.json (ProseMirror content)
@@ -20,7 +20,7 @@
 
 import 'dotenv/config';
 import { PubPub } from '@pubpub/sdk';
-import { CrimRXivDatabase } from '../src/lib/database.js';
+import { CrimRxivDatabase } from '../src/lib/database.js';
 import axios from 'axios';
 import fs from 'fs-extra';
 import path from 'path';
@@ -39,7 +39,7 @@ const CONFIG = {
   DOWNLOAD_TIMEOUT: 60000
 };
 
-class CrimRXivImporter {
+class CrimRxivImporter {
   constructor() {
     this.sdk = null;
     this.db = null;
@@ -385,7 +385,7 @@ class CrimRXivImporter {
    */
   async initialize() {
     console.log('\n' + '='.repeat(60));
-    console.log('🚀 CrimRXiv Import → data/articles/');
+    console.log('🚀 CrimRxiv Import → data/articles/');
     console.log('='.repeat(60) + '\n');
 
     // Check credentials
@@ -404,7 +404,7 @@ class CrimRXivImporter {
 
     // Initialize database
     console.log('🗄️  Opening SQLite database...');
-    this.db = new CrimRXivDatabase();
+    this.db = new CrimRxivDatabase();
     this.db.initialize();
     console.log('✅ Database ready\n');
 
@@ -766,7 +766,7 @@ class CrimRXivImporter {
  * Main execution
  */
 async function main() {
-  const importer = new CrimRXivImporter();
+  const importer = new CrimRxivImporter();
 
   try {
     await importer.initialize();
@@ -791,4 +791,4 @@ if (isRunningDirectly) {
   main();
 }
 
-export default CrimRXivImporter;
+export default CrimRxivImporter;

@@ -8,7 +8,7 @@
 Create a permanent, accessible archive of consortium member research that ensures perpetual access to criminology knowledge while providing optimal user experience for academic research workflows.
 
 ### **Scope Definition**
-- **Content Focus**: CrimConsortium member publications only (not full CrimRXiv)
+- **Content Focus**: CrimConsortium member publications only (not full CrimRxiv)
 - **Target Users**: Academic researchers, students, practitioners
 - **Scale**: 835 total publications, 37 with consortium affiliations
 - **Members**: 30 consortium members (17 research institutions, 13 supporting organizations)
@@ -23,7 +23,7 @@ Create a permanent, accessible archive of consortium member research that ensure
 - **Complete metadata** for all publications including abstracts and citations ✅
 
 ### **Built Features**
-- **Static site generator** with CrimRXiv consortium design ✅
+- **Static site generator** with CrimRxiv consortium design ✅
 - **Enhanced article pages** with full content and download sections ✅
 - **Complete member representation** including supporting organizations ✅
 - **868 static pages** (homepage + 835 articles + 30 members + 2 listings) ✅
@@ -45,20 +45,20 @@ Create a permanent, accessible archive of consortium member research that ensure
 2. **Member types**: Distinct presentation for research vs supporting organizations
 3. **Publication counts**: See exact publication numbers per institution
 4. **Complete archive**: Access all 835 consortium publications
-5. **Original links**: Direct access to CrimRXiv source pages
+5. **Original links**: Direct access to CrimRxiv source pages
 
 ### **Design Principles**
-- **CrimRXiv consistency**: Exact visual replication of consortium page design
+- **CrimRxiv consistency**: Exact visual replication of consortium page design
 - **Academic optimization**: Optimized for research workflows
 - **Mobile accessibility**: Responsive design for research on-the-go
 - **Permanent access**: Direct Arweave links ensure perpetual availability
 
 ### **Visual Design Standards**
-- **Color palette**: Black/white minimalist (matching CrimRXiv)
+- **Color palette**: Black/white minimalist (matching CrimRxiv)
 - **Typography**: Clean sans-serif fonts for academic readability
 - **Layout**: Grid-based responsive design
 - **Navigation**: Simple, clear hierarchy
-- **CrimRXiv logo**: Proper attribution in footer with ISSN
+- **CrimRxiv logo**: Proper attribution in footer with ISSN
 
 ## 🏗️ **Technical Implementation**
 
@@ -77,7 +77,7 @@ Create a permanent, accessible archive of consortium member research that ensure
 - **Offline capability**: Service worker caching ✅
 
 ### **Data Management**
-- **Source**: Complete CrimRXiv export with all consortium content
+- **Source**: Complete CrimRxiv export with all consortium content
 - **Processing**: 835 publications from 30 consortium members
 - **Dataset**: Single 56MB consortium-dataset.json file
 - **PDFs**: 37 attachment PDFs (26MB) stored locally
@@ -87,7 +87,7 @@ Create a permanent, accessible archive of consortium member research that ensure
 ## 💰 **Cost Model**
 
 ### **Achieved Cost Optimization**
-- **Original estimate**: $25-80 for full CrimRXiv archive
+- **Original estimate**: $25-80 for full CrimRxiv archive
 - **Consortium scope**: $19-91/year for permanent hosting
 - **Cost reduction**: 80% savings through focused scope
 
@@ -158,7 +158,7 @@ Top Contributing Institutions:
 
 ## 🔧 **Operational Requirements**
 
-### **Team Operations (CrimRXiv)**
+### **Team Operations (CrimRxiv)**
 - **Technical expertise**: Basic command line operation
 - **Time commitment**: 5-10 minutes weekly for updates
 - **Infrastructure**: Node.js 18+ and Arweave wallet
@@ -187,8 +187,8 @@ npm run validate         # Verify build integrity
 
 ## 🌍 **Stakeholder Value**
 
-### **For CrimRXiv Consortium**
-- **Professional presence**: High-quality static hub matching CrimRXiv brand
+### **For CrimRxiv Consortium**
+- **Professional presence**: High-quality static hub matching CrimRxiv brand
 - **Permanent preservation**: Research preserved indefinitely on Arweave
 - **Cost efficiency**: 80% cost reduction from original estimates
 - **Simple operations**: Minimal technical maintenance required
@@ -275,7 +275,7 @@ npm run validate         # Verify build integrity
 
 **Successfully delivered a complete permanent academic archive that:**
 
-- ✅ **Complete implementation**: 835 publications, 30 members, CrimRXiv design
+- ✅ **Complete implementation**: 835 publications, 30 members, CrimRxiv design
 - ✅ **Full archive**: All consortium content with 37 PDF attachments
 - ✅ **Production ready**: 868 static pages built and tested
 - ✅ **Self-contained**: Complete package ready for Arweave deployment

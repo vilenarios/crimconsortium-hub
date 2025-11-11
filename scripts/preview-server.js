@@ -64,7 +64,7 @@ app.get('*', (req, res, next) => {
 // Start server
 app.listen(PORT, () => {
   console.log('\n' + '='.repeat(60));
-  console.log('🚀 CrimRXiv Archive Preview Server');
+  console.log('🚀 CrimRxiv Archive Preview Server');
   console.log('='.repeat(60));
   console.log(`\n  ➜  Local:   http://localhost:${PORT}/`);
   console.log(`  ➜  Dist:    ${DIST_DIR}`);

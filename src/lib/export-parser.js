@@ -1,6 +1,6 @@
 /**
  * PubPub Export Parser
- * Processes the 353MB export.json file containing 3,630 CrimRXiv articles
+ * Processes the 353MB export.json file containing 3,630 CrimRxiv articles
  * Team-friendly with progress tracking and data validation
  */
 
@@ -50,7 +50,7 @@ export class ExportParser {
    * Main parsing function - processes the entire export
    */
   async parseExport() {
-    this.logger.info('📊 Starting CrimRXiv export parsing...');
+    this.logger.info('📊 Starting CrimRxiv export parsing...');
     
     try {
       await this.stateManager.init();
@@ -510,7 +510,7 @@ export class ExportParser {
         responseType: 'stream',
         timeout: 30000, // 30 second timeout
         headers: {
-          'User-Agent': 'CrimRXiv-Archive-Bot/1.0'
+          'User-Agent': 'CrimRxiv-Archive-Bot/1.0'
         }
       });
       

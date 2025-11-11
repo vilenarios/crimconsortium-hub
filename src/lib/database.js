@@ -1,5 +1,5 @@
 /**
- * SQLite Database - Source of Truth for CrimRXiv Data
+ * SQLite Database - Source of Truth for CrimRxiv Data
  *
  * Architecture: SQLite is the single source of truth (per PATTERN_GUIDE.md)
  * - Tracks all article versions
@@ -15,7 +15,7 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export class CrimRXivDatabase {
+export class CrimRxivDatabase {
   constructor(dbPath = null) {
     this.dbPath = dbPath || path.join(__dirname, '../../data/sqlite/crimrxiv.db');
     this.db = null;
@@ -785,4 +785,4 @@ export class CrimRXivDatabase {
   }
 }
 
-export default CrimRXivDatabase;
+export default CrimRxivDatabase;

@@ -104,7 +104,7 @@ Since we don't have full article content in SQLite, we have **two options**:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title} - CrimRXiv Archive</title>
+  <title>{title} - CrimRxiv Archive</title>
 
   <!-- SEO & Discovery -->
   <meta name="description" content="{abstract_preview}">
@@ -126,7 +126,7 @@ Since we don't have full article content in SQLite, we have **two options**:
     "url": "https://www.crimrxiv.com/pub/{slug}",
     "isPartOf": {
       "@type": "Periodical",
-      "name": "CrimRXiv"
+      "name": "CrimRxiv"
     }
   }
   </script>
@@ -226,7 +226,7 @@ Since we don't have full article content in SQLite, we have **two options**:
     <div class="links">
       <h3>📄 Access Full Article</h3>
       <ul>
-        <li><a href="https://www.crimrxiv.com/pub/{slug}">View on CrimRXiv</a></li>
+        <li><a href="https://www.crimrxiv.com/pub/{slug}">View on CrimRxiv</a></li>
         {#if pdf_url}
         <li><a href="{pdf_url}">Download PDF</a></li>
         {/if}
@@ -236,7 +236,7 @@ Since we don't have full article content in SQLite, we have **two options**:
 
     <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #666; font-size: 13px;">
       <p>
-        📦 Archived on Arweave via <a href="https://www.crimrxiv.com">CrimRXiv</a> |
+        📦 Archived on Arweave via <a href="https://www.crimrxiv.com">CrimRxiv</a> |
         This metadata is permanently stored and freely accessible.
       </p>
     </footer>
@@ -274,7 +274,7 @@ Since we don't have full article content in SQLite, we have **two options**:
   ```javascript
   tags: [
     { name: 'Content-Type', value: 'text/html' },
-    { name: 'App-Name', value: 'CrimRXiv-Archive' },
+    { name: 'App-Name', value: 'CrimRxiv-Archive' },
     { name: 'Title', value: article.title },
     { name: 'DOI', value: article.doi },
     { name: 'Slug', value: article.slug },

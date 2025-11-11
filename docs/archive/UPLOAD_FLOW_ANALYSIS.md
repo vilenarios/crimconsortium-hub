@@ -12,7 +12,7 @@ The current system implements a **manifest-based upload architecture** where art
 ### Phase 1: Data Import (Already Complete)
 **Script:** `npm run import` → `scripts/scrape-to-sqlite.js`
 
-1. Scrapes CrimRXiv publications via PubPub SDK
+1. Scrapes CrimRxiv publications via PubPub SDK
 2. Downloads PDF attachments to `data/attachments/{slug}/`
 3. Stores article metadata + attachments in SQLite database
 
@@ -207,7 +207,7 @@ CREATE TABLE articles (
 ## Current Upload Order (Correct)
 
 ```
-1. npm run import          # Scrape data from CrimRXiv → SQLite
+1. npm run import          # Scrape data from CrimRxiv → SQLite
 2. npm run generate:manifests    # Create manifest directories
 3. npm run upload:manifests      # Upload to Arweave, store manifest_tx_id in DB
 4. npm run export         # SQLite → Parquet (includes manifest_tx_id)

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * CrimRXiv Archive - Simple Production Deployment
+ * CrimRxiv Archive - Simple Production Deployment
  *
  * This script:
  * 1. Builds the production app
@@ -115,7 +115,7 @@ class Deployer {
         folderPath: this.distPath,
         dataItemOpts: {
           tags: [
-            { name: 'App-Name', value: 'CrimRXiv-Archive' },
+            { name: 'App-Name', value: 'CrimRxiv-Archive' },
             { name: 'App-Version', value: APP_VERSION },
             { name: 'Type', value: 'web-app' }
             // Content-Type auto-detected by SDK for each file type (CSS, JS, HTML, etc.)
@@ -262,7 +262,7 @@ class Deployer {
    */
   async deploy() {
     console.log('\n' + '🚀'.repeat(35));
-    console.log('  CrimRXiv Archive - Production Deployment');
+    console.log('  CrimRxiv Archive - Production Deployment');
     console.log('🚀'.repeat(35) + '\n');
 
     const startTime = Date.now();

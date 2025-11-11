@@ -1,10 +1,10 @@
 # Archive - Historical Planning Documents
 
-This folder contains planning documents, migration plans, and decision-making docs from the development phase of the CrimRXiv Archive project. These documents are kept for historical reference but are no longer actively used.
+This folder contains planning documents, migration plans, and decision-making docs from the development phase of the CrimRxiv Archive project. These documents are kept for historical reference but are no longer actively used.
 
 ## Why These Are Archived
 
-The CrimRXiv Archive project went through several architectural iterations before reaching the current implementation (SPA with DuckDB-WASM and Parquet). These documents capture:
+The CrimRxiv Archive project went through several architectural iterations before reaching the current implementation (SPA with DuckDB-WASM and Parquet). These documents capture:
 
 - **Planning phases** - Initial plans before implementation
 - **Migration plans** - Documents guiding transitions between approaches

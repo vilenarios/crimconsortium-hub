@@ -2,7 +2,7 @@
 
 ## Status: ✅ Ready for Testing
 
-The CrimRXiv Archive has been successfully migrated from a bundled approach to an **ArNS external resources architecture**. All code has been written, but local testing is required before deployment.
+The CrimRxiv Archive has been successfully migrated from a bundled approach to an **ArNS external resources architecture**. All code has been written, but local testing is required before deployment.
 
 ---
 

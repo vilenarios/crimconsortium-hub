@@ -101,7 +101,7 @@ async function uploadWasm() {
       folderPath: CONFIG.WASM_DIR,
       dataItemOpts: {
         tags: [
-          { name: 'App-Name', value: 'CrimRXiv-Archive' },
+          { name: 'App-Name', value: 'CrimRxiv-Archive' },
           { name: 'App-Version', value: APP_VERSION },
           { name: 'Description', value: 'DuckDB-WASM v1.30.0 files for browser-based SQL queries' }
           // Content-Type auto-detected by SDK for each file type

@@ -150,7 +150,7 @@ class ParquetDB {
 **File: `dist/app/app.js`**
 
 ```javascript
-class CrimRXivApp {
+class CrimRxivApp {
   constructor() {
     this.db = new ParquetDB();
     this.router = new Router();
@@ -340,7 +340,7 @@ const Homepage = {
       <div class="hero-section">
         <div class="container">
           <div class="hero-content">
-            <h1 class="hero-title">CrimRXiv Archive</h1>
+            <h1 class="hero-title">CrimRxiv Archive</h1>
             <p class="hero-description">
               Permanent, decentralized archive of criminology research powered by Arweave
             </p>
@@ -462,7 +462,7 @@ const ArticleDetail = {
             ${article.pdf_url ? `
               <div class="article-actions">
                 <a href="${article.pdf_url}" class="btn-primary" target="_blank">Download PDF</a>
-                <a href="${article.url}" class="btn-secondary" target="_blank">View on CrimRXiv</a>
+                <a href="${article.url}" class="btn-secondary" target="_blank">View on CrimRxiv</a>
               </div>
             ` : ''}
           </div>
@@ -526,7 +526,7 @@ const Search = {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CrimRXiv - Permanent Criminology Research Archive</title>
+  <title>CrimRxiv - Permanent Criminology Research Archive</title>
   <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
 
   <style>
@@ -562,7 +562,7 @@ const Search = {
   <div class="header">
     <div class="container">
       <div class="site-brand">
-        <h1 class="site-title"><a href="#/" style="text-decoration: none; color: inherit;">CrimRXiv</a></h1>
+        <h1 class="site-title"><a href="#/" style="text-decoration: none; color: inherit;">CrimRxiv</a></h1>
         <p class="tagline">Permanent Archive on Arweave</p>
       </div>
     </div>
@@ -578,7 +578,7 @@ const Search = {
   <footer class="footer">
     <div class="container">
       <p>Powered by <a href="https://www.arweave.org/">Arweave</a> |
-         Data: <a href="https://www.crimrxiv.com">CrimRXiv</a> |
+         Data: <a href="https://www.crimrxiv.com">CrimRxiv</a> |
          Built with <a href="https://duckdb.org/">DuckDB-WASM</a></p>
     </div>
   </footer>
@@ -597,7 +597,7 @@ const Search = {
 
   <script>
     // Initialize app
-    window.app = new CrimRXivApp();
+    window.app = new CrimRxivApp();
     window.app.initialize().catch(err => {
       document.getElementById('app').innerHTML = `
         <div style="text-align: center; padding: 4rem;">
@@ -676,8 +676,8 @@ build().catch(console.error);
 | **Search** | Lunr.js index | DuckDB SQL queries |
 | **Articles** | Pre-rendered HTML | Client-side rendered |
 | **Routing** | Static files | Hash routing |
-| **Scope** | 835 consortium articles | 20,000+ all CrimRXiv |
-| **Members** | 30 institutions | None (全 CrimRXiv) |
+| **Scope** | 835 consortium articles | 20,000+ all CrimRxiv |
+| **Members** | 30 institutions | None (全 CrimRxiv) |
 | **Initial Load** | ~5MB (metadata) | ~5MB (metadata.parquet) |
 | **Article Load** | Instant (pre-rendered) | ~30KB (from batch) |
 

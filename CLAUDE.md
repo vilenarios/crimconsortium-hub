@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Most Common Operations:**
 ```bash
 npm run dev              # Start dev server (http://localhost:3005)
-npm run import           # Scrape CrimRXiv to SQLite (30-45 min, needs .env)
+npm run import           # Scrape CrimRxiv to SQLite (30-45 min, needs .env)
 npm run export           # SQLite → Parquet export (~30 sec)
 npm run build            # Build SPA for local preview (includes all resources)
 npm run build:prod       # Build SPA for Arweave (excludes external resources)
@@ -37,7 +37,7 @@ npm run preview:vite  # Preview using Vite preview server
 
 **Data Pipeline:**
 ```bash
-npm run import              # Import from CrimRXiv → SQLite + Arweave (via import-to-articles.js)
+npm run import              # Import from CrimRxiv → SQLite + Arweave (via import-to-articles.js)
 npm run import:pdfs         # Download PDF attachments
 npm run export              # SQLite → Parquet for browser queries (via export-to-parquet-external.js)
 npm run upload:parquet      # Upload Parquet file to Arweave
@@ -96,7 +96,7 @@ This is a browser-based archive viewer that queries data directly in the browser
 ## Data Pipeline (3 Stages)
 
 ```
-Stage 1: CrimRXiv.com (PubPub API)
+Stage 1: CrimRxiv.com (PubPub API)
    ↓
 Stage 2: SQLite Database (source of truth)
    scripts/scrape-to-sqlite.js → data/sqlite/crimrxiv.db
@@ -110,7 +110,7 @@ Stage 3: Parquet Export (browser-optimized)
 ### Stage 1: Data Import (PubPub SDK)
 
 **Script**: `scripts/import-to-articles.js` (called via `npm run import`)
-**Source**: CrimRXiv.com (PubPub community)
+**Source**: CrimRxiv.com (PubPub community)
 **Output**: `data/sqlite/crimrxiv.db` + Arweave article manifests
 **Time**: 30-45 minutes for full import
 
@@ -168,7 +168,7 @@ Generates a **single Parquet file** with all article metadata optimized for brow
 
 ### Entry Points
 - `index.html` - HTML shell with nav/footer (always visible), loading screen
-- `src/main.js` - Vite entry point, creates and initializes CrimRXivApp
+- `src/main.js` - Vite entry point, creates and initializes CrimRxivApp
 - `src/app.js` - Main application orchestrator
 
 **Initialization Sequence** (app.js:36-76):
@@ -362,7 +362,7 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 **Progress Tracking**: Uses PubPub SDK's pagination + Arweave uploads
 
 **How it works**:
-1. Fetch all pubs from CrimRXiv community (batch of 100)
+1. Fetch all pubs from CrimRxiv community (batch of 100)
 2. For each pub, check if already in database
 3. If exists and unchanged, skip
 4. If new or updated, fetch full content and upsert to SQLite
@@ -440,7 +440,7 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 
 **Updating Article Data**:
 ```bash
-npm run import       # Fetch latest from CrimRXiv (incremental)
+npm run import       # Fetch latest from CrimRxiv (incremental)
 npm run export       # Re-export to Parquet
 npm run dev          # Test changes locally
 ```
@@ -492,7 +492,7 @@ console.log(getEnvironmentInfo());
 # - Optional: Add ARNS_PROCESS_ID=your-arns-process-id for automatic ArNS updates
 
 # 1. Prepare data
-npm run import              # Import latest from CrimRXiv
+npm run import              # Import latest from CrimRxiv
 npm run export              # Export to Parquet
 
 # 2. Deploy in one command

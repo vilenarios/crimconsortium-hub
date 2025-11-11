@@ -2,7 +2,7 @@
 
 ## 🎯 Overview
 
-Complete pipeline for archiving CrimRXiv articles on Arweave as **individual permanent transactions**. Each article is stored as Markdown with full content, metadata, attachments, and DOI references.
+Complete pipeline for archiving CrimRxiv articles on Arweave as **individual permanent transactions**. Each article is stored as Markdown with full content, metadata, attachments, and DOI references.
 
 ### Architecture
 
@@ -309,7 +309,7 @@ npm run upload:articles -- --dry-run       # Estimate costs
 ```javascript
 // Article tags
 { name: 'Content-Type', value: 'text/markdown' }
-{ name: 'App-Name', value: 'CrimRXiv-Archive' }
+{ name: 'App-Name', value: 'CrimRxiv-Archive' }
 { name: 'Title', value: 'Article Title' }
 { name: 'DOI', value: '10.31235/osf.io/abc123' }
 { name: 'Slug', value: 'article-slug' }
@@ -317,7 +317,7 @@ npm run upload:articles -- --dry-run       # Estimate costs
 
 // Attachment tags
 { name: 'Content-Type', value: 'application/pdf' }
-{ name: 'App-Name', value: 'CrimRXiv-Archive' }
+{ name: 'App-Name', value: 'CrimRxiv-Archive' }
 { name: 'Article-Slug', value: 'article-slug' }
 { name: 'Type', value: 'attachment' }
 { name: 'Filename', value: 'article.pdf' }
@@ -420,7 +420,7 @@ Get a wallet from [ArConnect](https://www.arconnect.io/) and export the JWK.
 npm run status
 
 # Check database stats
-node -e "import('./src/lib/database.js').then(m => { const db = new m.CrimRXivDatabase(); db.initialize(); console.log(db.getStats()); db.close(); })"
+node -e "import('./src/lib/database.js').then(m => { const db = new m.CrimRxivDatabase(); db.initialize(); console.log(db.getStats()); db.close(); })"
 ```
 
 ### Database Queries

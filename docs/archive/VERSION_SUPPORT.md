@@ -5,11 +5,11 @@
 
 ## Overview
 
-The CrimRXiv importer now fetches and stores ALL historical versions (releases) of each article, matching the URL structure used by CrimRXiv.com.
+The CrimRxiv importer now fetches and stores ALL historical versions (releases) of each article, matching the URL structure used by CrimRxiv.com.
 
 ## URL Pattern
 
-CrimRXiv uses this URL pattern for releases:
+CrimRxiv uses this URL pattern for releases:
 ```
 https://www.crimrxiv.com/pub/{slug}/release/{number}
 ```
@@ -275,7 +275,7 @@ processPub(pub) {
 ## Benefits
 
 ✅ **Complete History** - All versions preserved permanently on Arweave
-✅ **URL Compatibility** - Matches CrimRXiv URL structure exactly
+✅ **URL Compatibility** - Matches CrimRxiv URL structure exactly
 ✅ **Backwards Compatible** - Root level still has latest version
 ✅ **Easy Navigation** - `versions.json` provides clear manifest
 ✅ **Full Content** - Each version includes content + attachments
@@ -337,7 +337,7 @@ Update your app to:
 2. Show "Versions" tab/dropdown if multiple versions exist
 3. Load specific version when selected
 4. Highlight which version is currently displayed
-5. Link to CrimRXiv URLs for comparison
+5. Link to CrimRxiv URLs for comparison
 
 ---
 
@@ -347,4 +347,4 @@ Update your app to:
 
 ## Summary
 
-The version support implementation is complete and tested. All historical versions of articles are now fetched, stored in numbered folders matching CrimRXiv's URL structure, and ready to be uploaded to Arweave with full content preservation.
+The version support implementation is complete and tested. All historical versions of articles are now fetched, stored in numbered folders matching CrimRxiv's URL structure, and ready to be uploaded to Arweave with full content preservation.

@@ -402,6 +402,11 @@ class CrimRxivImporter {
     });
     console.log('✅ Logged in successfully\n');
 
+    // Fetch all collections (including restricted ones)
+    console.log('📚 Fetching collections...');
+    await this.fetchCollections();
+    console.log(`✅ Loaded ${this.collections.size} collections\n`);
+
     // Initialize database
     console.log('🗄️  Opening SQLite database...');
     this.db = new CrimRxivDatabase();
@@ -410,6 +415,33 @@ class CrimRxivImporter {
 
     // Ensure articles directory exists
     await fs.ensureDir(CONFIG.ARTICLES_DIR);
+  }
+
+  /**
+   * Fetch all collections and store in Map for lookups
+   */
+  async fetchCollections() {
+    try {
+      const response = await this.sdk.collection.getMany({
+        query: {
+          limit: 1000  // Get all collections (including restricted)
+        }
+      });
+
+      const collections = response.body;
+
+      for (const collection of collections) {
+        this.collections.set(collection.id, {
+          id: collection.id,
+          title: collection.title,
+          slug: collection.slug,
+          kind: collection.kind
+        });
+      }
+    } catch (error) {
+      console.error('⚠️  Failed to fetch collections:', error.message);
+      // Continue even if collections fail
+    }
   }
 
   /**
@@ -563,7 +595,11 @@ class CrimRxivImporter {
           is_corresponding: a.isCorresponding || false
         })) || []),
         author_count: pub.attributions?.length || 0,
-        collections_json: JSON.stringify(pub.collectionPubs?.map(cp => cp.collection?.title).filter(Boolean) || []),
+        collections_json: JSON.stringify(pub.collectionPubs?.map(cp => {
+          // Use Map to lookup collection title (handles restricted collections)
+          const collection = this.collections.get(cp.collectionId);
+          return collection?.title || null;
+        }).filter(Boolean) || []),
         collection_count: pub.collectionPubs?.length || 0,
         keywords_json: JSON.stringify([]),
         word_count: contentText.split(/\s+/).length,

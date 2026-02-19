@@ -13,7 +13,7 @@
  * - .env with ARNS_PROCESS_ID (your ArNS name's process ID)
  *
  * Optional:
- * - .env with ARNS_ROOT_NAME (default: 'crimrxiv-demo')
+ * - .env with ARNS_ROOT_NAME (default: 'crimrxiv')
  * - .env with ARNS_TTL_SECONDS (default: 60 - cache duration in seconds)
  * - .env with BUNDLE_RESOURCES=true (bundle WASM+data instead of loading externally)
  *
@@ -42,7 +42,7 @@ class Deployer {
     this.distPath = path.join(__dirname, '../dist');
     this.walletPath = process.env.ARWEAVE_WALLET_PATH;
     this.arnsProcessId = process.env.ARNS_PROCESS_ID;
-    this.arnsRootName = process.env.ARNS_ROOT_NAME || 'crimrxiv-demo';
+    this.arnsRootName = process.env.ARNS_ROOT_NAME || 'crimrxiv';
     this.arnsTtlSeconds = parseInt(process.env.ARNS_TTL_SECONDS || '60', 10);
 
     if (!this.walletPath) {

@@ -85,7 +85,7 @@ Look for:
 npm run upload:parquet
 
 # Verify parquet is accessible
-curl -I https://data_crimrxiv-demo.arweave.net
+curl -I https://data_crimrxiv.arweave.net
 ```
 
 2. Start preview server:
@@ -105,7 +105,7 @@ npm run dev
 ### What's Loaded
 
 - **App**: Vite preview server (production build, served locally)
-- **Parquet**: `https://data_crimrxiv-demo.arweave.net` (from Arweave)
+- **Parquet**: `https://data_crimrxiv.arweave.net` (from Arweave)
 - **Articles**: Arweave manifests via TX IDs (from Arweave)
 - **DuckDB WASM**: `/duckdb/*.wasm` (from `dist/duckdb/`)
 
@@ -170,15 +170,15 @@ npm run sync
 
 2. Access at your ArNS URL:
 ```
-https://crimrxiv-demo.arweave.net
-https://crimrxiv-demo.ar.io
-https://crimrxiv-demo.permagate.io
+https://crimrxiv.arweave.net
+https://crimrxiv.ar.io
+https://crimrxiv.permagate.io
 ```
 
 ### What's Loaded
 
-- **App**: `https://crimrxiv-demo.{gateway}` (from Arweave)
-- **Parquet**: `https://data_crimrxiv-demo.{gateway}` (ArNS undername)
+- **App**: `https://crimrxiv.{gateway}` (from Arweave)
+- **Parquet**: `https://data_crimrxiv.{gateway}` (ArNS undername)
 - **Articles**: Arweave manifests via TX IDs
 - **DuckDB WASM**: `https://duck-db-wasm.{gateway}` (ArNS undername)
 
@@ -232,7 +232,7 @@ npm run dev
 
 # Mode 3: Production
 npm run deploy
-# → https://crimrxiv-demo.arweave.net
+# → https://crimrxiv.arweave.net
 ```
 
 ### Debugging
@@ -262,7 +262,7 @@ No environment variables needed for testing modes - detection is automatic based
 For deployment, you need:
 ```env
 ARWEAVE_WALLET_PATH=/path/to/wallet.json
-ARNS_ROOT_NAME=crimrxiv-demo
+ARNS_ROOT_NAME=crimrxiv
 ARNS_DATA_UNDERNAME=data
 ARNS_PROCESS_ID=your-ant-process-id
 ```
@@ -290,7 +290,7 @@ ARNS_PROCESS_ID=your-ant-process-id
    ```bash
    npm run deploy
    # Wait 2-10 minutes for propagation
-   # Test at https://crimrxiv-demo.arweave.net
+   # Test at https://crimrxiv.arweave.net
    ```
 
 ---
@@ -325,7 +325,7 @@ npm run upload:articles
 
 **Check**: Is parquet accessible at ArNS URL?
 ```bash
-curl -I https://data_crimrxiv-demo.arweave.net
+curl -I https://data_crimrxiv.arweave.net
 ```
 
 **Fix**: Re-upload parquet:

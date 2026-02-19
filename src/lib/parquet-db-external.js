@@ -89,11 +89,11 @@ export class ParquetDB {
    * Load metadata.parquet from external URL (via ArNS undername)
    * ArNS undername points directly to the parquet file (no path needed)
    * - Development: http://localhost:{port}/data/metadata.parquet
-   * - Production: https://data_crimrxiv-demo.{gateway}
+   * - Production: https://data_crimrxiv.{gateway}
    *   Examples:
-   *     - https://data_crimrxiv-demo.ar.io
-   *     - https://data_crimrxiv-demo.arweave.net
-   *     - https://data_crimrxiv-demo.permagate.io
+   *     - https://data_crimrxiv.ar.io
+   *     - https://data_crimrxiv.arweave.net
+   *     - https://data_crimrxiv.permagate.io
    */
   async loadMetadata() {
     if (this.metadataLoaded) return;

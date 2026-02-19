@@ -8,7 +8,7 @@ Your app now dynamically loads ALL resources from whatever gateway the user acce
 ### ArNS Names Used:
 ```javascript
 const ARNS_CONFIG = {
-  rootName: 'crimrxiv-demo',          // Your app's root name
+  rootName: 'crimrxiv',          // Your app's root name
   dataUndername: 'data',              // Data undername prefix
   wasmName: 'duck-db-wasm',           // WASM ArNS name
 };
@@ -20,25 +20,25 @@ const ARNS_CONFIG = {
 Pattern: `{dataUndername}_{rootName}.{gateway}/metadata.parquet`
 
 Examples based on where user accesses your app:
-- App from `crimrxiv-demo.ar.io` → Data from `data_crimrxiv-demo.ar.io/metadata.parquet`
-- App from `crimrxiv-demo.arweave.net` → Data from `data_crimrxiv-demo.arweave.net/metadata.parquet`
-- App from `crimrxiv-demo.permagate.io` → Data from `data_crimrxiv-demo.permagate.io/metadata.parquet`
+- App from `crimrxiv.ar.io` → Data from `data_crimrxiv.ar.io/metadata.parquet`
+- App from `crimrxiv.arweave.net` → Data from `data_crimrxiv.arweave.net/metadata.parquet`
+- App from `crimrxiv.permagate.io` → Data from `data_crimrxiv.permagate.io/metadata.parquet`
 
 #### DuckDB WASM Files
 Pattern: `{wasmName}.{gateway}/{file}`
 
 Examples:
-- App from `crimrxiv-demo.ar.io` → WASM from `duck-db-wasm.ar.io/duckdb-mvp.wasm`
-- App from `crimrxiv-demo.arweave.net` → WASM from `duck-db-wasm.arweave.net/duckdb-mvp.wasm`
-- App from `crimrxiv-demo.permagate.io` → WASM from `duck-db-wasm.permagate.io/duckdb-mvp.wasm`
+- App from `crimrxiv.ar.io` → WASM from `duck-db-wasm.ar.io/duckdb-mvp.wasm`
+- App from `crimrxiv.arweave.net` → WASM from `duck-db-wasm.arweave.net/duckdb-mvp.wasm`
+- App from `crimrxiv.permagate.io` → WASM from `duck-db-wasm.permagate.io/duckdb-mvp.wasm`
 
 #### Article Manifests
 Pattern: `{gateway}/{txId}/article.md`
 
 Examples:
-- App from `crimrxiv-demo.ar.io` → Manifests from `ar.io/{txId}/article.md`
-- App from `crimrxiv-demo.arweave.net` → Manifests from `arweave.net/{txId}/article.md`
-- App from `crimrxiv-demo.permagate.io` → Manifests from `permagate.io/{txId}/article.md`
+- App from `crimrxiv.ar.io` → Manifests from `ar.io/{txId}/article.md`
+- App from `crimrxiv.arweave.net` → Manifests from `arweave.net/{txId}/article.md`
+- App from `crimrxiv.permagate.io` → Manifests from `permagate.io/{txId}/article.md`
 
 ## Key Implementation Details
 
@@ -50,9 +50,9 @@ function getGatewayDomain() {
   // Extract base gateway (last 2 parts)
   return parts.slice(-2).join('.');
 }
-// crimrxiv-demo.ar.io → ar.io
-// crimrxiv-demo.arweave.net → arweave.net
-// crimrxiv-demo.permagate.io → permagate.io
+// crimrxiv.ar.io → ar.io
+// crimrxiv.arweave.net → arweave.net
+// crimrxiv.permagate.io → permagate.io
 ```
 
 ### 2. Worker Creation (CORS Fix)
@@ -103,24 +103,24 @@ npm run build:prod
 ```
 
 Test URLs:
-- ✅ https://crimrxiv-demo.ar.io
-- ✅ https://crimrxiv-demo.arweave.net
-- ✅ https://crimrxiv-demo.permagate.io
-- ✅ https://crimrxiv-demo.g8way.io
-- ✅ https://crimrxiv-demo.{any-gateway}
+- ✅ https://crimrxiv.ar.io
+- ✅ https://crimrxiv.arweave.net
+- ✅ https://crimrxiv.permagate.io
+- ✅ https://crimrxiv.g8way.io
+- ✅ https://crimrxiv.{any-gateway}
 
 ### Expected Console Output (Production)
 ```javascript
 🌐 Arweave Config Initialized: {
   environment: 'production',
-  hostname: 'crimrxiv-demo.ar.io',
+  hostname: 'crimrxiv.ar.io',
   gateway: 'ar.io',
   arnsConfig: {
-    rootName: 'crimrxiv-demo',
+    rootName: 'crimrxiv',
     dataUndername: 'data',
     wasmName: 'duck-db-wasm'
   },
-  parquetUrl: 'https://data_crimrxiv-demo.ar.io/metadata.parquet',
+  parquetUrl: 'https://data_crimrxiv.ar.io/metadata.parquet',
   wasmUrls: {
     mvpModule: 'https://duck-db-wasm.ar.io/duckdb-mvp.wasm',
     mvpWorker: 'https://duck-db-wasm.ar.io/duckdb-browser-mvp.worker.js',
@@ -152,12 +152,12 @@ When you update your data or WASM files, just update the ArNS undername pointer 
 ```
 User accesses app from any gateway:
 ┌─────────────────────────────────────────┐
-│  https://crimrxiv-demo.{GATEWAY}       │
+│  https://crimrxiv.{GATEWAY}       │
 └────────────────┬────────────────────────┘
                  │
                  ├─ Detects gateway: {GATEWAY}
                  │
-                 ├─ Loads Parquet from: data_crimrxiv-demo.{GATEWAY}
+                 ├─ Loads Parquet from: data_crimrxiv.{GATEWAY}
                  │
                  ├─ Loads WASM from: duck-db-wasm.{GATEWAY}
                  │
@@ -173,7 +173,7 @@ All resources use the SAME gateway → No CORS! ✅
 1. **Check ArNS configuration:**
    ```bash
    # Verify undernames are set up correctly
-   curl -I https://data_crimrxiv-demo.ar.io/metadata.parquet
+   curl -I https://data_crimrxiv.ar.io/metadata.parquet
    curl -I https://duck-db-wasm.ar.io/duckdb-mvp.wasm
    ```
 

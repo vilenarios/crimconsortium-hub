@@ -26,7 +26,7 @@
 **Should be auto-configured** (check to be sure):
 
 1. Go to https://arns.app
-2. Find your root ArNS name (e.g., `crimrxiv-demo`)
+2. Find your root ArNS name (e.g., `crimrxiv`)
 3. Verify the `data` undername points to your latest parquet TX ID
    - Should have been set by `npm run upload:parquet`
 
@@ -43,10 +43,10 @@
 
 Once configured, your app will use:
 
-- **App**: `https://crimrxiv-demo.arweave.net`
-- **Data**: `https://data_crimrxiv-demo.arweave.net` (parquet file)
+- **App**: `https://crimrxiv.arweave.net`
+- **Data**: `https://data_crimrxiv.arweave.net` (parquet file)
 - **WASM**: `https://duck-db-wasm.ar.io` (DuckDB-WASM files)
-- **Articles**: `https://crimrxiv-demo.arweave.net/{manifest_tx_id}/...`
+- **Articles**: `https://crimrxiv.arweave.net/{manifest_tx_id}/...`
 
 ## 🔍 Testing Before Build
 
@@ -96,7 +96,7 @@ If the app doesn't load in production:
 1. **Check browser console** for errors
 2. **Verify ArNS records**:
    - `duck-db-wasm.ar.io` → WASM manifest TX ID
-   - `data_crimrxiv-demo.arweave.net` → Parquet TX ID
-   - `crimrxiv-demo.arweave.net` → App manifest TX ID
+   - `data_crimrxiv.arweave.net` → Parquet TX ID
+   - `crimrxiv.arweave.net` → App manifest TX ID
 3. **Test URLs directly** in browser
 4. **Check CORS** - Should work automatically on Arweave gateways

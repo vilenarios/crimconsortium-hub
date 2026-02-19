@@ -222,7 +222,7 @@ class ParquetExporter {
     console.log('='.repeat(60) + '\n');
 
     const arnsDataUndername = process.env.ARNS_DATA_UNDERNAME || 'data';
-    const arnsRootName = process.env.ARNS_ROOT_NAME || 'crimrxiv-demo';
+    const arnsRootName = process.env.ARNS_ROOT_NAME || 'crimrxiv';
     const arnsWasmUndername = process.env.ARNS_WASM_NAME || 'duck-db-wasm';
 
     console.log('💡 Next steps:');

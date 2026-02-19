@@ -2,21 +2,17 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## ⚡ Quick Reference
+## Quick Reference
 
 **Most Common Operations:**
 ```bash
 npm run dev              # Start dev server (http://localhost:3005)
-npm run import           # Scrape CrimRxiv to SQLite (30-45 min, needs .env)
-npm run export           # SQLite → Parquet export (~30 sec)
+npm run import           # Scrape CrimRxiv to SQLite (needs .env)
+npm run export           # SQLite → Parquet export
 npm run build            # Build SPA for local preview (includes all resources)
 npm run build:prod       # Build SPA for Arweave (excludes external resources)
+npm run deploy           # One-command deployment (build + upload + ArNS update)
 ```
-
-**IMPORTANT Migration Note:**
-- ✅ **Current implementation:** SPA with DuckDB-WASM (as described in this document)
-- ⚠️ **README.md is outdated:** Still describes old SSG architecture (being updated)
-- 📖 **Source of truth:** This CLAUDE.md file reflects the actual codebase
 
 **Prerequisites:**
 - `.env` file required for `npm run import` (see Security Considerations section)
@@ -31,18 +27,17 @@ npm run build:prod       # Build SPA for Arweave (excludes external resources)
 npm run dev           # Vite dev server at http://localhost:3005
 npm run build         # Build SPA to dist/ (includes all resources for local testing)
 npm run build:prod    # Build for Arweave deployment (excludes external resources)
-npm run preview       # Preview production build (custom server on port 4174)
+npm run preview       # Build + preview production build (custom server on port 4174)
 npm run preview:vite  # Preview using Vite preview server
 ```
 
 **Data Pipeline:**
 ```bash
-npm run import              # Import from CrimRxiv → SQLite + Arweave (via import-to-articles.js)
-npm run import:pdfs         # Download PDF attachments
-npm run export              # SQLite → Parquet for browser queries (via export-to-parquet-external.js)
-npm run upload:parquet      # Upload Parquet file to Arweave
-npm run upload:wasm         # Upload DuckDB WASM files to Arweave
-npm run upload:articles     # Upload article markdown to Arweave
+npm run import              # Import from CrimRxiv → SQLite + data/articles/ (does NOT upload to Arweave)
+npm run upload:articles     # Upload article folders to Arweave (stores manifest TX IDs in SQLite)
+npm run export              # SQLite → Parquet for browser queries (includes manifest TX IDs)
+npm run upload:parquet      # Upload Parquet file to Arweave + update ArNS undername
+npm run upload:wasm         # Upload DuckDB WASM files to Arweave (one-time)
 ```
 
 **Important:** Before running `npm run import`, ensure `.env` file exists with:
@@ -50,21 +45,19 @@ npm run upload:articles     # Upload article markdown to Arweave
 PUBPUB_EMAIL=your-email@example.com
 PUBPUB_PASSWORD=your-password
 ```
-See `docs/SECURITY_CHECKLIST.md` for credential management best practices.
 
 **Deployment:**
 ```bash
-npm run deploy                # Simple one-command deployment (build + upload + ArNS update)
-npm run sync                  # Sync with ArDrive (alternative method)
-npm run generate:manifests    # Generate Arweave manifests
-npm run upload:manifests      # Upload manifests to Arweave
+npm run deploy           # Simple one-command deployment (build + upload + ArNS update)
 ```
 
 **Development Utilities:**
 ```bash
-node scripts/scraping-status.js          # Check import progress
-node scripts/test-consortium-members.js  # Test consortium member detection
-node scripts/search-zero-members.js      # Debug affiliation matching
+node scripts/check-parquet.js            # Verify Parquet file contents
+node scripts/check-parquet-schema.js     # Inspect Parquet schema
+node scripts/check-collections.js        # Debug collection data
+node scripts/test-article-collections.js # Test article-collection mappings
+node scripts/clear-manifest-ids.js       # Clear manifest TX IDs for re-upload
 ```
 
 ## Architecture Overview
@@ -75,7 +68,7 @@ This is a browser-based archive viewer that queries data directly in the browser
 
 **Execution Contexts (Important!):**
 - **Build-time (Node.js):** `scripts/*.js`, `src/lib/database.js` (SQLite operations)
-- **Runtime (Browser):** `src/app.js`, `src/components/*.js`, `src/lib/parquet-db.js` (DuckDB-WASM)
+- **Runtime (Browser):** `src/app.js`, `src/components/*.js`, `src/lib/parquet-db-external.js` (DuckDB-WASM)
 - **Never mix:** SQLite is server-side only, DuckDB-WASM is browser-side only
 
 ### Tech Stack
@@ -99,10 +92,10 @@ This is a browser-based archive viewer that queries data directly in the browser
 Stage 1: CrimRxiv.com (PubPub API)
    ↓
 Stage 2: SQLite Database (source of truth)
-   scripts/scrape-to-sqlite.js → data/sqlite/crimrxiv.db
+   scripts/import-to-articles.js → data/sqlite/crimrxiv.db
    ↓
 Stage 3: Parquet Export (browser-optimized)
-   scripts/export-to-parquet.js → public/data/metadata.parquet (5MB)
+   scripts/export-to-parquet-external.js → public/data/metadata.parquet (5MB)
 ```
 
 **Critical Architecture Decision**: SQLite is the **single source of truth**. Parquet files are **regenerated exports**, never updated in place. See `docs/PATTERN_GUIDE.md` for the universal pattern.
@@ -111,8 +104,9 @@ Stage 3: Parquet Export (browser-optimized)
 
 **Script**: `scripts/import-to-articles.js` (called via `npm run import`)
 **Source**: CrimRxiv.com (PubPub community)
-**Output**: `data/sqlite/crimrxiv.db` + Arweave article manifests
+**Output**: `data/sqlite/crimrxiv.db` + `data/articles/{slug}/` folders
 **Time**: 30-45 minutes for full import
+**Note**: This script does NOT upload to Arweave. Use `npm run upload:articles` separately.
 
 Uses `@pubpub/sdk` to fetch:
 - Full article metadata (title, abstract, DOI, license)
@@ -192,6 +186,7 @@ Generates a **single Parquet file** with all article metadata optimized for brow
 - `#/` or empty → Homepage
 - `#/article/{slug}` → Article detail
 - `#/articles/{filterType}` → Articles browse (all, preprints, postprints)
+- `#/news` → News page
 - `#/search?q={query}` → Search results
 - `#/consortium` → Consortium members
 - `#/member/{slug}` → Member publications
@@ -254,6 +249,10 @@ Generates a **single Parquet file** with all article metadata optimized for brow
 **Articles Browse** (`articles-browse.js`):
 - Filtered article lists (all, preprints, postprints)
 - Accessed via `#/articles/{filterType}` routes
+
+**News** (`news.js`):
+- News and updates page
+- Accessed via `#/news` route
 
 **Search** (`search.js`):
 - Full-text search across title, abstract, authors, keywords
@@ -337,7 +336,7 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 - Use relative paths or hash routing (no absolute server paths)
 - External resources (DuckDB WASM, Parquet data) loaded via ArNS undernames
 - Self-contained HTML that works without server
-- Handle gateway URLs correctly (see `src/lib/gateway.js`)
+- Handle gateway URLs correctly (see `src/config/arweave.js`)
 
 **External Resource Architecture**:
 - **Production builds** (`npm run build:prod`): Excludes DuckDB WASM and data files (loaded from ArNS)
@@ -353,25 +352,25 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 - DuckDB-WASM requires absolute URLs for HTTP range requests
 - Special case: ar.io gateway uses arweave.net for TX ID resolution
 - ArNS configuration: rootName, dataUndername, wasmName
-- Parquet loaded from ArNS undername: `data_crimrxiv-demo.{gateway}`
+- Parquet loaded from ArNS undername: `data_crimrxiv.{gateway}`
 - WASM loaded from ArNS name: `duck-db-wasm.{gateway}`
 
 ### Incremental Data Sync
 
 **Script**: `scripts/import-to-articles.js`
-**Progress Tracking**: Uses PubPub SDK's pagination + Arweave uploads
+**Progress Tracking**: Uses PubPub SDK's pagination
 
 **How it works**:
 1. Fetch all pubs from CrimRxiv community (batch of 100)
 2. For each pub, check if already in database
 3. If exists and unchanged, skip
 4. If new or updated, fetch full content and upsert to SQLite
-5. Upload article markdown to Arweave and store manifest TX ID
+5. Save article content to `data/articles/{slug}/` folder
 6. Save progress after each batch
 
 **Resume capability**: Can stop/restart without losing progress (state tracked in SQLite)
 
-**Important**: This script handles both SQLite storage AND Arweave uploads in one pass
+**Important**: This script only imports data locally. To upload to Arweave, run `npm run upload:articles` separately.
 
 ## File Organization
 
@@ -406,28 +405,26 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 ## Scripts Overview
 
 **Data Import & Export:**
-- `import-to-articles.js` - Main import script (PubPub → SQLite + Arweave)
+- `import-to-articles.js` - Main import script (PubPub → SQLite + data/articles/)
 - `export-to-parquet-external.js` - SQLite → Parquet export for browser
-- `download-pdfs-only.js` - Download PDF attachments separately
 
 **Arweave Deployment:**
 - `deploy.js` - Simple one-command deployment (Turbo SDK + ArNS)
 - `upload-articles.js` - Upload article markdown to Arweave
 - `upload-parquet.js` - Upload Parquet file to Arweave
 - `upload-wasm.js` - Upload DuckDB WASM bundles to Arweave
-- `generate-manifests.js` - Generate Arweave manifest files
-- `upload-manifests.js` - Upload manifests to Arweave
-- `sync-ardrive-fixed.js` - Sync with ArDrive (alternative deployment)
-- `deploy-full.js` - Full deployment orchestration (legacy)
 
 **Build & Preview:**
 - `build-prod.js` - Production build (sets EXCLUDE_EXTERNAL=true)
-- `preview-server.js` - Custom preview server
+- `preview-server.js` - Custom preview server (port 4174)
 
 **Development Utilities:**
-- `scraping-status.js` - Check import progress
-- `test-consortium-members.js` - Test consortium member detection
-- `search-zero-members.js` - Debug affiliation matching issues
+- `check-parquet.js` - Verify Parquet file contents
+- `check-parquet-schema.js` - Inspect Parquet schema structure
+- `check-collections.js` - Debug collection data
+- `test-article-collections.js` - Test article-collection mappings
+- `clear-manifest-ids.js` - Clear manifest TX IDs for re-upload
+- `check-version-fix.js` - Debug version/timestamp issues
 
 ## Common Tasks
 
@@ -438,11 +435,20 @@ See `docs/PATTERN_GUIDE.md` for the universal data pipeline pattern.
 4. Add show method in `src/app.js` (e.g., `showNewPage()`)
 5. Test by navigating to `#/new-page`
 
-**Updating Article Data**:
+**Updating Article Data (Local Development)**:
 ```bash
 npm run import       # Fetch latest from CrimRxiv (incremental)
 npm run export       # Re-export to Parquet
 npm run dev          # Test changes locally
+```
+
+**Updating Article Data (Full Arweave Deployment)**:
+```bash
+npm run import           # Fetch latest from CrimRxiv
+npm run upload:articles  # Upload new articles to Arweave (stores manifest TX IDs)
+npm run export           # Re-export to Parquet (includes manifest TX IDs)
+npm run upload:parquet   # Upload Parquet to Arweave + update ArNS undername
+npm run deploy           # (Optional) Redeploy app if code changed
 ```
 
 **Adding New Database Fields**:
@@ -485,37 +491,42 @@ console.log(getEnvironmentInfo());
 - Cost-effective (~$0.10-1.00 for entire site one-time)
 - Works across 600+ ar.io gateways automatically
 
-**Simple Deployment (Recommended)**:
+**Full Deployment Workflow**:
 ```bash
 # Prerequisites:
 # - Create .env with ARWEAVE_WALLET_PATH=/path/to/wallet.json
-# - Optional: Add ARNS_PROCESS_ID=your-arns-process-id for automatic ArNS updates
+# - Add ARNS_PROCESS_ID, ARNS_ROOT_NAME, ARNS_DATA_UNDERNAME for ArNS updates
 
-# 1. Prepare data
-npm run import              # Import latest from CrimRxiv
-npm run export              # Export to Parquet
+# 1. Import and prepare data
+npm run import              # Import latest from CrimRxiv → SQLite + data/articles/
+npm run upload:articles     # Upload articles to Arweave (stores manifest TX IDs in SQLite)
+npm run export              # Export to Parquet (includes manifest TX IDs)
 
-# 2. Deploy in one command
-npm run deploy              # Builds, uploads to Arweave via Turbo SDK, updates ArNS
+# 2. Upload external resources
+npm run upload:parquet      # Upload Parquet + update ArNS undername
+npm run upload:wasm         # One-time: upload DuckDB WASM (only when version changes)
+
+# 3. Deploy app
+npm run deploy              # Builds, uploads app to Arweave, updates ArNS root
 ```
 
-**Advanced Deployment (Manual Control)**:
+**Data-Only Update (no code changes)**:
 ```bash
-# 1. Upload external resources (one-time or when updated)
-npm run upload:parquet      # Upload metadata.parquet to Arweave
-npm run upload:wasm         # Upload DuckDB WASM bundles to Arweave
-# Note ArNS undername for each upload (e.g., data_crimrxiv-demo, duck-db-wasm_crimrxiv-demo)
-
-# 2. Build SPA (excludes external resources)
-npm run build:prod          # Creates dist/ folder without bundled WASM/data
-
-# 3. Optional: Generate and upload article manifests
-npm run generate:manifests
-npm run upload:manifests
-
-# 4. Sync dist/ with ArDrive
-npm run sync
+npm run import              # Import new articles
+npm run upload:articles     # Upload new articles to Arweave
+npm run export              # Re-export Parquet with new manifest TX IDs
+npm run upload:parquet      # Upload Parquet + update ArNS undername
+# App automatically loads new data from ArNS undername - no redeploy needed
 ```
+
+**Self-Contained Deployment (bundles WASM + Parquet)**:
+```bash
+npm run import
+npm run upload:articles     # Still required - article content loaded from Arweave
+npm run export
+BUNDLE_RESOURCES=true npm run deploy  # Bundles WASM + Parquet into app (not article content)
+```
+Note: Even with BUNDLE_RESOURCES=true, article content is still fetched from Arweave using manifest TX IDs. The flag only bundles WASM and Parquet data, not the full article content.
 
 **Deployment Checklist**:
 - [ ] External resources uploaded to Arweave (parquet, WASM bundles)
@@ -593,7 +604,7 @@ npm run sync
 - Verify URL resolution in parquet-db-external.js works for your environment
 - For Arweave: check gateway detection in src/config/arweave.js
 - Debug: Check console logs from arweave.js for URL configuration
-- Check ArNS undername is resolving correctly (data_crimrxiv-demo.{gateway})
+- Check ArNS undername is resolving correctly (data_crimrxiv.{gateway})
 
 **Search returns no results**:
 - Check metadata loaded: Open browser console, run `await window.app.db.query('SELECT COUNT(*) FROM metadata')`
@@ -626,12 +637,3 @@ npm run sync
 - **docs/DEPLOYMENT.md** - Deployment guide with Turbo SDK and ArNS
 - **docs/TESTING_GUIDE.md** - Testing the complete pipeline
 - **docs/SECURITY_CHECKLIST.md** - Security best practices
-- **README.md** - Project overview and quick start
-
-**Migration Notes**:
-- This project migrated from Static Site Generator (SSG) to SPA in January 2025
-- Old architecture (archived) generated 900+ static HTML pages from consortium-dataset.json
-- New architecture: Client-side SPA with DuckDB-WASM querying Parquet files
-- Benefits: faster rebuilds (30s vs 5+ min), smaller deployments (5MB vs 80MB), dynamic features (search, filtering)
-- **Note**: README.md still references old SSG approach - current implementation is pure SPA
-- See `docs/ARCHITECTURE.md` for detailed migration information

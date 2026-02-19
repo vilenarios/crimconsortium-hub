@@ -6,7 +6,7 @@ A browser-based archive of 3,700+ CrimRxiv publications. Single Page Application
 
 - **Node.js 18+**
 - **PubPub credentials** (for data import)
-- **Arweave wallet** (optional, for deployment)
+- **Arweave wallet** (for deployment)
 
 ## Quick Setup
 
@@ -25,18 +25,20 @@ Create `.env` file in root:
 PUBPUB_EMAIL=your-email@example.com
 PUBPUB_PASSWORD=your-password
 
-# Optional for deployment
+# Required for deployment
 ARWEAVE_WALLET_PATH=./path/to/wallet.json
 ARNS_PROCESS_ID=your-arns-process-id
+ARNS_ROOT_NAME=crimrxiv
+ARNS_DATA_UNDERNAME=data
 ```
 
 ### 3. Import Data
 
 ```bash
-# Import from CrimRxiv (30-45 minutes, one-time)
+# Import from CrimRxiv (incremental, fetches new/updated articles)
 npm run import
 
-# Export to Parquet for browser queries (~30 seconds)
+# Export to Parquet for browser queries
 npm run export
 ```
 
@@ -53,30 +55,25 @@ npm run dev
 
 ```bash
 npm run dev              # Start dev server (localhost:3005)
-npm run build            # Build for production
-npm run preview          # Preview production build (localhost:4174)
+npm run build            # Build with bundled resources (for local testing)
+npm run build:prod       # Build without bundled resources (for Arweave)
+npm run preview          # Build + preview production build (localhost:4174)
 ```
 
 ### Data Pipeline
 
 ```bash
-npm run import           # Import CrimRxiv → SQLite (30-45 min)
-npm run export           # Export SQLite → Parquet (~30 sec)
+npm run import           # Import CrimRxiv → SQLite
+npm run export           # Export SQLite → Parquet
 ```
 
 ### Deployment
 
 ```bash
-npm run deploy           # Build + upload to Arweave + update ArNS
-npm run build:prod       # Build without bundled resources (for Arweave)
-```
-
-### Utilities
-
-```bash
-npm run upload:parquet   # Upload Parquet file to Arweave
-npm run upload:wasm      # Upload DuckDB WASM to Arweave
+npm run upload:parquet   # Upload Parquet to Arweave + update ArNS undername
+npm run upload:wasm      # Upload DuckDB WASM to Arweave (one-time)
 npm run upload:articles  # Upload article markdown to Arweave
+npm run deploy           # Build app + upload to Arweave + update ArNS root
 ```
 
 ## Data Pipeline
@@ -95,47 +92,68 @@ Browser (DuckDB-WASM)
 
 **Important:** SQLite is the single source of truth. Parquet files are regenerated exports, never updated directly.
 
-## Deployment to Arweave
+## Deployment Architecture
 
-### Simple Deployment (One Command)
+The deployed app loads external resources from separate ArNS names:
+- **App**: `crimrxiv.arweave.net` (root ArNS name)
+- **Parquet data**: `data_crimrxiv.arweave.net` (ArNS undername)
+- **DuckDB WASM**: `duck-db-wasm.arweave.net` (separate ArNS name)
 
-```bash
-npm run deploy
-```
+This separation allows updating data without redeploying the entire app.
 
-This will:
-1. Build the production app
-2. Upload to Arweave via Turbo SDK
-3. Update your ArNS name to point to new deployment
+## Updating Content (Big Update Workflow)
 
-**Prerequisites:**
-- `.env` with `ARWEAVE_WALLET_PATH`
-- Optional: `ARNS_PROCESS_ID` for automatic ArNS updates
-
-### Manual Deployment
+When you need to update the archive with new publications:
 
 ```bash
-# 1. Build production bundle
-npm run build:prod
-
-# 2. Upload dist/ to Arweave
-# Use your preferred Arweave upload tool
-
-# 3. Update ArNS to point to new transaction ID
-```
-
-## Updating Content
-
-```bash
-# Fetch latest publications from CrimRxiv
+# Step 1: Import latest publications from CrimRxiv → SQLite + data/articles/
 npm run import
 
-# Regenerate Parquet file
+# Step 2: Upload article content to Arweave (creates manifests, stores TX IDs in SQLite)
+npm run upload:articles
+
+# Step 3: Export SQLite (with manifest TX IDs) to Parquet
 npm run export
 
-# Build and deploy
+# Step 4: Upload new Parquet to Arweave and update ArNS undername
+npm run upload:parquet
+
+# Step 5: (Optional) Redeploy app if code changed
 npm run deploy
 ```
+
+**Note:** If only data changed (not code), you only need steps 1-4. The app will automatically load the new parquet from the updated ArNS undername.
+
+**Tip:** `upload:articles` only uploads articles that don't already have a `manifest_tx_id` in SQLite, so it's safe to run incrementally.
+
+## Full Deployment (First Time or Code Changes)
+
+```bash
+# 1. Import and prepare data
+npm run import           # Scrape CrimRxiv → SQLite + data/articles/
+npm run upload:articles  # Upload articles to Arweave (stores manifest TX IDs)
+npm run export           # Export SQLite (with TX IDs) → Parquet
+
+# 2. Upload external resources
+npm run upload:parquet   # Upload Parquet + update ArNS undername
+npm run upload:wasm      # One-time: upload DuckDB WASM files (only when DuckDB version changes)
+
+# 3. Deploy app
+npm run deploy           # Build + upload app + update ArNS root
+```
+
+## Self-Contained Deployment (Alternative)
+
+To bundle WASM and Parquet into the app (no separate ArNS undernames needed for these):
+
+```bash
+npm run import
+npm run upload:articles     # Still required - article content loaded from Arweave
+npm run export
+BUNDLE_RESOURCES=true npm run deploy
+```
+
+**Note:** Even with BUNDLE_RESOURCES=true, article content is still fetched from Arweave using manifest TX IDs. The flag only bundles WASM and Parquet data into the app.
 
 ## Architecture
 
@@ -166,5 +184,10 @@ npm run deploy
 - Check WASM files exist in `public/duckdb/`
 - Verify browser supports WebAssembly
 - Check browser console for errors
+
+**Upload fails:**
+- Verify `ARWEAVE_WALLET_PATH` points to valid JWK wallet file
+- Check wallet has sufficient balance (check with Turbo SDK)
+- Verify all required `.env` variables are set
 
 For more help, see [CLAUDE.md](CLAUDE.md) troubleshooting section.

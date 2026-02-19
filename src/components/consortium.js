@@ -42,6 +42,7 @@ export class Consortium {
       { name: 'University of South Carolina, Department of Criminology and Criminal Justice', slug: 'university-of-south-carolina', logo: 'southcarolina.jpg', patterns: ['University of South Carolina', 'USC'] },
       { name: 'University of Texas at Dallas, Criminology & Criminal Justice', slug: 'university-of-texas-dallas', logo: 'utd1c.png', patterns: ['University of Texas at Dallas', 'UT Dallas'] },
       { name: 'University of Waikato, Te Puna Haumaru New Zealand Institute for Security & Crime Science', slug: 'university-of-waikato', logo: 'nziscs.png', patterns: ['University of Waikato'] },
+      { name: 'Erasmus University Rotterdam Library', slug: 'erasmus-university-rotterdam', logo: 'eur.jpg', patterns: ['Erasmus University Rotterdam', 'EUR Library', 'EUR'] },
     ];
   }
 

@@ -29,9 +29,10 @@ const useRemoteWasm = !isDev; // Only use remote WASM when actually deployed on 
 /**
  * Get the base gateway domain from current hostname
  * Examples:
- *   crimrxiv-demo.arweave.net → arweave.net
- *   crimrxiv-demo.ar.io → ar.io
- *   crimrxiv-demo.permagate.io → permagate.io
+ *   crimrxiv.arweave.net → arweave.net
+ *   crimrxiv.ar.io → ar.io
+ *   crimrxiv.permagate.io → permagate.io
+ *   crimrxiv.8.ario.p10node.onl → 8.ario.p10node.onl
  */
 function getGatewayDomain() {
   if (isDev) {
@@ -42,10 +43,16 @@ function getGatewayDomain() {
   const hostname = window.location.hostname;
   const parts = hostname.split('.');
 
-  // If it's a subdomain format (xxx.gateway.tld or xxx.tld), extract gateway
+  // The hostname format is: {arns-name}.{gateway-domain}
+  // Examples:
+  //   crimrxiv.arweave.net → gateway: arweave.net
+  //   crimrxiv.ar.io → gateway: ar.io
+  //   crimrxiv.8.ario.p10node.onl → gateway: 8.ario.p10node.onl
+  //
+  // The ArNS name is always the first part, gateway is everything after
   if (parts.length >= 2) {
-    // Take last 2 parts (gateway.tld) or last 1 part if it's just a TLD
-    return parts.slice(-2).join('.');
+    // Remove the first part (ArNS name) and join the rest
+    return parts.slice(1).join('.');
   }
 
   return hostname;
@@ -61,12 +68,12 @@ function getProtocol() {
 /**
  * ArNS Configuration
  * These values match your .env file:
- * - ARNS_ROOT_NAME=crimrxiv-demo
+ * - ARNS_ROOT_NAME=crimrxiv
  * - ARNS_DATA_UNDERNAME=data
  * - ARNS_WASM_NAME=duck-db-wasm
  */
 const ARNS_CONFIG = {
-  rootName: 'crimrxiv-demo',
+  rootName: 'crimrxiv',
   dataUndername: 'data',
   wasmName: 'duck-db-wasm',
 };
@@ -76,10 +83,10 @@ const ARNS_CONFIG = {
  * The ArNS undername points directly to the parquet file (no path needed)
  * Pattern: {dataUndername}_{rootName}.{gateway}
  * Examples:
- *   - App on crimrxiv-demo.ar.io → Data from data_crimrxiv-demo.ar.io
- *   - App on crimrxiv-demo.arweave.net → Data from data_crimrxiv-demo.arweave.net
- *   - App on crimrxiv-demo.permagate.io → Data from data_crimrxiv-demo.permagate.io
- *   - App on localhost (hybrid mode) → Data from data_crimrxiv-demo.arweave.net
+ *   - App on crimrxiv.ar.io → Data from data_crimrxiv.ar.io
+ *   - App on crimrxiv.arweave.net → Data from data_crimrxiv.arweave.net
+ *   - App on crimrxiv.permagate.io → Data from data_crimrxiv.permagate.io
+ *   - App on localhost (hybrid mode) → Data from data_crimrxiv.arweave.net
  */
 function getParquetDataUrl() {
   // On localhost in hybrid mode, use arweave.net gateway
@@ -94,9 +101,9 @@ function getParquetDataUrl() {
  * Get DuckDB-WASM URLs using ArNS name
  * Pattern: {wasmName}.{gateway}
  * Examples:
- *   - App on crimrxiv-demo.ar.io → WASM from duck-db-wasm.ar.io
- *   - App on crimrxiv-demo.arweave.net → WASM from duck-db-wasm.arweave.net
- *   - App on crimrxiv-demo.permagate.io → WASM from duck-db-wasm.permagate.io
+ *   - App on crimrxiv.ar.io → WASM from duck-db-wasm.ar.io
+ *   - App on crimrxiv.arweave.net → WASM from duck-db-wasm.arweave.net
+ *   - App on crimrxiv.permagate.io → WASM from duck-db-wasm.permagate.io
  *
  * NOTE: In production only! Localhost always uses local WASM (CORS restriction)
  */
